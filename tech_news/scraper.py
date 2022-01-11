@@ -63,7 +63,11 @@ def scrape_noticia(html_content):
       "article.tec--article h1#js-article-title::text"
       ).get()
 
-    print(noticia_title)
+    noticia_time = html_text.css(
+      "article.tec--article time#js-article-date::attr(datetime)"
+      ).get()
+
+    print(noticia_title, noticia_time)
 
 
 # Requisito 5
