@@ -20,7 +20,11 @@ def fetch(url):
 def scrape_novidades(html_content):
     selector = Selector(text=html_content)
     link_selector = ".tec--list__item .tec--card__title__link::attr(href)"
-    return selector.css(link_selector).getall()
+    list = selector.css(link_selector).getall()
+    if not list:
+        return []
+    else:
+        return list
 
 
 # Requisito 3
