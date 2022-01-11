@@ -57,7 +57,13 @@ def scrape_next_page_link(html_content):
 
 
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    html_text = selector_html(html_content)
+
+    noticia_title = html_text.css(
+      "article.tec--article h1#js-article-title::text"
+      ).get()
+
+    print(noticia_title)
 
 
 # Requisito 5
