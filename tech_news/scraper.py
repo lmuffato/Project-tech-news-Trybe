@@ -7,11 +7,11 @@ def fetch(url, delay=1, timeout=3):
     try:
         sleep(delay)
         response = requests.get(url, timeout=timeout)
-        response.raise_for_status()
     except (requests.ReadTimeout, requests.HTTPError):
-        return "None"
+        return None
     else:
-        return response.text
+        if response.status_code == 200:
+            return response.text
 
 
 # Requisito 2
