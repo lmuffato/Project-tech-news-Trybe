@@ -1,11 +1,31 @@
+import requests
+import time
+from parsel import Selector
+
+
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
+    try:
+        response = requests.get(url, timeout=3)
+        time.sleep(1)
+        if response.status_code == 200:
+            return response.text
+        else:
+            return None
+    except requests.Timeout:
+        return None
 
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    urls = []
+    for div in selector.css(".tec--card__info"):
+        url = div.css("h3 a::attr(href)").get()
+        print(url)
+        if url is not None:
+            urls.append(url)
+    return urls
 
 
 # Requisito 3
