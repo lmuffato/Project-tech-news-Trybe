@@ -20,12 +20,21 @@ def fetch(url):
 # Requisito 2
 def scrape_novidades(html_content):
     selector = Selector(html_content)
-    content = selector.css(
+    return selector.css(
         "h3.tec--card__title a.tec--card__title__link::attr(href)"
     ).getall()
 
-    return [item for item in content]
+
+# Requisito 3
+def scrape_next_page_link(html_content):
+    selector = Selector(html_content)
+    link = selector.css("div.tec--list a.tec--btan::attr(href)").getall()
+
+    if link:
+        return link[0]
+    else:
+        return None
 
 
-# x = scrape_novidades(fetch(URL_BASE))
-# print(x)
+x = scrape_next_page_link(fetch(URL_BASE))
+print(x)
