@@ -60,8 +60,6 @@ def scrape_next_page_link(html_content):
 def scrape_noticia(html_content):
     html_text = selector_html(html_content)
 
-    # noticia_organized = []
-
     noticia_url = html_text.css(
       "head meta[property='og:url']::attr(content)"
       ).get()
@@ -75,21 +73,27 @@ def scrape_noticia(html_content):
       ).get()
 
     noticia_writer = html_text.css(
-      "article.tec--article a.tec--author__info__link::text"
+      ".z--font-bold ::text"
       ).get()
 
-    writer = noticia_writer.strip()
+    if not noticia_writer:
+        writer = None
+    else:
+        writer = noticia_writer.strip()
 
     noticia_shares_count = html_text.css(
       "article.tec--article div.tec--toolbar__item::text"
       ).get()
 
-    shares_count = int(re.findall('[0-9]+', noticia_shares_count)[0])
+    if not noticia_shares_count:
+        shares_count = 0
+    else:
+        shares_count = int(re.findall('[0-9]+', noticia_shares_count)[0])
 
     noticia_summary = html_text.css(
       "article.tec--article div.tec--article__body p:first_child *::text"
       ).getall()
-    # summary_text = [text.strip() for text in noticia_summary]
+
     summary = "".join(noticia_summary).strip()
 
     noticia_sources = html_text.css(
@@ -115,8 +119,6 @@ def scrape_noticia(html_content):
         "sources": sources,
         "categories": categories
     })
-
-    # print(noticia_organized)
 
     return noticia_organized
 
