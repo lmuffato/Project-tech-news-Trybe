@@ -7,7 +7,10 @@ import time
 def fetch(url):
     try:
         time.sleep(1)
-        return requests.get(url, timeout=3).text
+        response = requests.get(url, timeout=3)
+        if(response.status_code == 200):
+            return response.text
+        return None
     except requests.Timeout:
         return None
 
