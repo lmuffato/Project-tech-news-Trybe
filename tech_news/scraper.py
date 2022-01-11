@@ -21,10 +21,10 @@ def fetch(url):
 # Requisito 2
 def scrape_novidades(html_content):
     selector = Selector(html_content)
-    news_item = selector.css('.tec--list__item').getall()
+    news_item = selector.css('.tec--list__item')
     news_url = []
     for item in news_item:
-        url = item.css('article figure a::attr(href)')
+        url = item.css('article figure a::attr(href)').get()
         news_url.append(url)
     return news_url
 
