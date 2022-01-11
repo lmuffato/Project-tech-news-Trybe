@@ -52,6 +52,19 @@ def format_strings(str_list):
     return list_formatted
 
 
+def format_paragraph(list_of_paragraphs):
+    paragraphs = ''
+    key = 0
+    while key < len(list_of_paragraphs):
+        paragraph = list_of_paragraphs[key]
+        paragraphs = "".join(paragraph)
+    return paragraphs
+
+
+def extract_numbers(phrase):
+    return [int(s) for s in phrase.split() if s.isdigit()][0]
+
+
 # Requisito 4
 def scrape_noticia(html_content):
     selector = Selector(html_content)
@@ -72,11 +85,14 @@ def scrape_noticia(html_content):
         title = news.css('h1.tec--article__header__title::text').get()
         writer = news.css('a.tec--author__info__link::text').get().strip()
         full_text = news.css('div.tec--article__body').xpath('./p')
-        summary = full_text.get()
+        summary = format_paragraph(full_text.css('*::text').getall())
         categories = news.xpath('//div[contains(@id, "js-categories")]')
         categories_list = format_strings(
             categories.xpath('./a/text()').getall())
-        sources = news.css('div.z--mb-16').xpath('./a//text()').getall()
+        sources = format_strings(
+            news.css('div.z--mb-16').xpath('./div/a//text()').getall())
+        comments = news.xpath('//button[contains(@id, "js-comments-btn")]')
+        comments_text = extract_numbers(comments.css('*::text').getall()[1])
 
         news_dict["url"] = news_url
         news_dict["title"] = title
@@ -84,12 +100,13 @@ def scrape_noticia(html_content):
         news_dict["summary"] = summary
         news_dict["categories"] = categories_list
         news_dict["sources"] = sources
+        news_dict["comments_count"] = comments_text
 
     return news_dict
 
 
 test = fetch(
-    "https://www.tecmundo.com.br/produto/231765-buser-vale-pena-conheca-servico-viagens-onibus.htm"
+    "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
 )
 print(scrape_noticia(test))
 # Source:
