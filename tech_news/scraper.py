@@ -1,5 +1,7 @@
 import requests
 import time
+
+from requests.exceptions import URLRequired
 import parsel
 
 # URL = "https://www.tecmundo.com.br/novidades"
@@ -42,7 +44,14 @@ def scrape_novidades(html_content):
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = parsel.Selector(html_content)
+    url = selector.css("a.tec--btn--lg ::attr(href)").get()
+
+    return url
+
+
+# html = fetch(URL)
+# print(scrape_next_page_link(html))
 
 
 # Requisito 4
