@@ -1,5 +1,6 @@
 import requests
 import time
+import parsel
 
 # URL = "https://www.tecmundo.com.br/novidades"
 
@@ -23,7 +24,20 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = parsel.Selector(html_content)
+    lists = []
+
+    lists = selector.css("h3.tec--card__title a::attr(href)").getall()
+
+    # for item in selector.css(".tec--list__item"):
+    #     url = item.css(".tec--card__title__link ::attr(href)").get()
+    #     lists.append(url)
+
+    return lists
+
+
+# html = fetch(URL)
+# print(scrape_novidades(html))
 
 
 # Requisito 3
