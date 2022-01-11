@@ -8,14 +8,12 @@ def fetch(url):
     try:
         response = requests.get(url, timeout=3)
         time.sleep(1)
-    except requests.HTTPError as err:
-        print(err)
-        response = None
-    finally:
         if response.status_code == 200:
             return response.text
         else:
             return None
+    except requests.ReadTimeout:
+        return None
 
 
 # Requisito 2
