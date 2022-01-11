@@ -35,8 +35,11 @@ def scrape_novidades(html_content):
 # Requisito 3
 def scrape_next_page_link(html_content):
     page_content = parsel.Selector(html_content)
-    next_page_link = page_content.css("a.tec--btn--lg::attr(href)").get()
-    return next_page_link
+    try:
+        next_page_link = page_content.css("a.tec--btn--lg::attr(href)").get()
+        return next_page_link
+    except requests.Timeout:
+        return None
 
 
 # Requisito 4
