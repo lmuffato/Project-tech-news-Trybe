@@ -23,14 +23,19 @@ def scrape_novidades(html_content):
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    btn_next_page = selector.css('.tec--btn--primary::attr(href)').get()
+    if(btn_next_page):
+        return btn_next_page
+    return None
 
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    pass   
 
 
 # Requisito 5
 def get_tech_news(amount):
+    pass
     """Seu código deve vir aqui"""
