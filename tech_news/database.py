@@ -3,8 +3,6 @@
 # Atenção: este arquivo não deve ser alterado. Mudanças aqui não serão
 # refletidas no avaliador automático.
 
-#iniciando projeto
-
 from pymongo import MongoClient
 from decouple import config
 import copy
