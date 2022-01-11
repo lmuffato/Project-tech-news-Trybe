@@ -1,5 +1,6 @@
 import requests
 import time
+from parsel import Selector
 
 # Requisito 1
 
@@ -21,8 +22,16 @@ def fetch(url):
 
 
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
 
+    urls = selector.css(
+      "h3.tec--card__title a.tec--card__title__link::attr(href)"
+      ).getall()
+
+    return urls
+
+# Requisito 2 foi entendindo utilizando o seguinte link:
+# https://parsel.readthedocs.io/en/latest/usage.html#nesting-selectors
 
 # Requisito 3
 
