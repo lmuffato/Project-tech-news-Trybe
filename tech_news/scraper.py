@@ -76,15 +76,14 @@ def scrape_noticia(html_content):
         categories = news.xpath('//div[contains(@id, "js-categories")]')
         categories_list = format_strings(
             categories.xpath('./a/text()').getall())
-        # str_to_match = 'Fontes'
-        # sources = news.xpath().getall()
+        sources = news.css('div.z--mb-16').xpath('./a//text()').getall()
 
         news_dict["url"] = news_url
         news_dict["title"] = title
         news_dict["writer"] = writer
         news_dict["summary"] = summary
         news_dict["categories"] = categories_list
-        # news_dict["sources"] = sources
+        news_dict["sources"] = sources
 
     return news_dict
 
@@ -93,6 +92,9 @@ test = fetch(
     "https://www.tecmundo.com.br/produto/231765-buser-vale-pena-conheca-servico-viagens-onibus.htm"
 )
 print(scrape_noticia(test))
+# Source:
+# Sobre strip():
+# https://dev.to/jacob777baltimore/python-remove-all-whitespace-4m3n
 
 
 # Requisito 5
