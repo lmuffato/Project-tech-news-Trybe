@@ -36,8 +36,13 @@ def scrape_novidades(html_content):
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
-    pass
+    selector = Selector(html_content)
+    try:
+        return selector.css("a.tec--btn ::attr(href)").get()
+    except requests.Timeout:
+        None
+
+# print(scrape_next_page_link(html))
 
 
 # Requisito 4
