@@ -1,11 +1,12 @@
 import requests
 import time
+from parsel import Selector
 
 
 # Requisito 1
 def fetch(url):
     try:
-        response = requests.get(url, timeout=3)
+        response = requests.get(url, timeout=5)
         time.sleep(1)
         if response.status_code == 200:
             return response.text
@@ -19,12 +20,21 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    links_list = []
+    for news_link in selector.css("h3.tec--card__title"):
+        link = news_link.css("a.tec--card__title__link::attr(href)").get()
+        links_list.append(link)
+    return links_list
+
+
+# test = fetch("https://www.tecmundo.com.br/novidades")
+# print(scrape_novidades(test))
 
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    pass
 
 
 # Requisito 4
