@@ -22,7 +22,6 @@ def scrape_novidades(html_content):
     urls = []
     for div in selector.css(".tec--card__info"):
         url = div.css("h3 a::attr(href)").get()
-        print(url)
         if url is not None:
             urls.append(url)
     return urls
@@ -30,7 +29,9 @@ def scrape_novidades(html_content):
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    next = selector.css(".tec--btn--primary::attr(href)").get()
+    return next
 
 
 # Requisito 4
