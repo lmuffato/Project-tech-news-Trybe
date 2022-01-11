@@ -88,7 +88,12 @@ def scrape_noticia(html_content):
       "article.tec--article div.z--mb-16 a.tec--badge::text"
       ).getall()
 
+    noticia_categories = html_text.css(
+      "article.tec--article div#js-categories a.tec--badge::text"
+      ).getall()
+
     print("Teste dos Sources", noticia_sources)
+    print("Teste dos Categories", noticia_categories)
 
     print({
       noticia_title,
