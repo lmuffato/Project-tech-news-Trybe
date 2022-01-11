@@ -6,7 +6,6 @@ from parsel import Selector
 
 
 def fetch(url):
-    """Seu código deve vir aqui"""
     try:
         time.sleep(1)
         data = requests.get(url, timeout=3)
@@ -20,7 +19,6 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
     selector = Selector(text=html_content)
     url_list = list()
 
@@ -35,7 +33,9 @@ def scrape_novidades(html_content):
 
 
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    url = selector.css(".tec--list a.tec--btn::attr(href)").get()
+    return url
 
 
 # Requisito 4
