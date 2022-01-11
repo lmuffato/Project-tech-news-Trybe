@@ -1,6 +1,5 @@
 from tech_news.database import find_news
-
-# import operator
+import collections
 
 
 def calculate_popularity(new):
@@ -20,4 +19,12 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    news = find_news()
+    if not news:
+        return []
+
+    categories = []
+    for new in news:
+        categories = [*categories, *new["categories"]]
+    most_commons = list(collections.Counter(categories))
+    return [category for category in sorted(most_commons)[:5]]
