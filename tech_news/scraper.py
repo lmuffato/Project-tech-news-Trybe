@@ -31,7 +31,12 @@ def scrape_novidades(html_content):
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    readed = BeautifulSoup(html_content)
+    a = readed.find('a', 'tec--btn')
+    if a is None:
+        return None
+    link = a.get('href')
+    return link
 
 
 # Requisito 4
