@@ -12,6 +12,7 @@
     "conventionalCommits.scopes": [
         "Scraper",
         "Search Engine",
-        "Ratings"
+        "Ratings",
+        "Menu"
     ]
 }
