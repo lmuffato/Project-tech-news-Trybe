@@ -63,7 +63,10 @@ def format_paragraph(list_of_paragraphs):
 
 
 def extract_numbers(phrase):
-    return [int(s) for s in phrase.split() if s.isdigit()][0]
+    if phrase:
+        return [int(s) for s in phrase.split() if s.isdigit()][0]
+    else:
+        return 0
 
 
 # Requisito 4
@@ -84,7 +87,11 @@ def scrape_noticia(html_content):
         noticia_url = news.xpath('//meta[contains(@property, "url")]')
         news_url = noticia_url.xpath('@content').get()
         title = news.css('h1.tec--article__header__title::text').get()
-        writer = news.css('a.tec--author__info__link::text').get().strip()
+        writer = news.css('.z--font-bold ::text').get()
+        if writer:
+            writer_name = writer.strip()
+        else:
+            writer_name = writer
         text = news.css('.tec--article__body p:first_child *::text')
         summary_paragraph = text.getall()
         summary = "".join(summary_paragraph)
@@ -102,7 +109,7 @@ def scrape_noticia(html_content):
 
         news_dict["url"] = news_url
         news_dict["title"] = title
-        news_dict["writer"] = writer
+        news_dict["writer"] = writer_name
         news_dict["summary"] = summary
         news_dict["categories"] = categories_list
         news_dict["sources"] = sources
