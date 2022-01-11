@@ -2,6 +2,12 @@ import requests
 import time
 from parsel import Selector
 
+
+def selector_html(html_content):
+    selector = Selector(text=html_content)
+
+    return selector
+
 # Requisito 1
 
 
@@ -22,9 +28,9 @@ def fetch(url):
 
 
 def scrape_novidades(html_content):
-    _selector_ = Selector(text=html_content)
+    html_text = selector_html(html_content)
 
-    urls = _selector_.css(
+    urls = html_text.css(
       "h3.tec--card__title a.tec--card__title__link::attr(href)"
       ).getall()
 
@@ -37,9 +43,9 @@ def scrape_novidades(html_content):
 
 
 def scrape_next_page_link(html_content):
-    _selector_ = Selector(text=html_content)
+    html_text = selector_html(html_content)
 
-    next_url = _selector_.css(
+    next_url = html_text.css(
       "a.tec--btn.tec--btn--lg.tec--btn-" +
       "-primary.z--mx-auto.z--mt-48::attr(href)"
       ).get()
