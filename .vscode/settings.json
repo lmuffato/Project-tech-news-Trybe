@@ -11,6 +11,7 @@
     "python.formatting.provider": "black",
     "conventionalCommits.scopes": [
         "Scraper",
-        "Search Engine"
+        "Search Engine",
+        "Ratings"
     ]
 }
