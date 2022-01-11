@@ -28,21 +28,56 @@ def scrape_novidades(html_content):
 # Requisito 3
 def scrape_next_page_link(html_content):
     selector = Selector(html_content)
-    link = selector.css("div.tec--list a.tec--btn::attr(href)").getall()
+    link = selector.css("div.tec--list a.tec--btn::attr(href)").get()
 
     if link:
-        return link[0]
+        return link
     else:
         return None
 
 
-# x = scrape_next_page_link(fetch(URL_BASE))
-# print(x)
-
-
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+
+    url = selector.css("meta[property='og:url']::attr(content)").get()
+    title = selector.css(".tec--article__header__title::text").get()
+    timestamp = selector.css(
+        ".tec--timestamp__item time::attr(datetime)"
+        ).get()
+    writer1 = selector.css(".tec--author__info__link::text").get()
+    writer2 = selector.css("div.tec--timestamp__item a::text").get()
+    writer3 = selector.css("div.tec--author__info p.z--font-bold::text").get()
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+    summary = "".join(selector.css(
+        ".tec--article__body > p:first-child *::text"
+        ).getall())
+    sources = [item.strip() for item in selector.css(
+        "div.z--mb-16 div a::text"
+        ).getall()]
+    categories = [item.strip() for item in selector.css(
+        "#js-categories a::text"
+        ).getall()]
+
+    if writer1:
+        writer = writer1
+    elif writer2:
+        writer = writer2
+    else:
+        writer = writer3
+
+    return {
+       "url": url,
+       "title": title,
+       "timestamp": timestamp,
+       "writer": writer.strip() if writer else None,
+       "shares_count": int(shares_count.split()[0]) if shares_count else 0,
+       "comments_count": int(comments_count) if comments_count else 0,
+       "summary": summary,
+       "sources": sources,
+       "categories": categories,
+    }
 
 
 # Requisito 5
