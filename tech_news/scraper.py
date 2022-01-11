@@ -1,24 +1,32 @@
 from requests import get
 from time import sleep
-
+from bs4 import BeautifulSoup
 import requests
 
 
 def fetch(url):
     sleep(1)
+    response = None
     try:
         response = get(url, timeout=3)
-    except requests.ReadTimeout:
-        return None
-    finally:
         if (response.status_code == 200):
-            return response.content
+            return response.text
+        return None
+    except requests.ReadTimeout:
         return None
 
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    returnList = []
+    readed = BeautifulSoup(html_content)
+    div = readed.find('div', attrs={'class': "tec--list--lg"})
+    if div is None:
+        return returnList
+    test = div.find_all_next('a', attrs={'class': "tec--card__thumb__link"})
+    for a in test:
+        returnList.append(a.get('href'))
+    return returnList
 
 
 # Requisito 3
