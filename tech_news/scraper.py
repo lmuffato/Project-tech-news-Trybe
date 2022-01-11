@@ -78,13 +78,32 @@ def scrape_noticia(html_content):
 
     shares_count = int(re.findall('[0-9]+', noticia_shares_count)[0])
 
+    noticia_summary = html_text.css(
+      "article.tec--article div.tec--article__body p *::text"
+      ).getall()
+
+    summary = " ".join(str(element) for element in noticia_summary)
+
+    noticia_sources = html_text.css(
+      "article.tec--article div.z--mb-16 a.tec--badge::text"
+      ).getall()
+
+    print("Teste dos Sources", noticia_sources)
+
     print({
       noticia_title,
       noticia_time,
       noticia_writer,
-      shares_count
+      shares_count,
+      summary,
       })
 
+# Utilização do Regex através do link:
+# https://pythonguides.com/python-find-number-in-string/
+
+# Utilização do *::text com o getall() e transformação em string:
+# https://parsel.readthedocs.io/en/latest/usage.html
+# https://www.simplilearn.com/tutorials/python-tutorial/list-to-string-in-python
 
 # Requisito 5
 
