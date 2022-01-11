@@ -1,8 +1,7 @@
 import requests
 import time
-
-from requests.exceptions import URLRequired
 import parsel
+
 
 # URL = "https://www.tecmundo.com.br/novidades"
 
