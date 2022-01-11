@@ -1,6 +1,6 @@
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
+    """Seu código deve vir aqui - Iniciando - commit 1"""
 
 
 # Requisito 2
