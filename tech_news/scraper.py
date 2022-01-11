@@ -58,6 +58,7 @@ def format_paragraph(list_of_paragraphs):
     while key < len(list_of_paragraphs):
         paragraph = list_of_paragraphs[key]
         paragraphs = "".join(paragraph)
+        key += 1
     return paragraphs
 
 
@@ -84,8 +85,10 @@ def scrape_noticia(html_content):
         news_url = noticia_url.xpath('@content').get()
         title = news.css('h1.tec--article__header__title::text').get()
         writer = news.css('a.tec--author__info__link::text').get().strip()
-        full_text = news.css('div.tec--article__body').xpath('./p')
-        summary = format_paragraph(full_text.css('*::text').getall())
+        text = news.css('.tec--article__body p:first_child *::text')
+        summary_paragraph = text.getall()
+        summary = "".join(summary_paragraph)
+
         categories = news.xpath('//div[contains(@id, "js-categories")]')
         categories_list = format_strings(
             categories.xpath('./a/text()').getall())
@@ -93,6 +96,9 @@ def scrape_noticia(html_content):
             news.css('div.z--mb-16').xpath('./div/a//text()').getall())
         comments = news.xpath('//button[contains(@id, "js-comments-btn")]')
         comments_text = extract_numbers(comments.css('*::text').getall()[1])
+        shares = news.css('.tec--toolbar__item::text').get()
+        shares_count = extract_numbers(shares)
+        timestamp = news.xpath('//time//@datetime').get()
 
         news_dict["url"] = news_url
         news_dict["title"] = title
@@ -100,15 +106,17 @@ def scrape_noticia(html_content):
         news_dict["summary"] = summary
         news_dict["categories"] = categories_list
         news_dict["sources"] = sources
+        news_dict["shares_count"] = shares_count
         news_dict["comments_count"] = comments_text
+        news_dict["timestamp"] = timestamp
 
     return news_dict
 
 
-test = fetch(
-    "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
-)
-print(scrape_noticia(test))
+# test = fetch(
+#     "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
+# )
+# print(scrape_noticia(test))
 # Source:
 # Sobre strip():
 # https://dev.to/jacob777baltimore/python-remove-all-whitespace-4m3n
