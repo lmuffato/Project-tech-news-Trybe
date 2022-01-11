@@ -1,6 +1,6 @@
 import requests
 import time
-import parsel
+from parsel import Selector
 
 
 # Requisito 1
@@ -19,11 +19,11 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    parselSelector = parsel.Selector(html_content)
+    parsel_selector = Selector(html_content)
     list = []
-    for noticia in parselSelector.css("div.tec--list__item"):
-        linkElement = noticia.css("a.tec--card__title__link::attr(href)").get()
-        list.append(linkElement)
+    for news in parsel_selector.css("div.tec--list__item"):
+        element_link = news.css("a.tec--card__title__link::attr(href)").get()
+        list.append(element_link)
     return list
 
 
