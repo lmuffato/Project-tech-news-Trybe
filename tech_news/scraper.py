@@ -60,6 +60,12 @@ def scrape_next_page_link(html_content):
 def scrape_noticia(html_content):
     html_text = selector_html(html_content)
 
+    # noticia_organized = []
+
+    noticia_url = html_text.css(
+      "head meta[property='og:url']::attr(content)"
+      ).get()
+
     noticia_title = html_text.css(
       "article.tec--article h1#js-article-title::text"
       ).get()
@@ -72,6 +78,8 @@ def scrape_noticia(html_content):
       "article.tec--article a.tec--author__info__link::text"
       ).get()
 
+    writer = noticia_writer.strip()
+
     noticia_shares_count = html_text.css(
       "article.tec--article div.tec--toolbar__item::text"
       ).get()
@@ -79,29 +87,38 @@ def scrape_noticia(html_content):
     shares_count = int(re.findall('[0-9]+', noticia_shares_count)[0])
 
     noticia_summary = html_text.css(
-      "article.tec--article div.tec--article__body p *::text"
+      "article.tec--article div.tec--article__body p:first_child *::text"
       ).getall()
-
-    summary = " ".join(str(element) for element in noticia_summary)
+    # summary_text = [text.strip() for text in noticia_summary]
+    summary = "".join(noticia_summary).strip()
 
     noticia_sources = html_text.css(
       "article.tec--article div.z--mb-16 a.tec--badge::text"
       ).getall()
 
+    sources = [source.strip() for source in noticia_sources]
+
     noticia_categories = html_text.css(
       "article.tec--article div#js-categories a.tec--badge::text"
       ).getall()
 
-    print("Teste dos Sources", noticia_sources)
-    print("Teste dos Categories", noticia_categories)
+    categories = [category.strip() for category in noticia_categories]
 
-    print({
-      noticia_title,
-      noticia_time,
-      noticia_writer,
-      shares_count,
-      summary,
-      })
+    noticia_organized = dict({
+        "url": noticia_url,
+        "title": noticia_title,
+        "timestamp": noticia_time,
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": 0,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories
+    })
+
+    # print(noticia_organized)
+
+    return noticia_organized
 
 # Utilização do Regex através do link:
 # https://pythonguides.com/python-find-number-in-string/
@@ -109,6 +126,9 @@ def scrape_noticia(html_content):
 # Utilização do *::text com o getall() e transformação em string:
 # https://parsel.readthedocs.io/en/latest/usage.html
 # https://www.simplilearn.com/tutorials/python-tutorial/list-to-string-in-python
+
+# Como obter a url foi feita olhando a documentação:
+# https://parsel.readthedocs.io/en/latest/usage.html
 
 # Requisito 5
 
