@@ -19,7 +19,12 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    parselSelector = parsel.Selector(html_content)
+    list = []
+    for noticia in parselSelector.css("div.tec--list__item"):
+        linkElement = noticia.css("a.tec--card__title__link::attr(href)").get()
+        list.append(linkElement)
+    return list
 
 
 # Requisito 3
