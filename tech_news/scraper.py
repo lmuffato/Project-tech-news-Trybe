@@ -1,5 +1,6 @@
 import requests
 import time
+import re
 from parsel import Selector
 
 
@@ -67,11 +68,22 @@ def scrape_noticia(html_content):
       "article.tec--article time#js-article-date::attr(datetime)"
       ).get()
 
-    noticia_author = html_text.css(
+    noticia_writer = html_text.css(
       "article.tec--article a.tec--author__info__link::text"
       ).get()
 
-    print({noticia_title, noticia_time, noticia_author})
+    noticia_shares_count = html_text.css(
+      "article.tec--article div.tec--toolbar__item::text"
+      ).get()
+
+    shares_count = int(re.findall('[0-9]+', noticia_shares_count)[0])
+
+    print({
+      noticia_title,
+      noticia_time,
+      noticia_writer,
+      shares_count
+      })
 
 
 # Requisito 5
