@@ -6,7 +6,7 @@ from parsel import Selector
 # Requisito 1
 def fetch(url):
     try:
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, timeout=3)
         time.sleep(1)
         if response.status_code == 200:
             return response.text
@@ -28,13 +28,22 @@ def scrape_novidades(html_content):
     return links_list
 
 
-# test = fetch("https://www.tecmundo.com.br/novidades")
-# print(scrape_novidades(test))
+# Documentação Parsel:
+# https://parsel.readthedocs.io/en/latest/usage.html
 
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    pass
+    selector = Selector(html_content)
+    next_page_link = selector.css("a.tec--btn::attr(href)").get()
+    if next_page_link:
+        return next_page_link
+    else:
+        return None
+
+
+# test = fetch("https://www.tecmundo.com.br/novidades")
+# print(scrape_next_page_link(test))
 
 
 # Requisito 4
