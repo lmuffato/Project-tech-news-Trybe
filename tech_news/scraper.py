@@ -1,8 +1,9 @@
 from typing import Union
+from requests.models import Response
+
 import requests
 import time
-
-from requests.models import Response
+from parsel import Selector
 
 
 # Requisito 1
@@ -18,8 +19,17 @@ def fetch(url: str) -> Union[Response, None]:
 
 
 # Requisito 2
-def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+def scrape_novidades(html_content: str):
+    selector = Selector(text=html_content)
+    # É preciso resgatar os links via <h3>
+    # ao invés de direto pelo <a> para retornar quantidade correta
+    news_links = [a.attrib['href'] for a in selector.css(
+        'h3.tec--card__title').css('a')]
+    return news_links
+
+
+html = fetch('https://www.tecmundo.com.br/novidades')
+print(len(scrape_novidades(html)))
 
 
 # Requisito 3
