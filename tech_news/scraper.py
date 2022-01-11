@@ -18,8 +18,6 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
-
     selector = Selector(html_content)
     url_list = []
     for notice in selector.css("div.tec--list__item"):
@@ -27,11 +25,16 @@ def scrape_novidades(html_content):
         url_list.append(url)
     return url_list
 
+
 # Requisito 3
-
-
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    next_page_url = selector.css("a.tec--btn::attr(href)").get()
+    if next_page_url:
+        return next_page_url
+    else:
+        return None
 
 
 # Requisito 4
