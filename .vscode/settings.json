@@ -10,6 +10,7 @@
     ],
     "python.formatting.provider": "black",
     "conventionalCommits.scopes": [
-        "Scraper"
+        "Scraper",
+        "Search Engine"
     ]
 }
