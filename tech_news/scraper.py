@@ -19,7 +19,7 @@ def fetch(url: str) -> Union[Response, None]:
 
 
 # Requisito 2
-def scrape_novidades(html_content: str):
+def scrape_novidades(html_content: str) -> list:
     selector = Selector(text=html_content)
     # É preciso resgatar os links via <h3>
     # ao invés de direto pelo <a> para retornar quantidade correta
@@ -33,8 +33,10 @@ print(len(scrape_novidades(html)))
 
 
 # Requisito 3
-def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+def scrape_next_page_link(html_content: str) -> list:
+    selector = Selector(text=html_content)
+    next_page_link_href = selector.css('a.tec--btn::attr(href)').get()
+    return next_page_link_href
 
 
 # Requisito 4
