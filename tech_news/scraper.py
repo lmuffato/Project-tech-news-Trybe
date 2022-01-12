@@ -86,38 +86,24 @@ def scrape_noticia(html_content):
         "categories": []
     }
     for news in selector.xpath('//html[contains(@lang, "pt-BR")]'):
-        noticia_url = news.xpath('//meta[contains(@property, "url")]')
-        news_url = noticia_url.xpath('@content').get()
-        title = news.css('h1.tec--article__header__title::text').get()
-        writer = news.css('.z--font-bold ::text').get()
-        if writer:
-            writer_name = writer.strip()
-        else:
-            writer_name = writer
-        text = news.css('.tec--article__body > p:first_child *::text')
-        summary_paragraph = text.getall()
-        summary = "".join(summary_paragraph).strip()
-
-        categories = news.xpath('//div[contains(@id, "js-categories")]')
-        categories_list = format_strings(
-            categories.xpath('./a/text()').getall())
-        sources = format_strings(
-            news.css('div.z--mb-16').xpath('./div/a//text()').getall())
-        comments = news.xpath('//button[contains(@id, "js-comments-btn")]')
-        comments_text = NewsConstructor.extract_numbers(
-            comments.css('*::text').getall()[1])
-        shares = news.css('.tec--toolbar__item::text').get()
-        shares_count = extract_numbers(shares)
-        timestamp = news.xpath('//time//@datetime').get()
+        news_url = NewsConstructor.extract_news_url(news)
+        title = NewsConstructor.extract_news_title(news)
+        writer = NewsConstructor.get_news_author(news)
+        summary = NewsConstructor.get_news_summary(news)
+        categories_list = NewsConstructor.get_news_categories(news)
+        sources_list = NewsConstructor.get_news_sources(news)
+        comments_count = NewsConstructor.get_comments_count(news)
+        shares_count = NewsConstructor.get_shares_count(news)
+        timestamp = NewsConstructor.get_datetime(news)
 
         news_dict["url"] = news_url
         news_dict["title"] = title
-        news_dict["writer"] = writer_name
+        news_dict["writer"] = writer
         news_dict["summary"] = summary
         news_dict["categories"] = categories_list
-        news_dict["sources"] = sources
+        news_dict["sources"] = sources_list
         news_dict["shares_count"] = shares_count
-        news_dict["comments_count"] = comments_text
+        news_dict["comments_count"] = comments_count
         news_dict["timestamp"] = timestamp
 
     return news_dict
