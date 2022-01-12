@@ -97,20 +97,23 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    html_content = fetch("https://www.tecmundo.com.br/novidades")
-    news_data = []
-    next_page_link = ''
-
-    while len(news_data) < amount:
+    try:
+        html_content = fetch("https://www.tecmundo.com.br/novidades")
+        news_data = []
+        news_data.extend(scrape_novidades(html_content))
         news_links = []
-        if len(news_links) == 0:
-            news_links = scrape_novidades(html_content)
+
+        while len(news_data) < amount:
             next_page_link = scrape_next_page_link(html_content)
-        else:
-            news_links = scrape_novidades(fetch(next_page_link))
-            next_page_link = scrape_next_page_link(fetch(next_page_link))
-        for link in news_links:
-            if len(news_data) < amount:
-                news_data.append(scrape_noticia(fetch(link)))
-    create_news(news_data)
-    return news_data
+            next_page = fetch(next_page_link)
+            news_url = scrape_noticia(next_page)
+            news_data.extend(news_url)
+
+        for i in news_data[:amount]:
+            news = fetch(i)
+            news_links.append(scrape_noticia(news))
+
+        create_news(news_data)
+        return news_links
+    except ValueError:
+        return ''
