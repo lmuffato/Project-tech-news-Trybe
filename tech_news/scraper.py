@@ -94,10 +94,7 @@ def scrape_noticia(html_content):
     }
 
 
-# Requisito 5
-def get_tech_news(amount):
-    base_endpoint = "https://www.tecmundo.com.br/novidades"
-    html_response = fetch(base_endpoint)
+def get_news_links(html_response, amount):
     news_links = scrape_novidades(html_response)
     last_endpoint = html_response
     while len(news_links) < amount:
@@ -111,8 +108,17 @@ def get_tech_news(amount):
 
     if len(news_links) > amount:
         news_links = news_links[0:amount]
+    return news_links
+
+
+# Requisito 5
+def get_tech_news(amount):
+    base_endpoint = "https://www.tecmundo.com.br/novidades"
+    html_response = fetch(base_endpoint)
+    news_links = get_news_links(html_response, amount)
 
     news_list = []
+
     for link in news_links:
         news_html_response = fetch(link)
         news_dict = scrape_noticia(news_html_response)
