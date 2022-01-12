@@ -12,13 +12,25 @@ def search_by_title(title):
     # print(news)
     for new in news:
         search_title.append((new["title"], new["url"]))
-    print(search_title)
+    # print(search_title)
     return search_title
 
 
 # Requisito 7
 def search_by_date(date):
     """Seu código deve vir aqui"""
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError("Data inválida")
+
+    search_date = []
+    news = search_news({"timestamp": re.compile(date, re.IGNORECASE)})
+    # print(news)
+    for new in news:
+        search_date.append((new["title"], new["url"]))
+    # print(search_date)
+    return search_date
 
 
 # Requisito 8
