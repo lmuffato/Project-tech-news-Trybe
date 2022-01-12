@@ -100,15 +100,13 @@ def scrape_noticia(html_content):
       "button#js-comments-btn::text"
       ).getall()[1]
 
-    print('Olha a noticia', noticia_comments)
-
     if not noticia_comments:
         comments_count = 0
     else:
         comments_count = int(re.findall('[0-9]+', noticia_comments)[0])
 
     noticia_summary = html_text.css(
-      "article.tec--article div.tec--article__body p:first_child *::text"
+      "article.tec--article div.tec--article__body > p:first_child *::text"
       ).getall()
 
     summary = "".join(noticia_summary).strip()
