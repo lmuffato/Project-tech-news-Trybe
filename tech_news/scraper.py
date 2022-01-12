@@ -136,4 +136,18 @@ def scrape_noticia(html_content):
 
 
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    news_by_amount = []
+    count_news = 1
+
+    news_page_fetch = fetch("https://www.tecmundo.com.br/novidades/")
+    news_catched = scrape_novidades(news_page_fetch)
+
+    for new in news_catched:
+        if count_news <= amount:
+            new_html = fetch(new)
+            new_scraped = scrape_noticia(new_html)
+
+            news_by_amount.append(new_scraped)
+            count_news += 1
+
+    print(news_by_amount)
