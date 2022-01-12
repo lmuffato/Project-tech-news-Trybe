@@ -40,16 +40,34 @@ def scrape_next_page_link(html_content):
 def get_url(selector):
     url = ""
     for item in selector.css("link"):
-        if item.css("link::attr(rel)").get() == "amphtml":
+        if item.css("link::attr(rel)").get() == "canonical":
             url = item.css("link::attr(href)").get()
-    return url
+    return url.strip()
+
+
+def get_author(selector):
+    writer_raw_a = selector.css("a.tec--author__info__link::text").get()
+    writer_raw_div = selector.css("p.z--m-none::text").get()
+    writer_raw_link = None
+    for item in selector.css("a"):
+        if "autor" in item.css("a::attr(href)").get():
+            writer_raw_link = item.css("a::text").get()
+    if writer_raw_a:
+        writer = writer_raw_a.strip()
+    if writer_raw_link:
+        writer = writer_raw_link.strip()
+    else:
+        writer = writer_raw_div.strip()
+    return writer
 
 
 def get_shares_count(selector):
     shares_count = 0
-    for word in selector.css("div.tec--toolbar__item::text").get().split():
-        if word.isdigit():
-            shares_count = int(word)
+    phrase = selector.css("div.tec--toolbar__item::text").get()
+    if phrase:
+        for word in phrase.split():
+            if word.isdigit():
+                shares_count = int(word)
     return shares_count
 
 
@@ -59,21 +77,24 @@ def scrape_noticia(html_content):
     url = get_url(selector)
     title = selector.css("h1#js-article-title::text").get()
     timestamp = selector.css("time#js-article-date::attr(datetime)").get()
-    writer = selector.css("a.tec--author__info__link::text").get()
+    writer = get_author(selector)
     shares_count = get_shares_count(selector)
-    comments_count = selector.css(
-        "button#js-comments-btn::attr(data-count)").get()
+    comments_count = int(selector.css(
+        "button#js-comments-btn::attr(data-count)").get())
     item = selector.css("div.tec--article__body p").getall()
     item_list = parsel.Selector(item[0]).css("*::text").getall()
     summary = ""
     for text in item_list:
         summary += text
     tec_badges = selector.css("a.tec--badge::text").getall()
-    categories = selector.css("a.tec--badge--primary::text").getall()
+    categories_raw = selector.css("a.tec--badge--primary::text").getall()
+    categories = []
+    for item in categories_raw:
+        categories.append(item.strip())
     sources = []
     for badge in tec_badges:
-        if badge not in categories:
-            sources.append(badge)
+        if badge not in categories_raw:
+            sources.append(badge.strip())
     return {
         "url": url,
         "title": title,
