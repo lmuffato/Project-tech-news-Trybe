@@ -1,6 +1,18 @@
+from tech_news.database import search_news
+
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    queryDict = {'title': {'$regex': title, '$options': 'i'}}
+    rawList = search_news(queryDict)
+
+    def mapNews(new):
+        newTuple = (new['title'], new['url'])
+        print(newTuple)
+        return newTuple
+    test = list(map(mapNews, rawList))
+    print(test)
+    return test
 
 
 # Requisito 7

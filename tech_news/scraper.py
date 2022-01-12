@@ -45,7 +45,7 @@ def scrape_noticia(html_content):
     readed = BeautifulSoup(html_content)
     divs = readed.find_all('div')
     mapedDivs = list(map(lambda div: div.get_text(), divs))
-    filteredDivs = list(filter(lambda div: 'Compartilharam' in div, mapedDivs)) 
+    filteredDivs = list(filter(lambda div: 'Compartilharam' in div, mapedDivs))
     shareCount = 0
     if len(filteredDivs) > 0:
         shareCount = filteredDivs[-1].strip().split(' ')[0]
