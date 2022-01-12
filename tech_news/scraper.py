@@ -82,10 +82,6 @@ def scrape_noticia(html_content):
     return news_dict
 
 
-# test = fetch(
-#     "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
-# )
-# print(scrape_noticia(test))
 # Source:
 # Sobre strip():
 # https://dev.to/jacob777baltimore/python-remove-all-whitespace-4m3n
@@ -121,11 +117,9 @@ def get_tech_news(amount):
             news_updated_list = get_more_news(news_list, amount, html)
             result = iterate_news_list(news_updated_list, amount)
             create_news(result)
-        elif len(news_list) >= amount:
+        else:
             result = iterate_news_list(news_list, amount)
             create_news(result)
         return result
     except ValueError:
         return ""
-
-# get_tech_news(5)
