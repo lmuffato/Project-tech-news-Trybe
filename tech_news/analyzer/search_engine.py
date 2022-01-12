@@ -1,6 +1,13 @@
+from ..database import db
+
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    found_news = db.news.find({"title": {"$regex": title, "$options": 'i'}})
+    return [
+        (news['title'], news['url'])
+        for news in found_news
+    ] or []
 
 
 # Requisito 7
