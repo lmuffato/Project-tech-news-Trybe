@@ -103,5 +103,5 @@ def get_tech_news(amount):
     return info_db
 
 
-""" x = get_tech_news(13)
-print(x) """
+x = get_tech_news(19)
+print(x)
