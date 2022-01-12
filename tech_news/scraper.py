@@ -42,8 +42,79 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 4
+def extends_scrape_notia(selector):
+    link = selector.css("link[rel*='canonical']::attr(href)").get()
+
+    title = selector.css("#js-article-title::text").get()
+
+    timestamp = selector.css("#js-article-date::attr(datetime)").get()
+
+    writer = (
+        selector.css("#js-author-bar .z--font-bold::text").get()
+        or selector.css("div#js-author-bar>div>p>a::text").get()
+        or selector.css("div.tec--timestamp__item>a::text").get()
+    )
+    if writer is not None:
+        writer = writer.strip()
+
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    if shares_count is None:
+        shares_count = 0
+    else:
+        shares_count = int(shares_count.split(" ")[1])
+
+    comments_count = selector.css(
+            ".js-comments-btn::attr(data-count)"
+        ).get()
+    if comments_count is None:
+        comments_count = 0
+
+    return {
+        "url": link,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": comments_count,
+    }
+
+
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+
+    summary = "".join(selector.css(
+            "div.p402_premium p:nth-child(1) *::text"
+        ).getall())
+
+    sources = selector.css("div.z--mb-16 a.tec--badge::text").getall()
+    new_sources = []
+    if sources is not None:
+        for word in sources:
+            new_word = word.split(" ")
+            new_word = [word for word in new_word if word != ""]
+            new_sources.append(" ".join(new_word))
+
+    categories = selector.css("#js-categories a.tec--badge::text").getall()
+    new_categories = []
+    if categories is not None:
+        for word in categories:
+            new_word = word.split(" ")
+            new_word = [word for word in new_word if word != ""]
+            new_categories.append(" ".join(new_word))
+
+    extend = extends_scrape_notia(selector)
+
+    return {
+        "url": extend["url"],
+        "title": extend["title"],
+        "timestamp": extend["timestamp"],
+        "writer": extend["writer"],
+        "shares_count": extend["shares_count"],
+        "comments_count": extend["comments_count"],
+        "summary": summary,
+        "sources": new_sources,
+        "categories": new_categories,
+    }
 
 
 # Requisito 5
