@@ -50,7 +50,7 @@ def search_by_source(source):
 def search_by_category(category):
     """Seu código deve vir aqui"""
     search_category = []
-    news = search_news({"category": re.compile(category, re.IGNORECASE)})
+    news = search_news({"categories": re.compile(category, re.IGNORECASE)})
     # print(news)
     for new in news:
         search_category.append((new["title"], new["url"]))
