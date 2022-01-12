@@ -17,8 +17,9 @@ def selector_html(html_content):
 
 def fetch(url):
     try:
-        time.sleep(1)
         response = requests.get(url, timeout=3)
+        time.sleep(1)
+
     except requests.ReadTimeout:
         return None
 
@@ -63,6 +64,8 @@ def scrape_next_page_link(html_content):
 def scrape_noticia(html_content):
     html_text = selector_html(html_content)
 
+    # print("Teste", html_text)
+
     noticia_url = html_text.css(
       "head meta[property='og:url']::attr(content)"
       ).get()
@@ -93,6 +96,17 @@ def scrape_noticia(html_content):
     else:
         shares_count = int(re.findall('[0-9]+', noticia_shares_count)[0])
 
+    noticia_comments = html_text.css(
+      "button#js-comments-btn::text"
+      ).getall()[1]
+
+    print('Olha a noticia', noticia_comments)
+
+    if not noticia_comments:
+        comments_count = 0
+    else:
+        comments_count = int(re.findall('[0-9]+', noticia_comments)[0])
+
     noticia_summary = html_text.css(
       "article.tec--article div.tec--article__body p:first_child *::text"
       ).getall()
@@ -117,7 +131,7 @@ def scrape_noticia(html_content):
         "timestamp": noticia_time,
         "writer": writer,
         "shares_count": shares_count,
-        "comments_count": 0,
+        "comments_count": comments_count,
         "summary": summary,
         "sources": sources,
         "categories": categories
@@ -140,7 +154,7 @@ def scrape_noticia(html_content):
 
 def get_tech_news(amount):
     news_by_amount = []
-    news_page_fetch = fetch("https://www.tecmundo.com.br/novidades/")
+    news_page_fetch = fetch("https://www.tecmundo.com.br/novidades")
     news_catched = scrape_novidades(news_page_fetch)
 
     if amount > 20:
