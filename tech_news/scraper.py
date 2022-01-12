@@ -13,7 +13,7 @@ def fetch(url):
         return None
     else:
         return response.text
-    
+
 
 # Requisito 2
 def scrape_novidades(html_content):
