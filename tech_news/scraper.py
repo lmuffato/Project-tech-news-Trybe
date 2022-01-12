@@ -1,5 +1,6 @@
 import requests
 import time
+from parsel import Selector
 
 
 # Requisito 1
@@ -19,6 +20,12 @@ def fetch(url):
 # Requisito 2
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    links_list = []
+    for news_link in selector.css("h3.tec--card__title"):
+        link = news_link.css("a.tec--card__title__link::attr(href)").get()
+        links_list.append(link)
+    return links_list
 
 
 # Requisito 3
