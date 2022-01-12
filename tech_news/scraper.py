@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from .database import create_news
 
 
 # Requisito 1
@@ -50,7 +51,7 @@ def scrape_noticia(html_content):
     else:
         writer = raw_content_writer.strip()
     timestamp = selector.css('time#js-article-date::attr(datetime)').get()
-    css_selector = '.tec--article__body p:first_child *::text'
+    css_selector = '.tec--article__body > p:first_child *::text'
     raw_content_summary = selector.css(css_selector).getall()
     summary = "".join(raw_content_summary).strip()
     raw_content_sources = selector.css('.z--mb-16 a.tec--badge::text').getall()
@@ -73,4 +74,15 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    recovered_news = []
+    next_page_link = 'https://www.tecmundo.com.br/novidades'
+    while len(recovered_news) != amount:
+        html_content = fetch(next_page_link)
+        news_urls = scrape_novidades(html_content)
+        for url in news_urls:
+            page_content = fetch(url)
+            news_data = scrape_noticia(page_content)
+            recovered_news.append(news_data)
+        next_page_link = scrape_next_page_link(html_content)
+    create_news(recovered_news)
+    return recovered_news
