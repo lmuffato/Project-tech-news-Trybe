@@ -80,6 +80,8 @@ def get_tech_news(amount):
         html_content = fetch(next_page_link)
         news_urls = scrape_novidades(html_content)
         for url in news_urls:
+            if len(recovered_news) == amount:
+                break
             page_content = fetch(url)
             news_data = scrape_noticia(page_content)
             recovered_news.append(news_data)
