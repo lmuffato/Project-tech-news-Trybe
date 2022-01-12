@@ -1,5 +1,7 @@
+from parsel import Selector
 import requests
 import time
+
 
 # Requisito 1
 
@@ -19,8 +21,15 @@ def fetch(url):
 
 
 # Requisito 2
+# Estes links estão contidos na página Novidades
+# (https://www.tecmundo.com.br/novidades)
+
+
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    data = selector.css("h3.tec--card__title a::attr(href)").getall()
+    return data
 
 
 # Requisito 3
