@@ -1,6 +1,17 @@
+from tech_news.database import search_news
+
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    query = {
+        'title': {
+            '$regex': title,
+            '$options': 'i',
+        }
+    }
+    results = search_news(query)
+    news = [(result['title'], result['url']) for result in results]
+    return news
 
 
 # Requisito 7
