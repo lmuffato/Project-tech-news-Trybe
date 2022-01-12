@@ -44,33 +44,6 @@ def scrape_next_page_link(html_content):
         return None
 
 
-def format_strings(str_list):
-    key = 0
-    list_formatted = []
-    while key < len(str_list):
-        list_item = str_list[key].strip()
-        list_formatted.append(list_item)
-        key += 1
-    return list_formatted
-
-
-def format_paragraph(list_of_paragraphs):
-    paragraphs = ''
-    key = 0
-    while key < len(list_of_paragraphs):
-        paragraph = list_of_paragraphs[key]
-        paragraphs = "".join(paragraph)
-        key += 1
-    return paragraphs
-
-
-def extract_numbers(phrase):
-    if phrase:
-        return [int(s) for s in phrase.split() if s.isdigit()][0]
-    else:
-        return 0
-
-
 # Requisito 4
 def scrape_noticia(html_content):
     selector = Selector(html_content)
