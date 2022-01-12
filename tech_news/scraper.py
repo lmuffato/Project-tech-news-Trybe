@@ -1,5 +1,6 @@
 import requests
 import time
+import re
 from parsel import Selector
 
 
@@ -42,7 +43,69 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+
+    url = selector.css(
+        "head meta[property='og:url']::attr(content)"
+    ).get()
+
+    title = selector.css(
+        "article.tec--article h1#js-article-title::text"
+    ).get()
+
+    date = selector.css(
+        "article.tec--article time#js-article-date::attr(datetime)"
+    ).get()
+
+    author = selector.css(
+        ".z--font-bold ::text"
+    ).get()
+
+    if not author:
+        newswritter = None
+    else:
+        newswritter = author.strip()
+
+    share = selector.css(
+        "article.tec--article div.tec--toolbar__item::text"
+    ).get()
+
+    if not share:
+        share_count = 0
+    else:
+        share_count = int(re.findall('[0-9]+', share)[0])
+
+    synopsis = selector.css(
+        "article.tec--article div.tec--article__body p:first_child *::text"
+    ).getall()
+
+    news_synopsis = "".join(synopsis).strip()
+
+    sources = selector.css(
+        "article.tec--article div.z--mb-16 a.tec--badge::text"
+    ).getall()
+
+    news_source = [source.strip() for source in sources]
+
+    categorization = selector.css(
+        "article.tec--article div#js-categories a.tec--badge::text"
+    ).getall()
+
+    categories = [category.strip() for category in categorization]
+
+    tecmundo_news = dict({
+        "url": url,
+        "title": title,
+        "timestamp": date,
+        "writer": newswritter,
+        "shares_count": share_count,
+        "comments_count": 0,
+        "summary": news_synopsis,
+        "sources": news_source,
+        "categories": categories,
+    })
+
+    return tecmundo_news
 
 
 # Requisito 5
