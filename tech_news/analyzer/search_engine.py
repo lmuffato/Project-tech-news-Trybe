@@ -1,11 +1,12 @@
 from tech_news.database import search_news
 import re
+from datetime import datetime
 
 
 # Requisito 6
 def search_by_title(title):
     """Seu código deve vir aqui"""
-    # https://www.tutorialspoint.com/How-to-write-a-case-insensitive-Python-regular-expression-without-re-compile
+    # https://www.programcreek.com/python/example/96/re.IGNORECASE
     search_title = []
     news = search_news({"title": re.compile(title, re.IGNORECASE)})
     # print(news)
