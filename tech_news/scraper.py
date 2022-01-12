@@ -90,14 +90,23 @@ def scrape_noticia(html_content):
 # Sobre strip():
 # https://dev.to/jacob777baltimore/python-remove-all-whitespace-4m3n
 
-# def get_full_news_links(amount, list_of_news, html_page):
 
-#     news_urls_list = []
-#     while len(list_of_news) <= amount:
-#         get_next_page_link = scrape_next_page_link(html_page)
-#         next_page_html = fetch(get_next_page_link)
-#         news_urls_list.extend(scrape_novidades(next_page_html))
-#     return news_urls_list
+def get_more_news(news_list, amount, html_content):
+    if news_list and amount and html_content:
+        while len(news_list) < amount:
+            link_to_next_page = scrape_next_page_link(html_content)
+            next_page = fetch(link_to_next_page)
+            news_urls = scrape_novidades(next_page)
+            news_list.extend(news_urls)
+    return news_list
+
+
+def iterate_news_list(news_list, amount):
+    result_list = []
+    for news in news_list[:amount]:
+        page = fetch(news)
+        result_list.append(scrape_noticia(page))
+    return result_list
 
 
 # Requisito 5
@@ -107,24 +116,16 @@ def get_tech_news(amount):
         html = fetch("https://www.tecmundo.com.br/novidades")
 
         news_list.extend(scrape_novidades(html))
-
-        while len(news_list) <= amount:
-            next_page_link = scrape_next_page_link(html)
-            next_page = fetch(next_page_link)
-            news_links = scrape_novidades(next_page)
-            print(news_list.extend(news_links))
-
         result = []
-
-        for item in news_list[:amount]:
-            page = fetch(item)
-            result.append(scrape_noticia(page))
-        create_news(result)
-        print(news_list)
-        print(len(result))
+        if len(news_list) < amount:
+            news_updated_list = get_more_news(news_list, amount, html)
+            result = iterate_news_list(news_updated_list, amount)
+            create_news(result)
+        elif len(news_list) >= amount:
+            result = iterate_news_list(news_list, amount)
+            create_news(result)
         return result
     except ValueError:
         return ""
-
 
 # get_tech_news(5)
