@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -65,7 +66,7 @@ def scrape_noticia(html_content):
 
     c_c_selected = unique_css_selector(s, "#js-comments-btn::attr(data-count)")
     comments_count = int(c_c_selected)
-    summary_selector = ".tec--article__body p:first-child *::text"
+    summary_selector = ".tec--article__body > p:first-child *::text"
     summary_list = selector.css(summary_selector).getall()
     summary = "".join(summary_list)
     sources_list = selector.css(".z--mb-16 .tec--badge::text").getall()
@@ -95,4 +96,26 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    base_endpoint = "https://www.tecmundo.com.br/novidades"
+    html_response = fetch(base_endpoint)
+    news_links = scrape_novidades(html_response)
+    last_endpoint = html_response
+    while len(news_links) < amount:
+        next_page_link = scrape_next_page_link(last_endpoint)
+        last_endpoint = next_page_link
+        next_page_html_response = fetch(next_page_link)
+        next_page_news_links = scrape_novidades(next_page_html_response)
+        for link in next_page_news_links:
+            if len(news_links) < amount:
+                news_links.append(link)
+
+    if len(news_links) > amount:
+        news_links = news_links[0:amount]
+
+    news_list = []
+    for link in news_links:
+        news_html_response = fetch(link)
+        news_dict = scrape_noticia(news_html_response)
+        news_list.append(news_dict)
+    create_news(news_list)
+    return news_list
