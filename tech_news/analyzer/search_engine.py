@@ -19,6 +19,7 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     """Seu código deve vir aqui"""
+    # https://www.alura.com.br/artigos/lidando-com-datas-e-horarios-no-python?gclid=CjwKCAiAlfqOBhAeEiwAYi43F0yFdq_qGyHjTnkr-xwdG6pBq5-Kd-BP5zMVK_nnF7heqNlAsWELrRoCib8QAvD_BwE
     try:
         datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
@@ -48,3 +49,10 @@ def search_by_source(source):
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
+    search_category = []
+    news = search_news({"category": re.compile(category, re.IGNORECASE)})
+    # print(news)
+    for new in news:
+        search_category.append((new["title"], new["url"]))
+    # print(search_category)
+    return search_category
