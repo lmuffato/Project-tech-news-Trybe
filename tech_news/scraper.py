@@ -2,6 +2,7 @@ import requests
 from requests.exceptions import Timeout
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -45,15 +46,12 @@ def get_writer(html_content):
         ".tec--author__info > p:first-child::text"
     ).get()
     if writer is not None:
-        print(writer)
         writer_stripped = writer.strip()
         return writer_stripped
     elif writer_secondary is not None:
-        print(writer_secondary)
         writer_stripped = writer_secondary.strip()
         return writer_stripped
     elif writer_tertiary is not None:
-        print(writer_tertiary)
         writer_stripped = writer_tertiary.strip()
         return writer_stripped
     else:
@@ -106,4 +104,15 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url_to_fetch = 'https://www.tecmundo.com.br/novidades'
+    news = []
+    while len(news) > 90:
+        page = fetch(url_to_fetch)
+        content_links = scrape_novidades(page)
+        for link in content_links:
+            content_page = fetch(link)
+            news.append(scrape_noticia(content_page))
+        url_to_fetch = scrape_next_page_link(page)
+        print(news, len(news))
+    news_created = create_news(news)
+    return news_created
