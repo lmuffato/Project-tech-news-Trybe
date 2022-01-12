@@ -5,7 +5,6 @@ import time
 import re
 
 
-# Requisito 1
 def fetch(url):
     try:
         time.sleep(1)
@@ -17,7 +16,6 @@ def fetch(url):
         return None
 
 
-# Requisito 2
 def scrape_novidades(html_content):
     selector = Selector(text=html_content)
     urls = selector.css('.tec--card__info h3 a::attr(href)').getall()
@@ -26,7 +24,6 @@ def scrape_novidades(html_content):
     return []
 
 
-# Requisito 3
 def scrape_next_page_link(html_content):
     selector = Selector(text=html_content)
     btn_next_page = selector.css('.tec--btn--primary::attr(href)').get()
@@ -99,6 +96,7 @@ def get_categories(selector):
         '.tec--article__body-grid .tec--badge--primary::text').getall()
     return stripe_list(categories_list)
 
+
 def get_page_info_dict(html_content):
     selector = Selector(text=html_content)
     return (
@@ -115,7 +113,6 @@ def get_page_info_dict(html_content):
         })
 
 
-# Requisito 
 def scrape_noticia(html_content):
     page_dict = {}
     dict_test = get_page_info_dict(html_content)
@@ -125,7 +122,6 @@ def scrape_noticia(html_content):
     return page_dict
 
 
-# Requisito 5
 def get_tech_news(amount):
     html_text = fetch('https://www.tecmundo.com.br/novidades')
     news = scrape_novidades(html_text)
@@ -138,7 +134,7 @@ def get_tech_news(amount):
     new_list = []
     for new in range(amount):
         new_list.append(scrape_noticia(fetch(news[new])))
-    
+
     create_news(new_list)
 
     return new_list
