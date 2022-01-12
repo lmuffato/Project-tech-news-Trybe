@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # https://developer.mozilla.org/pt-BR/docs/Web/CSS/CSS_Selectors
@@ -90,3 +91,21 @@ def scrape_noticia(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    page = "https://www.tecmundo.com.br/novidades"
+    tech_news = []
+    while amount > len(tech_news):
+        fetch_tech_news = fetch(page)
+        pages = scrape_novidades(fetch_tech_news)
+        # print(pages)
+        for link in pages:
+            fetch_link = fetch(link)
+            scrape = scrape_noticia(fetch_link)
+            # print(scrape)
+            tech_news.append(scrape)
+            if len(tech_news) == amount:
+                break
+
+            page = scrape_next_page_link(fetch_tech_news)
+    create_news(tech_news)
+    # print(tech_news)
+    return tech_news
