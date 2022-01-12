@@ -2,8 +2,7 @@ import requests
 import time
 import parsel
 
-
-# URL = "https://www.tecmundo.com.br/novidades"
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -20,9 +19,6 @@ def fetch(url):
         return None
 
 
-# print(fetch(URL))
-
-
 # Requisito 2
 def scrape_novidades(html_content):
     selector = parsel.Selector(html_content)
@@ -37,10 +33,6 @@ def scrape_novidades(html_content):
     return lists
 
 
-# html = fetch(URL)
-# print(scrape_novidades(html))
-
-
 # Requisito 3
 def scrape_next_page_link(html_content):
     selector = parsel.Selector(html_content)
@@ -48,9 +40,6 @@ def scrape_next_page_link(html_content):
 
     return url
 
-
-# html = fetch(URL)
-# print(scrape_next_page_link(html))
 
 # Requisito 4
 def extract_comments(comments):
@@ -122,7 +111,7 @@ def scrape_noticia(html_content):
       "title": title,
       "timestamp": timestamp,
       "writer": writer,
-      "shares_count": int(shares),
+      "shares_count": int(shares) if shares else 0,
       "comments_count": comments_count,
       "summary": summary,
       "sources": sources,
@@ -131,10 +120,30 @@ def scrape_noticia(html_content):
     return news_json
 
 
-# html_content = fetch(URL_DETAILS)
-# print(scrape_noticia(html_content))
-
-
 # Requisito 5
+# Requisito feito com ajuda do repositório da Ana Ventura:
+# https://github.com/tryber/sd-010-a-tech-news/blob/5f3559c47a924df65977a6832d3b5b9f918a4c06/tech_news/scraper.py
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    try:
+        URL = "https://www.tecmundo.com.br/novidades"
+        html_content = fetch(URL)
+        last_news_url = []
+        news_dict = []
+
+        last_news_url.extend(scrape_novidades(html_content))
+
+        while len(last_news_url) < amount:
+            next_page_link = scrape_next_page_link(html_content)
+            next_page = fetch(next_page_link)
+            news_links = scrape_novidades(next_page)
+            last_news_url.extend(news_links)
+
+        for url_news in last_news_url[:amount]:
+            page = fetch(url_news)
+            news_dict.append(scrape_noticia(page))
+
+        create_news(news_dict)
+
+        return news_dict
+    except ValueError:
+        return ""
