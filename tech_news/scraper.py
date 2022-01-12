@@ -38,7 +38,37 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    title = selector.css('h1.tec--article__header__title::text').get()
+    comments_count = selector.css('#js-comments-btn::text').re_first(r"\d+")
+    shares_count = selector.css('.tec--toolbar__item::text').re_first(r"\d+")
+    if not shares_count:
+        shares_count = 0
+    raw_content_writer = selector.css('.z--font-bold ::text').get()
+    if not raw_content_writer:
+        writer = None
+    else:
+        writer = raw_content_writer.strip()
+    timestamp = selector.css('time#js-article-date::attr(datetime)').get()
+    css_selector = '.tec--article__body p:first_child *::text'
+    raw_content_summary = selector.css(css_selector).getall()
+    summary = "".join(raw_content_summary).strip()
+    raw_content_sources = selector.css('.z--mb-16 a.tec--badge::text').getall()
+    sources = [src.strip() for src in raw_content_sources]
+    raw_content_categories = selector.css('div#js-categories a::text').getall()
+    categories = [cat.strip() for cat in raw_content_categories]
+    url = selector.css('head link[rel=canonical]::attr(href)').get()
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": int(shares_count) or 0,
+        "comments_count": int(comments_count) or 0,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
 
 
 # Requisito 5
