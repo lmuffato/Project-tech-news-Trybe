@@ -42,4 +42,8 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    queryDIct = {'categories':
+                 {'$elemMatch':
+                  {'$regex': category, '$options': 'i'}}}
+    rawList = search_news(queryDIct)
+    return list(map(mapNews, rawList))
