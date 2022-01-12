@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -94,7 +95,7 @@ def scrape_noticia(html_content):
             writer_name = writer
         text = news.css('.tec--article__body p:first_child *::text')
         summary_paragraph = text.getall()
-        summary = "".join(summary_paragraph)
+        summary = "".join(summary_paragraph).strip()
 
         categories = news.xpath('//div[contains(@id, "js-categories")]')
         categories_list = format_strings(
@@ -128,7 +129,38 @@ def scrape_noticia(html_content):
 # Sobre strip():
 # https://dev.to/jacob777baltimore/python-remove-all-whitespace-4m3n
 
+# def get_full_news_links(amount, list_of_news, html_page):
+
+#     news_urls_list = []
+#     while len(list_of_news) <= amount:
+#         get_next_page_link = scrape_next_page_link(html_page)
+#         next_page_html = fetch(get_next_page_link)
+#         news_urls_list.extend(scrape_novidades(next_page_html))
+#     return news_urls_list
+
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    try:
+        news_list = []
+        html = fetch("https://www.tecmundo.com.br/novidades")
+
+        news_list.extend(scrape_novidades(html))
+
+        while len(news_list) <= amount:
+            next_page_link = scrape_next_page_link(html)
+            next_page = fetch(next_page_link)
+            news_links = scrape_novidades(next_page)
+            news_list.extend(news_links)
+
+        result = []
+
+        for item in news_list[:amount]:
+            page = fetch(item)
+            result.append(scrape_noticia(page))
+        create_news(result)
+        return result
+    except ValueError:
+        return ""
+
+# print(get_tech_news(20))
