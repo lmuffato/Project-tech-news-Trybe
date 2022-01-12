@@ -64,8 +64,6 @@ def scrape_next_page_link(html_content):
 def scrape_noticia(html_content):
     html_text = selector_html(html_content)
 
-    # print("Teste", html_text)
-
     noticia_url = html_text.css(
       "head meta[property='og:url']::attr(content)"
       ).get()
