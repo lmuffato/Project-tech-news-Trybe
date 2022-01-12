@@ -30,10 +30,6 @@ def scrape_novidades(html_content):
     return links
 
 
-# html_content = fetch("https://www.tecmundo.com.br/novidades")
-# scrape_novidades(html_content)
-
-
 # Requisito 3
 def scrape_next_page_link(html_content):
     selector = parsel.Selector(html_content)
@@ -65,7 +61,7 @@ def scrape_noticia(html_content):
 
     comments_count = selector.css('#js-comments-btn::attr(data-count)').get()
     summary = "".join(
-        selector.css('.tec--article__body p:first_child *::text').getall()
+        selector.css('.tec--article__body > p:first_child *::text').getall()
         ).strip()
 
     sources = []
@@ -114,8 +110,4 @@ def get_tech_news(amount):
         scraped_new = scrape_noticia(new_data)
         news_content.append(scraped_new)
     create_news(news_content)
-    # print(news_content)
     return(news_content)
-
-
-# get_tech_news(2)
