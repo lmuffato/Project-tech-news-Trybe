@@ -1,6 +1,7 @@
 # from pymongo import MongoClient
 from tech_news.database import db, client
 import re
+import datetime
 
 
 # Requisito 6
@@ -9,10 +10,8 @@ def search_by_title(title):
 
     with client:
         for new in db.news.find({"title": re.compile(title, re.IGNORECASE)}):
-            print(title)
-            title_list.append((new["title"], new["url"]))
 
-    print("Lista final", title_list)
+            title_list.append((new["title"], new["url"]))
 
     return title_list
 
@@ -22,7 +21,21 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    news_list = []
+
+    try:
+        datetime.datetime.strptime(date, "%Y-%m-%d")
+        with client:
+            for new in db.news.find({"timestamp": {"$regex": date}}):
+                news_list.append((new["title"], new["url"]))
+
+    except ValueError:
+        raise ValueError("Data inválida")
+
+    return news_list
+
+# Cheguei a utilizar a lib datetime por causa desse forum:
+# https://stackoverflow.com/questions/9978534/match-dates-using-python-regular-expressions/9978701
 
 
 # Requisito 8
