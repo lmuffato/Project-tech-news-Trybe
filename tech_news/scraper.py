@@ -3,6 +3,7 @@ import time
 from parsel import Selector
 
 
+# https://developer.mozilla.org/pt-BR/docs/Web/CSS/CSS_Selectors
 # Requisito 1
 def fetch(url):
     """Seu código deve vir aqui"""
@@ -22,7 +23,6 @@ def fetch(url):
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
     selector = Selector(text=html_content)
-    # https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
     links_news = selector.css(
         "main .tec--card__title__link::attr(href)"
     ).getall()
@@ -42,6 +42,49 @@ def scrape_next_page_link(html_content):
 # Requisito 4
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    url = selector.css("link[rel=canonical]::attr(href)").get()
+    title = selector.css("#js-article-title::text").get()
+    timestamp = selector.css("#js-article-date::attr(datetime)").get()
+    writer = (
+        selector.css(".tec--author__info__link::text").get()
+        or selector.css(".tec--timestamp__item.z--font-bold a::text").get()
+        or selector.css(".z--m-none.z--truncate.z--font-bold::text").get()
+    )
+    # https://www.w3schools.com/python/ref_string_strip.asp
+    config_writer = writer.strip() if writer else None
+    # print(config_writer)
+    shares_count = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
+    shares_count = int(shares_count) if shares_count else 0
+    # print(shares_count)
+    comments_count = selector.css("#js-comments-btn::text").re_first(r"\d+")
+    comments_count = int(comments_count) if comments_count else 0
+    # print(comments_count)
+    summary = selector.css(
+        ".tec--article__body > p:first-of-type *::text"
+    ).getall()
+    summary = "".join(summary).strip()
+    # print(summary)
+    sources = selector.css(".z--mb-16 div a::text").getall()
+    sources = [source.strip() for source in sources]
+    # print(sources)
+    categories = selector.css("#js-categories a::text").getall()
+    categories = [category.strip() for category in categories]
+    # print(categories)
+
+    data = {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": config_writer,
+        "shares_count": shares_count,
+        "comments_count": comments_count,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
+    # print(data)
+    return data
 
 
 # Requisito 5
