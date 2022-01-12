@@ -1,6 +1,17 @@
+import requests
+import time
+
+
 # Requisito 1
 def fetch(url):
     """Seu código deve vir aqui - Iniciando - commit 1"""
+    try:
+        response = requests.get(url, timeout=3)
+        time.sleep(1)
+        if response.status_code == 200:
+            return response.text
+    except requests.Timeout:
+        return None
 
 
 # Requisito 2
