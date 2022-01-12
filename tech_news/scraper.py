@@ -1,4 +1,5 @@
 from parsel import Selector
+from tech_news.database import create_news
 import requests
 import time
 import re
@@ -66,12 +67,15 @@ def get_shares_count(selector):
 
 
 def get_comments_count(selector):
-    return int(selector.css('#js-comments-btn::attr(data-count)').get())
+    comments = selector.css('#js-comments-btn::attr(data-count)').get()
+    if(not comments):
+        return 0
+    return int(comments)
 
 
 def get_summary(selector):
     summary_list = selector.css(
-        '.tec--article__body p:nth-child(1) *::text').getall()
+        '.tec--article__body > p:first-child *::text').getall()
     return ''.join(summary_list)
 
 
@@ -95,35 +99,46 @@ def get_categories(selector):
         '.tec--article__body-grid .tec--badge--primary::text').getall()
     return stripe_list(categories_list)
 
-
-# Requisito 4
-def scrape_noticia(html_content):
+def get_page_info_dict(html_content):
     selector = Selector(text=html_content)
-    url = get_url(selector)
-    title = get_title(selector)
-    timestamp = get_timestamp(selector)
-    writer = get_writer(selector)
-    shares_count = get_shares_count(selector)
-    comments_count = get_comments_count(selector)
-    summary = get_summary(selector)
-    sources = get_sources(selector)
-    categories = get_categories(selector)
-    page_dict = {
-        'url': url,
-        'title': title,
-        'timestamp': timestamp,
-        'writer': writer,
-        'shares_count': shares_count,
-        'comments_count': comments_count,
-        'summary': summary,
-        'sources': sources,
-        'categories': categories
-        }
+    return (
+        {
+            'url': get_url(selector),
+            'title': get_title(selector),
+            'timestamp': get_timestamp(selector),
+            'writer': get_writer(selector),
+            'shares_count': get_shares_count(selector),
+            'comments_count': get_comments_count(selector),
+            'summary': get_summary(selector),
+            'sources': get_sources(selector),
+            'categories': get_categories(selector)
+        })
+
+
+# Requisito 
+def scrape_noticia(html_content):
+    page_dict = {}
+    dict_test = get_page_info_dict(html_content)
+    for key in dict_test:
+        page_dict[key] = dict_test[key]
 
     return page_dict
 
 
 # Requisito 5
 def get_tech_news(amount):
-    pass
-    """Seu código deve vir aqui"""
+    html_text = fetch('https://www.tecmundo.com.br/novidades')
+    news = scrape_novidades(html_text)
+    while(len(news) < amount):
+        btn_link = scrape_next_page_link(html_text)
+        if(btn_link):
+            html_text = fetch(btn_link)
+            news += scrape_novidades(html_text)
+
+    new_list = []
+    for new in range(amount):
+        new_list.append(scrape_noticia(fetch(news[new])))
+    
+    create_news(new_list)
+
+    return new_list
