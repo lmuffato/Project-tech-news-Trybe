@@ -38,8 +38,7 @@ def scrape_next_page_link(html_content):
         return None
 
 
-def get_writer(html_content):
-    selector = Selector(html_content)
+def get_writer(selector):
     writer = selector.css("a.tec--author__info__link::text").get()
     writer_secondary = selector.css(".tec--timestamp__item a::text").get()
     writer_tertiary = selector.css(
@@ -58,11 +57,20 @@ def get_writer(html_content):
         return None
 
 
-def get_shares(html_content):
-    selector = Selector(html_content)
+def get_shares(selector):
     shares = selector.css(".tec--toolbar__item::text").get()
     if shares is not None:
         return int(shares.strip().split()[0])
+    else:
+        return 0
+
+
+def get_comments(selector):
+    comments = selector.css(
+        ".tec--toolbar__item #js-comments-btn::attr(data-count)"
+    ).get()
+    if type(comments) == 'str':
+        return int(comments)
     else:
         return 0
 
@@ -76,13 +84,9 @@ def scrape_noticia(html_content):
         "timestamp": selector.css(
             ".tec--timestamp__item time::attr(datetime)"
         ).get(),
-        "writer": get_writer(html_content),
-        "shares_count": get_shares(html_content),
-        "comments_count": int(
-            selector.css(
-                ".tec--toolbar__item #js-comments-btn::attr(data-count)"
-            ).get()
-        ),
+        "writer": get_writer(selector),
+        "shares_count": get_shares(selector),
+        "comments_count": get_comments(selector),
         "summary": "".join(selector.css(
             ".tec--article__body > p:first-child *::text"
         ).getall()),
@@ -104,9 +108,9 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    url_to_fetch = 'https://www.tecmundo.com.br/novidades'
+    url_to_fetch = "http://www.tecmundo.com.br/novidades"
     news = []
-    while len(news) > 90:
+    while len(news) < amount:
         page = fetch(url_to_fetch)
         content_links = scrape_novidades(page)
         for link in content_links:
@@ -114,5 +118,7 @@ def get_tech_news(amount):
             news.append(scrape_noticia(content_page))
         url_to_fetch = scrape_next_page_link(page)
         print(news, len(news))
-    news_created = create_news(news)
+    news_sliced = news[0:amount-1]
+    print(news_sliced)
+    news_created = create_news(news_sliced)
     return news_created
