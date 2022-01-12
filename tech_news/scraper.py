@@ -69,7 +69,7 @@ def get_comments(selector):
     comments = selector.css(
         ".tec--toolbar__item #js-comments-btn::attr(data-count)"
     ).get()
-    if type(comments) == 'str':
+    if isinstance(comments, str):
         return int(comments)
     else:
         return 0
@@ -108,17 +108,17 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    url_to_fetch = "http://www.tecmundo.com.br/novidades"
+    url_to_fetch = "https://www.tecmundo.com.br/novidades"
     news = []
     while len(news) < amount:
         page = fetch(url_to_fetch)
         content_links = scrape_novidades(page)
         for link in content_links:
-            content_page = fetch(link)
-            news.append(scrape_noticia(content_page))
+            if len(news) < amount:
+                content_page = fetch(link)
+                news.append(scrape_noticia(content_page))
         url_to_fetch = scrape_next_page_link(page)
         print(news, len(news))
-    news_sliced = news[0:amount-1]
-    print(news_sliced)
-    news_created = create_news(news_sliced)
-    return news_created
+    print(news)
+    create_news(news)
+    return news
