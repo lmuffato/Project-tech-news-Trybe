@@ -78,3 +78,7 @@ class NewsConstructor:
     def get_datetime(element):
         if element:
             return element.xpath('//time//@datetime').get()
+
+# Source:
+# Função extract_numbers adaptada de:
+# https://stackoverflow.com/questions/4289331/how-to-extract-numbers-from-a-string-in-python
