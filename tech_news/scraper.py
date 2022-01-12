@@ -39,7 +39,59 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    parsel_selector = Selector(html_content)
+    url = parsel_selector.css("head link[rel=canonical]::attr(href)").get()
+    title = parsel_selector.css(".tec--article__header__title::text").get()
+    timestamp = parsel_selector.css(
+        ".tec--timestamp__item time::attr(datetime)"
+    ).get()
+
+    writer = parsel_selector.css(".z--font-bold *::text").get()
+    if writer:
+        writer = writer.strip()
+
+    shares_count = parsel_selector.css(".tec--toolbar__item::text").get()
+    if shares_count:
+        shares_count = int(shares_count.strip()[0])
+    else:
+        shares_count = 0
+
+    comments_count = parsel_selector.css(
+        "#js-comments-btn::attr(data-count)"
+    ).get()
+
+    summary = ''.join(
+        parsel_selector.css(
+            ".tec--article__body p:nth-child(1) *::text"
+        ).getall()
+    )
+
+    sources = [
+        source.strip()
+        for source in parsel_selector.css(
+            ".z--mb-16 .tec--badge::text"
+        ).getall()
+    ]
+
+    categories = [
+        category.strip()
+        for category in parsel_selector.css(
+            "#js-categories a::text"
+        ).getall()
+    ]
+
+    scraping_data = {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": int(comments_count),
+        "summary": summary,
+        "sources": sources,
+        "categories": categories
+    }
+    return scraping_data
 
 
 # Requisito 5
