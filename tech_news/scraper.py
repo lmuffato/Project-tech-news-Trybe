@@ -41,7 +41,35 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    readed = BeautifulSoup(html_content)
+    shareCount = readed.find('button', attrs={'id': 'js-comments-btn'})
+    comment = readed.find('button', attrs={'id': 'js-comments-btn'})
+    rawSources = readed.find_all('a', attrs={'rel': 'noopener nofollow'})
+    categories = readed.find_all('a', 'tec--badge tec--badge--primary')
+    refindedSources = list(map(lambda a: a.get_text().strip(), rawSources))
+    filterdeSources = list(filter(lambda str: len(str) >= 2, refindedSources))
+    url = readed.find('meta', attrs={'property': 'og:url'}).get('content')
+    writers = list(filter(lambda a: 'autor' in a.get('href'),
+                                    readed.find_all('a')))
+    filteredWirters = list(filter(lambda a: len(a.get_text()) > 3, writers))
+    filterTecMundo = list(filter(lambda txt: 'tec_mundo' not in txt,
+                                             filterdeSources))
+    summary = readed.find('meta', attrs={'name': 'description'}).get('content')
+    returnDict = {
+        'timestamp': readed.find('time').get('datetime'),
+        'url': url,
+        'title': readed.find('h1').get_text(),
+        'shares_count': int(shareCount.get('data-count')),
+        'comments_count': int(comment.get('data-count')),
+        'summary': summary,
+        'sources': filterTecMundo,
+        'categories': list(map(lambda a: a.get_text().strip(), categories)),
+    }
+    if len(writers) != 0:
+        returnDict['writer'] = filteredWirters[0].get_text().strip()
+    else:
+        returnDict['writer'] = 'Equipe TecMundo'
+    return returnDict
 
 
 # Requisito 5
