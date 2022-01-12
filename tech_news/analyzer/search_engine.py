@@ -33,7 +33,11 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    queryDIct = {'sources':
+                 {'$elemMatch':
+                  {'$regex': source, '$options': 'i'}}}
+    rawList = search_news(queryDIct)
+    return list(map(mapNews, rawList))
 
 
 # Requisito 9
