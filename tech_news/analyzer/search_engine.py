@@ -1,6 +1,19 @@
+# from pymongo import MongoClient
+from tech_news.database import db, client
+
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    title_list = []
+
+    with client:
+        for new in db.news.find({"title": title}):
+            print(title)
+            title_list.append((new["title"], new["url"]))
+
+    print("Lista final", title_list)
+
+    return title_list
 
 
 # Requisito 7
