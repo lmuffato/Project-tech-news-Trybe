@@ -36,6 +36,13 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
+    search_source = []
+    news = search_news({"sources": re.compile(source, re.IGNORECASE)})
+    # print(news)
+    for new in news:
+        search_source.append((new["title"], new["url"]))
+    # print(search_source)
+    return search_source
 
 
 # Requisito 9
