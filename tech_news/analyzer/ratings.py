@@ -52,7 +52,7 @@ def top_5_categories():
     aux = get_ocorrencies(item)
 
     sorted_tuples = sorted(
-        aux.items(), key=operator.itemgetter(1), reverse=True
+        aux.items(), key=operator.itemgetter(0)
     )
 
     my_list = []
