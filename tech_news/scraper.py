@@ -37,9 +37,54 @@ def scrape_next_page_link(html_content):
         return None
 
 
+def get_url(selector):
+    url = ""
+    for item in selector.css("link"):
+        if item.css("link::attr(rel)").get() == "amphtml":
+            url = item.css("link::attr(href)").get()
+    return url
+
+
+def get_shares_count(selector):
+    shares_count = 0
+    for word in selector.css("div.tec--toolbar__item::text").get().split():
+        if word.isdigit():
+            shares_count = int(word)
+    return shares_count
+
+
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = parsel.Selector(html_content)
+    url = get_url(selector)
+    title = selector.css("h1#js-article-title::text").get()
+    timestamp = selector.css("time#js-article-date::attr(datetime)").get()
+    writer = selector.css("a.tec--author__info__link::text").get()
+    shares_count = get_shares_count(selector)
+    comments_count = selector.css(
+        "button#js-comments-btn::attr(data-count)").get()
+    item = selector.css("div.tec--article__body p").getall()
+    item_list = parsel.Selector(item[0]).css("*::text").getall()
+    summary = ""
+    for text in item_list:
+        summary += text
+    tec_badges = selector.css("a.tec--badge::text").getall()
+    categories = selector.css("a.tec--badge--primary::text").getall()
+    sources = []
+    for badge in tec_badges:
+        if badge not in categories:
+            sources.append(badge)
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": comments_count,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
 
 
 # Requisito 5
