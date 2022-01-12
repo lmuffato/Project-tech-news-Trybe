@@ -2,6 +2,7 @@ import requests
 import time
 from parsel import Selector
 from tech_news.database import create_news
+from tech_news.news_constructor import NewsConstructor
 
 
 # Requisito 1
@@ -93,7 +94,7 @@ def scrape_noticia(html_content):
             writer_name = writer.strip()
         else:
             writer_name = writer
-        text = news.css('.tec--article__body p:first_child *::text')
+        text = news.css('.tec--article__body > p:first_child *::text')
         summary_paragraph = text.getall()
         summary = "".join(summary_paragraph).strip()
 
@@ -103,7 +104,8 @@ def scrape_noticia(html_content):
         sources = format_strings(
             news.css('div.z--mb-16').xpath('./div/a//text()').getall())
         comments = news.xpath('//button[contains(@id, "js-comments-btn")]')
-        comments_text = extract_numbers(comments.css('*::text').getall()[1])
+        comments_text = NewsConstructor.extract_numbers(
+            comments.css('*::text').getall()[1])
         shares = news.css('.tec--toolbar__item::text').get()
         shares_count = extract_numbers(shares)
         timestamp = news.xpath('//time//@datetime').get()
@@ -147,11 +149,11 @@ def get_tech_news(amount):
 
         news_list.extend(scrape_novidades(html))
 
-        while len(news_list) < amount:
+        while len(news_list) <= amount:
             next_page_link = scrape_next_page_link(html)
             next_page = fetch(next_page_link)
             news_links = scrape_novidades(next_page)
-            news_list.extend(news_links)
+            print(news_list.extend(news_links))
 
         result = []
 
@@ -159,8 +161,11 @@ def get_tech_news(amount):
             page = fetch(item)
             result.append(scrape_noticia(page))
         create_news(result)
+        print(news_list)
+        print(len(result))
         return result
     except ValueError:
         return ""
 
-# print(get_tech_news(20))
+
+# get_tech_news(5)
