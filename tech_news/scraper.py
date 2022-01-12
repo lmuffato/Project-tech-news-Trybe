@@ -63,7 +63,7 @@ def scrape_noticia(html_content):
     comment_count = selector.css('#js-comments-btn::attr(data-count)').get()
 
     summary = ''.join(selector.css(
-        'div.tec--article__body p:nth-child(1) *::text'
+        'div.tec--article__body p:nth-child(1) ::text'
     ).getall())
 
     sources = selector.css('div.z--mb-16 .tec--badge::text').getall()
