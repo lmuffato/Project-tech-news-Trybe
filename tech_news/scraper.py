@@ -37,6 +37,38 @@ def scrape_next_page_link(html_content):
         return None
 
 
+def get_writer(html_content):
+    selector = Selector(html_content)
+    writer = selector.css("a.tec--author__info__link::text").get()
+    writer_secondary = selector.css(".tec--timestamp__item a::text").get()
+    writer_tertiary = selector.css(
+        ".tec--author__info > p:first-child::text"
+    ).get()
+    if writer is not None:
+        print(writer)
+        writer_stripped = writer.strip()
+        return writer_stripped
+    elif writer_secondary is not None:
+        print(writer_secondary)
+        writer_stripped = writer_secondary.strip()
+        return writer_stripped
+    elif writer_tertiary is not None:
+        print(writer_tertiary)
+        writer_stripped = writer_tertiary.strip()
+        return writer_stripped
+    else:
+        return None
+
+
+def get_shares(html_content):
+    selector = Selector(html_content)
+    shares = selector.css(".tec--toolbar__item::text").get()
+    if shares is not None:
+        return int(shares.strip().split()[0])
+    else:
+        return 0
+
+
 # Requisito 4
 def scrape_noticia(html_content):
     selector = Selector(html_content)
@@ -46,18 +78,16 @@ def scrape_noticia(html_content):
         "timestamp": selector.css(
             ".tec--timestamp__item time::attr(datetime)"
         ).get(),
-        "writer": selector.css("a.tec--author__info__link::text")
-        .get()
-        .strip(),
-        "shares_count": int(
-            selector.css(".tec--toolbar__item::text").get().strip().split()[0]
-        ),
+        "writer": get_writer(html_content),
+        "shares_count": get_shares(html_content),
         "comments_count": int(
             selector.css(
                 ".tec--toolbar__item #js-comments-btn::attr(data-count)"
             ).get()
         ),
-        "summary": selector.css(".tec--article__body p *::text").get(),  # ???
+        "summary": "".join(selector.css(
+            ".tec--article__body > p:first-child *::text"
+        ).getall()),
         "sources": [
             badge.strip()
             for badge in selector.css(
