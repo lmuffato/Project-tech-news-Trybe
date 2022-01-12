@@ -17,12 +17,13 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
+    """nota importante, a forma de utilizar o xpath foi retirada
+    de https://parsel.readthedocs.io/en/latest/usage.html#using-selectors"""
     urls_arr = []
     selector = Selector(html_content)
     cards = selector.css("div .tec--list__item")
     for card in cards:
         url = card.xpath(".//article/figure/a/@href").get()
-        print(url)
         urls_arr.append(url)
     return urls_arr
 
