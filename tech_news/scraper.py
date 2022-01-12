@@ -4,8 +4,6 @@ import parsel
 
 
 # URL = "https://www.tecmundo.com.br/novidades"
-# URL_DETAILS = "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
-
 
 
 # Requisito 1
@@ -63,21 +61,24 @@ def extract_comments(comments):
         comments = int(comments)
         return comments
 
-def extract_paragraph(selector):
-    paragraphText = selector.css("div.tec--article__body p:first-child *::text").getall()
- 
-    phrase_complete = "".join(paragraphText)
-    
+
+def extract_paragraph(se):
+    paragraph = se.css("div.tec--article__body p:first-child *::text").getall()
+
+    phrase_complete = "".join(paragraph)
+
     return phrase_complete
+
 
 def extract_categories(selector):
     categoriesFormated = []
     categories = selector.css("a.tec--badge--primary ::text").getall()
-    
+
     for category in categories:
         categoriesFormated.append(category.strip())
-    
+
     return categoriesFormated
+
 
 def extract_sources(selector):
     sourcesFormated = []
@@ -90,16 +91,15 @@ def extract_sources(selector):
 
 
 def extract_writer(selector):
-    
     if selector.css(".tec--author__info__link ::text").get():
-       writer = selector.css(".tec--author__info__link ::text").get()
-       return writer
+        writer = selector.css(".tec--author__info__link ::text").get()
+        return writer
     if selector.css(".tec--timestamp__item a::text").get():
         writer = selector.css(".tec--timestamp__item a::text").get()
         return writer
     if selector.css(".z--m-none ::text").get():
-       writer = selector.css(".z--m-none ::text").get()
-       return writer
+        writer = selector.css(".z--m-none ::text").get()
+        return writer
 
 
 def scrape_noticia(html_content):
@@ -110,7 +110,7 @@ def scrape_noticia(html_content):
     timestamp = selector.css("div.tec--timestamp__item ::attr(datetime)").get()
     writer_tech = extract_writer(selector)
     writer = writer_tech.strip() if writer_tech else None
-    shares_count = selector.css("div.tec--toolbar__item ::text").re_first(r'\d+')
+    shares = selector.css("div.tec--toolbar__item ::text").re_first(r'\d+')
     comments = selector.css("button.tec--btn ::attr(data-count)").get()
     comments_count = extract_comments(comments)
     summary = extract_paragraph(selector)
@@ -118,21 +118,19 @@ def scrape_noticia(html_content):
     categories = extract_categories(selector)
 
     news_json = {
-      "url":url,
-      "title":title,
-      "timestamp":timestamp,
-      "writer":writer,
-      "shares_count":int(shares_count),
-      "comments_count":comments_count,
-      "summary":summary,
-      "sources":sources,
-      "categories":categories
+      "url": url,
+      "title": title,
+      "timestamp": timestamp,
+      "writer": writer,
+      "shares_count": int(shares),
+      "comments_count": comments_count,
+      "summary": summary,
+      "sources": sources,
+      "categories": categories
     }
     return news_json
 
 
-# URL_DETAILS = "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
-# URL_DETAILS = "https://www.tecmundo.com.br/minha-serie/215168-10-viloes-animes-extremamente-inteligentes.htm"
 # html_content = fetch(URL_DETAILS)
 # print(scrape_noticia(html_content))
 
