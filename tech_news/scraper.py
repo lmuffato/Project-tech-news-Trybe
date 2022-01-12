@@ -4,7 +4,7 @@ import re
 import math
 from parsel import Selector
 
-import tech_news.database as database
+from tech_news.database import create_news
 
 
 def selector_html(html_content):
@@ -140,18 +140,12 @@ def scrape_noticia(html_content):
 
 def get_tech_news(amount):
     news_by_amount = []
-    # count_news = 1
-
     news_page_fetch = fetch("https://www.tecmundo.com.br/novidades/")
     news_catched = scrape_novidades(news_page_fetch)
-
-    # print('Print dos catcheds', news_catched)
-    print('Primeiro len', len(news_catched))
 
     if amount > 20:
         count_pages = 1
         number_of_pages = math.ceil(amount / 20)
-        print('Numero de Pages', number_of_pages)
 
         while count_pages < number_of_pages:
             another_page_link = scrape_next_page_link(news_page_fetch)
@@ -163,23 +157,15 @@ def get_tech_news(amount):
 
             for link in news_for_another_page:
                 news_catched.append(link)
-                # print('Novo len', len(news_catched))
 
             count_pages += 1
 
-            # print(news_catched)
-
-    print('Len final', len(news_catched))
-
     for new in news_catched[:amount]:
-        # print('Test do new', new)
         new_html = fetch(new)
         new_scraped = scrape_noticia(new_html)
 
         news_by_amount.append(new_scraped)
 
-    database.create_news(news_by_amount)
+    create_news(news_by_amount)
 
     return news_by_amount
-
-    # print('Result', news_by_amount)
