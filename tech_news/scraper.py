@@ -31,18 +31,15 @@ def scrape_novidades(html_content):
 # Requisito 3
 def scrape_next_page_link(html_content):
     parsel_selector = Selector(html_content)
-    next_page_link = parsel_selector.css("a.tec--btn::attr(href)").get()
-    if next_page_link:
-        return next_page_link
-    else:
-        return None
+    next_page_link = parsel_selector.css("a.tec--btn--primary::attr(href)").get()
+    return next_page_link
 
 
 # Requisito 4
 def scrape_noticia(html_content):
     parsel_selector = Selector(html_content)
     url = parsel_selector.css("head link[rel=canonical]::attr(href)").get()
-    title = parsel_selector.css(".tec--article__header__title::text").get()
+    title = parsel_selector.css("#js-article-title::text").get()
     timestamp = parsel_selector.css(
         ".tec--timestamp__item time::attr(datetime)"
     ).get()
@@ -63,7 +60,7 @@ def scrape_noticia(html_content):
 
     summary = ''.join(
         parsel_selector.css(
-            ".tec--article__body p:nth-child(1) *::text"
+            ".tec--article__body > p:nth-child(1) *::text"
         ).getall()
     )
 
@@ -97,24 +94,19 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    try:
-        html_content = fetch("https://www.tecmundo.com.br/novidades")
-        news_data = []
-        news_data.extend(scrape_novidades(html_content))
+    html_content = fetch("https://www.tecmundo.com.br/novidades")
+    url = []
+    news_links = []
+    url.extend(scrape_novidades(html_content))
 
-        while len(news_data) < amount:
-            next_page_link = scrape_next_page_link(html_content)
-            next_page = fetch(next_page_link)
-            news_url = scrape_novidades(next_page)
-            news_data.extend(news_url)
+    while len(url) < amount:
+        next_page_link = scrape_next_page_link(html_content)
+        next_page = fetch(next_page_link)
+        url.extend(scrape_novidades(next_page))
 
-        news_links = []
+    for i in url[:amount]:
+        news = fetch(i)
+        news_links.append(scrape_noticia(news))
 
-        for i in news_data[:amount]:
-            news = fetch(i)
-            news_links.append(scrape_noticia(news))
-
-        create_news(news_data)
-        return news_links
-    except ValueError:
-        return ''
+    create_news(news_links)
+    return news_links
