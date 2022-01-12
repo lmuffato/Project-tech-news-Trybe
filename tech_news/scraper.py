@@ -147,7 +147,7 @@ def get_tech_news(amount):
 
         news_list.extend(scrape_novidades(html))
 
-        while len(news_list) <= amount:
+        while len(news_list) < amount:
             next_page_link = scrape_next_page_link(html)
             next_page = fetch(next_page_link)
             news_links = scrape_novidades(next_page)
