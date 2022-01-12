@@ -32,7 +32,54 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    url = selector.css('head link[rel="canonical"]::attr(href)').get()
+    title = selector.css(".tec--article h1::text").get()
+    timestamp = selector.css(".tec--article time::attr(datetime)").get()
+    writer_name = selector.css(".z--font-bold *::text").get()
+
+    if writer_name:
+        writer = writer_name.strip()
+    else:
+        writer = None
+
+    shares_count = selector.css(
+        "div.tec--toolbar__item::text"
+    ).re_first(r"[0-9]")
+    if not shares_count:
+        shares_count = 0
+
+    comments_count = selector.css(
+        "div.tec--toolbar__item button::text"
+    ).re_first(r"[0-9]")
+
+    summary_text = selector.css(
+        "div.tec--article__body p:first-child *::text"
+    ).getall()
+    summary = "".join(summary_text).strip()
+
+    sources_list = selector.css(
+        "div.z--mb-16 a.tec--badge::text"
+    ).getall()
+    sources = [source.strip() for source in sources_list]
+
+    categories_list = selector.css(
+        "div#js-categories a.tec--badge::text"
+    ).getall()
+    categories = [category.strip() for category in categories_list]
+
+    result = dict({
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": int(shares_count),
+        "comments_count": int(comments_count),
+        "summary": summary,
+        "sources": sources,
+        "categories": categories
+    })
+    return result
 
 
 # Requisito 5
