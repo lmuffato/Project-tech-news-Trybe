@@ -1,6 +1,7 @@
 from parsel import Selector
 import requests
 import time
+import re
 
 
 # Requisito 1
@@ -33,9 +34,93 @@ def scrape_next_page_link(html_content):
     return None
 
 
+def get_url(selector):
+    return selector.css('link[rel=canonical]::attr(href)').get()
+
+
+def get_title(selector):
+    return selector.css('.tec--article__header__title::text').get()
+
+
+def get_timestamp(selector):
+    return selector.css('.tec--timestamp__item time::attr(datetime)').get()
+
+
+def get_writer(selector):
+    writer = selector.css(
+        '.tec--author__info__link::text,'
+        '.tec--timestamp--lg .z--font-bold a::text,'
+        '.tec--author__info p::text').get()
+    if(not writer):
+        return None
+    return writer.strip()
+
+
+def get_shares_count(selector):
+    shares_count_string = selector.css(
+        '.tec--toolbar .tec--toolbar__item::text').get()
+    if(not shares_count_string):
+        return 0
+    # Source https://pythonguides.com/python-find-number-in-string/
+    return int(re.findall('[0-9]+', shares_count_string)[0])
+
+
+def get_comments_count(selector):
+    return int(selector.css('#js-comments-btn::attr(data-count)').get())
+
+
+def get_summary(selector):
+    summary_list = selector.css(
+        '.tec--article__body p:nth-child(1) *::text').getall()
+    return ''.join(summary_list)
+
+
+def stripe_list(list):
+    new_list = []
+    for element in list:
+        if(element):
+            new_list.append(element.strip())
+    return new_list
+
+
+def get_sources(selector):
+    sources_list = (selector.css(
+        '.tec--article__body-grid .z--mb-16 .tec--badge::text'
+        ).getall())
+    return stripe_list(sources_list)
+
+
+def get_categories(selector):
+    categories_list = selector.css(
+        '.tec--article__body-grid .tec--badge--primary::text').getall()
+    return stripe_list(categories_list)
+
+
 # Requisito 4
 def scrape_noticia(html_content):
-    pass   
+    selector = Selector(text=html_content)
+    url = get_url(selector)
+    title = get_title(selector)
+    timestamp = get_timestamp(selector)
+    writer = get_writer(selector)
+    shares_count = get_shares_count(selector)
+    comments_count = get_comments_count(selector)
+    summary = get_summary(selector)
+    sources = get_sources(selector)
+    categories = get_categories(selector)
+    page_dict = {
+        'url': url,
+        'title': title,
+        'timestamp': timestamp,
+        'writer': writer,
+        'shares_count': shares_count,
+        'comments_count': comments_count,
+        'summary': summary,
+        'sources': sources,
+        'categories': categories
+        }
+
+    return page_dict
 
 
 # Requisito 5
