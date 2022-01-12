@@ -63,7 +63,7 @@ def scrape_noticia(html_content):
     comment_count = selector.css('#js-comments-btn::attr(data-count)').get()
 
     summary = ''.join(selector.css(
-        'div.tec--article__body p:nth-child(1) ::text'
+        'div.tec--article__body > p:nth-child(1) *::text'
     ).getall())
 
     sources = selector.css('div.z--mb-16 .tec--badge::text').getall()
@@ -95,23 +95,19 @@ def scrape_noticia(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
-    try:
-        new_list_urls = []
-        page_html = fetch('https://www.tecmundo.com.br/novidades')
+    new_list_urls = []
+    page_html = fetch('https://www.tecmundo.com.br/novidades')
 
-        new_list_urls.extend(scrape_novidades(page_html))
+    new_list_urls.extend(scrape_novidades(page_html))
 
-        while len(new_list_urls) < amount:
-            link_next_page = scrape_next_page_link(page_html)
-            next_page = fetch(link_next_page)
-            new_urls = scrape_novidades(next_page)
-            new_list_urls.extend(new_urls)
-        result = []
+    while len(new_list_urls) < amount:
+        link_next_page = scrape_next_page_link(page_html)
+        next_page = fetch(link_next_page)
+        new_list_urls.extend(scrape_novidades(next_page))
+    result = []
 
-        for url in new_list_urls[:amount]:
-            page = fetch(url)
-            result.append(scrape_novidades(page))
-        create_news(result)
-        return result
-    except ValueError:
-        return ''
+    for url in new_list_urls[:amount]:
+        page = fetch(url)
+        result.append(scrape_noticia(page))
+    create_news(result)
+    return result
