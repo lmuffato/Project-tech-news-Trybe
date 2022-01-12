@@ -22,13 +22,17 @@ def scrape_novidades(html_content):
     for link in selector.css("h3.tec--card__title"):
         noticia = link.css("a.tec--card__title__link::attr(href)").get()
         listLinks.append(noticia)
-
     return listLinks
 
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = parsel.Selector(html_content)
+    buttonNext = selector.css("a.tec--btn::attr(href)").get()
+    if buttonNext:
+        return buttonNext
+    else:
+        return None
 
 
 # Requisito 4
