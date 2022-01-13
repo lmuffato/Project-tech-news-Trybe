@@ -42,7 +42,43 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    response = requests.get(html_content)
+    selector = Selector(text=response.text)
+    selected_class = "link[rel=amphtml]::attr(href)"
+    url = selector.css(selected_class).get()
+    selected_title = "title::text"
+    title = selector.css(selected_title).get()
+
+    select_writer = ".z--font-bold ::text"
+    writer = selector.css(select_writer).get().strip()
+
+    selected_summary = "meta[name=description]::attr(content)"
+    summary = selector.css(selected_summary).get()
+
+    selected_sources = ".tec--badge ::text"
+    sources = selector.css(selected_sources).get().strip()
+    list_sources = []
+    list_sources.append(sources)
+
+    selected_categories = ".tec--badge--primary ::text"
+    categories = selector.css(selected_categories).getall()
+    new_list = []
+    for category in categories:
+        new_category = category.strip()
+        new_list.append(new_category)
+
+    selected_comments = ".post-body p"
+    comments = selector.css(selected_comments).get()
+
+    return {
+        "url": url,
+        "title": title,
+        "writer": writer,
+        "summary": summary,
+        "sources": list_sources,
+        "categories": new_list,
+        "comments_count": comments,
+    }
 
 
 # Requisito 5
