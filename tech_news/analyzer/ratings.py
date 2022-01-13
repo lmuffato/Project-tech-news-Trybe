@@ -23,6 +23,7 @@ def top_5_news():
 # https://docs.mongodb.com/manual/reference/operator/aggregation/limit/
 # https://stackoverflow.com/questions/48786941/how-to-sort-with-the-sum-of-2-fields-in-mongodb
 
+
 # Requisito 11
 def top_5_categories():
     """Seu código deve vir aqui"""
