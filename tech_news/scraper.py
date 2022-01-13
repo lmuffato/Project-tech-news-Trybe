@@ -17,8 +17,6 @@ def fetch(url):
     except requests.Timeout:
         return None
 
-# print(fetch("http://quotes.toscrape.com/page/1"))
-
 
 # Requisito 2
 def scrape_novidades(html_content):
@@ -123,6 +121,3 @@ def get_tech_news(amount):
         return result
     except ValueError:
         return ""
-
-
-# get_tech_news(2)
