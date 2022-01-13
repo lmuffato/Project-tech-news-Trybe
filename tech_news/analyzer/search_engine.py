@@ -35,9 +35,13 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    query = {"sources": {"$regex": source, "$options": 'i'}}
+    result = formated_search(query)
+    return result
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    query = {"categories": {"$regex": category, "$options": 'i'}}
+    result = formated_search(query)
+    return result
