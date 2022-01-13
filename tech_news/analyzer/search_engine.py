@@ -33,12 +33,19 @@ def search_by_date(date):
     except ValueError:
         raise ValueError("Data inválida")
 
-# print(search_by_date('2022-01-13'))
-
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    query = {"sources": {'$regex': source, '$options': 'i'}}
+    news_dict = search_news(query)
+    tuplas_news = []
+
+    for n in news_dict:
+        tuplas_news.append((n["title"], n["url"]))
+
+    return tuplas_news
+
+# print(search_by_source('G1'))
 
 
 # Requisito 9
