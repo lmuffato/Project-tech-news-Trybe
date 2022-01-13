@@ -1,5 +1,4 @@
 from tech_news.database import find_news
-from tech_news.database import db
 from tech_news.analyzer.search_engine import format_result
 from operator import itemgetter
 
