@@ -125,4 +125,4 @@ def get_tech_news(amount):
         return ""
 
 
-get_tech_news(1)
+# get_tech_news(2)

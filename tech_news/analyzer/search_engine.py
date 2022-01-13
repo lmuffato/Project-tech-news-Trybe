@@ -1,7 +1,6 @@
 from tech_news.database import search_news
 from tech_news.database import db
 import datetime
-from re import search
 
 
 def format_result(result_list):
@@ -39,9 +38,17 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    query = {"sources": {'$regex': source, '$options': 'i'}}
+    news_list = search_news(query)
+    data = format_result(news_list)
+    return data
 
 
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
+
+
+# Source:
+# Sobre case insensitive queries no mongoDB:
+# https://docs.cloudmanager.mongodb.com/schema-advisor/case-insensitive-regex/index.html?_ga=2.183487270.1260522265.1642037303-1859995600.1642037303
