@@ -1,6 +1,7 @@
 from tech_news.database import find_news
 
-
+# Sort
+# https://www.geeksforgeeks.org/ways-sort-list-dictionaries-values-python-using-lambda-function/
 # Requisito 10
 def top_5_news():
     news_list = find_news()
