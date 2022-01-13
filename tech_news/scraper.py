@@ -39,6 +39,27 @@ def scrape_next_page_link(html_content):
 # Requisito 4
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    url = selector.css("head link[rel=canonical]::attr(href)").get()
+    title = selector.css("body .tec--article__header__title::text").get()
+    datetime = selector.css("div .tec--timestamp__item time::attr(datetime)").get()
+
+    data = {
+        "url": url,
+        "title": title,
+        "timestamp": datetime,
+        "write": '',
+        "shares_count": '',
+        "comments_count": '',
+        "summary": '',
+        "sources": '',
+        "categories": '',
+    }
+    print(data)
+    return data
+
+
+scrape_noticia((fetch("https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm")))
 
 
 # Requisito 5
