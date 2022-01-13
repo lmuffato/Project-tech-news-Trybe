@@ -41,6 +41,55 @@ def scrape_next_page_link(html_content):
 # Requisito 4
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    # print(selector.css("link::attr(href)").getall())
+    aux_selector = selector.css("link")
+    for link in aux_selector:
+        if link.css("link[rel=canonical]").get():
+            url = link.css("link::attr(href)").get()
+    print(url)
+    title = selector.css("#js-article-title::text").get()
+    print(title)
+    timestamp = selector.css("time::attr(datetime)").get()
+    print(timestamp)
+    writer = selector.css(".tec--author__info__link::text").get()
+    print(writer)
+    shares_count = selector.css("div.tec--toolbar__item::text").get()[:2]
+    print(shares_count)
+    comments_count = selector.css("button::attr(data-count)").get()
+    print(comments_count)
+    # https://devhints.io/css
+    # https://pt.stackoverflow.com/questions/324979/como-concatenar-itens-de-uma-lista-em-python
+    aux_summary = selector.css(
+        "div.tec--article__body > p:first-child *::text"
+    )
+    summary = ''.join(aux_summary.getall())
+    print(summary)
+    sources = []
+    for source in selector.css(".z--mb-16"):
+        sources.append(source.css(
+            ".tec--badge::text"
+        ).getall())
+    print(sources)
+    categories = []
+    for category in selector.css(".z--px-16 #js-categories"):
+        categories.append(category.css(
+            ".tec--badge--primary::text"
+        ).getall())
+    print(categories)
+
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer.strip(),
+        "shares_count": int(shares_count),
+        "comments_count": int(comments_count),
+        "summary": summary,
+        "sources": sources,
+        "categories": categories
+    }
+
 
 
 # Requisito 5
