@@ -52,9 +52,17 @@ def scrape_noticia(html_content):
     print(title)
     timestamp = selector.css("time::attr(datetime)").get()
     print(timestamp)
-    writer = selector.css(".tec--author__info__link::text").get()
+    aux_writer = selector.css(".z--font-bold ::text").get()
+    if aux_writer:
+        writer = aux_writer.strip()
+    else:
+        writer = None
     print(writer)
-    shares_count = selector.css("div.tec--toolbar__item::text").get()[:2]
+    aux_shares_count = selector.css(".tec--toolbar__item::text").get()
+    if aux_shares_count is None:
+        shares_count = 0
+    else:
+        shares_count = aux_shares_count[:2]
     print(shares_count)
     comments_count = selector.css("button::attr(data-count)").get()
     print(comments_count)
@@ -66,16 +74,14 @@ def scrape_noticia(html_content):
     summary = ''.join(aux_summary.getall())
     print(summary)
     sources = []
-    for source in selector.css(".z--mb-16"):
-        sources.append(source.css(
-            ".tec--badge::text"
-        ).getall())
+    for source in selector.css(".z--mb-16 .tec--badge::text").getall():
+        sources.append(source.strip())
     print(sources)
     categories = []
-    for category in selector.css(".z--px-16 #js-categories"):
-        categories.append(category.css(
-            ".tec--badge--primary::text"
-        ).getall())
+    for category in selector.css(
+        ".z--px-16 #js-categories .tec--badge--primary::text"
+    ).getall():
+        categories.append(category.strip())
     print(categories)
 
     return {
