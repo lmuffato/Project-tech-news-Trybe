@@ -1,6 +1,7 @@
 from tech_news.scraper import get_tech_news
 from tech_news.analyzer import search_engine
 from tech_news.analyzer.ratings import top_5_categories, top_5_news
+import sys
 
 
 def search_title():
@@ -29,17 +30,15 @@ def get_news():
 
 
 def choose_options():
-    return input(
-        """ Selecione uma das opções a seguir:
-            0 - Popular o banco com notícias;
-            1 - Buscar notícias por título;
-            2 - Buscar notícias por data;
-            3 - Buscar notícias por fonte;
-            4 - Buscar notícias por categoria;
-            5 - Listar top 5 notícias;
-            6 - Listar top 5 categorias;
-            7 - Sair. """
-    )
+    return input("""Selecione uma das opções a seguir:
+ 0 - Popular o banco com notícias;
+ 1 - Buscar notícias por título;
+ 2 - Buscar notícias por data;
+ 3 - Buscar notícias por fonte;
+ 4 - Buscar notícias por categoria;
+ 5 - Listar top 5 notícias;
+ 6 - Listar top 5 categorias;
+ 7 - Sair. """)
 
 
 # Requisito 12
@@ -56,17 +55,14 @@ def analyzer_menu():
         "6": top_5_categories,
     }
 
-    response = 0
-
     try:
         if main_info == "7":
-            return
+            return print("Encerrando script\n")
         response = my_list[main_info]()
     except KeyError:
-        print("Opção inválida")
+        return sys.stderr.write("Opção inválida\n")
 
     return response
 
 
-x = analyzer_menu()
-print(x)
+print(analyzer_menu())
