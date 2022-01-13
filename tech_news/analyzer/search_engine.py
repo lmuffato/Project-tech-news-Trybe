@@ -34,7 +34,9 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    query = {
+        "sources": source
+    }
 
 
 # Requisito 9
