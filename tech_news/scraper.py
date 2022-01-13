@@ -35,7 +35,7 @@ def scrape_next_page_link(html_content):
 def scrape_noticia(html_content):
     selector = parsel.Selector(html_content)
 
-    writer_selector = selector.css("a.tec--author__info__link::text").get()
+    writer_selector = selector.css(".z--font-bold ::text").get()
     writer = writer_selector.strip() if writer_selector else None
 
     shares = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
