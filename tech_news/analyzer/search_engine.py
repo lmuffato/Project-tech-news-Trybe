@@ -45,9 +45,14 @@ def search_by_source(source):
 
     return tuplas_news
 
-# print(search_by_source('G1'))
-
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    query = {"categories": {'$regex': category, '$options': 'i'}}
+    news_dict = search_news(query)
+    tuplas_news = []
+
+    for n in news_dict:
+        tuplas_news.append((n["title"], n["url"]))
+
+    return tuplas_news
