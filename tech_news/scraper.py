@@ -123,3 +123,6 @@ def get_tech_news(amount):
         return result
     except ValueError:
         return ""
+
+
+get_tech_news(1)
