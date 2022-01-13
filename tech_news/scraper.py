@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -62,7 +63,7 @@ def scrape_noticia(html_content):
     comments_address = "button.tec--btn ::attr(data-count)"
     comments_counter = int(selector.css(comments_address).get())
 
-    summary_address = "div.tec--article__body p:first-child *::text"
+    summary_address = "div.tec--article__body > p:first-child *::text"
     summary = selector.css(summary_address).getall()
     complete_summary = "".join(summary).strip()
 
@@ -94,3 +95,21 @@ def scrape_noticia(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    # Bug do summary do req. 04 que quebra o req. 05
+    # resolvido com ajuda de Gabriel Pereira, T10-A.
+    news_url = "https://www.tecmundo.com.br/novidades"
+    news_links = []
+    news_data = []
+
+    while len(news_links) < amount:
+        news_html = fetch(news_url)
+        news_links.extend(scrape_novidades(news_html))
+        news_url = scrape_next_page_link(news_html)
+
+    for new_url in news_links[:amount]:
+        news_html = fetch(new_url)
+        news = scrape_noticia(news_html)
+        news_data.append(news)
+
+    create_news(news_data)
+    return news_data
