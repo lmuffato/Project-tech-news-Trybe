@@ -6,7 +6,6 @@ from tech_news.database import create_news
 
 
 # Requisito 1
-# GO!
 def fetch(url):
     try:
         time.sleep(1)
