@@ -9,7 +9,7 @@ def search_title():
 
 
 def search_date():
-    return search_engine.search_by_date(input("Digite o título:"))
+    return search_engine.search_by_date(input("Digite a data no formato aaaa-mm-dd:"))
 
 
 def search_source():
@@ -65,4 +65,4 @@ def analyzer_menu():
     return response
 
 
-print(analyzer_menu())
+# print(analyzer_menu())
