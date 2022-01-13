@@ -9,6 +9,15 @@ def tuple_from_dict(news, search_param, search_param_str):
             if search_param.lower() in new[search_param_str].lower()]
 
 
+def tuple_from_list_inside_dict(news, param):
+    new_list = [] # for new in news:
+    for new in news:
+        for src in new['sources']:
+            if param.lower() == src.lower():
+                new_list.append((new['title'], new['url']))
+    return new_list
+
+
 def create_new_regex_ignore_case(value):
     return re.compile(f'^{value}', re.IGNORECASE)
 
@@ -44,7 +53,9 @@ def search_by_date(date):
 
 
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    reg = create_new_regex_ignore_case(source)
+    news = search_news({'sources': reg})
+    return tuple_from_list_inside_dict(news, source)
 
 
 # Requisito 9
