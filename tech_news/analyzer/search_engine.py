@@ -38,7 +38,6 @@ def search_by_source(source):
     news = find_news()
     news_filtered = []
     for article in news:
-        print(article)
         for sources in article["sources"]:
             if sources.lower() == source.lower():
                 news_filtered.append(article)
@@ -47,4 +46,11 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    news = find_news()
+    news_filtered = []
+    for article in news:
+        for category_item in article["categories"]:
+            if category_item.lower() == category.lower():
+                if article not in news_filtered:
+                    news_filtered.append(article)
+    return [(news["title"], news["url"]) for news in news_filtered]
