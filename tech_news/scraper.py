@@ -31,7 +31,9 @@ def scrape_novidades(html_content):
 # Requisito 3
 def scrape_next_page_link(html_content):
     parsel_selector = Selector(html_content)
-    next_page_link = parsel_selector.css("a.tec--btn--primary::attr(href)").get()
+    next_page_link = parsel_selector.css(
+        "a.tec--btn--primary::attr(href)"
+    ).get()
     return next_page_link
 
 
