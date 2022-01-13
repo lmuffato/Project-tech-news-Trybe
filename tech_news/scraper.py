@@ -51,10 +51,10 @@ def extract_comments(comments):
         return comments
 
 
-def extract_paragraph(se):
-    paragraph = se.css("div.tec--article__body p:first-child *::text").getall()
+def extract_paragraph(s):
+    p = s.css("div.tec--article__body > p:first-child *::text").getall()
 
-    phrase_complete = "".join(paragraph)
+    phrase_complete = "".join(p)
 
     return phrase_complete
 
@@ -99,9 +99,11 @@ def scrape_noticia(html_content):
     timestamp = selector.css("div.tec--timestamp__item ::attr(datetime)").get()
     writer_tech = extract_writer(selector)
     writer = writer_tech.strip() if writer_tech else None
-    shares = selector.css("div.tec--toolbar__item ::text").re_first(r'\d+')
-    comments = selector.css("button.tec--btn ::attr(data-count)").get()
-    comments_count = extract_comments(comments)
+    shares_se = "#js-author-bar > nav > div:nth-child(1)::text"
+    shares_tech = selector.css(shares_se).re_first(r'\d+')
+    shares = int(shares_tech) if shares_tech else 0
+    comments = selector.css("#js-comments-btn ::text").re_first(r'\d+')
+    comments_count = int(comments) if comments else 0
     summary = extract_paragraph(selector)
     sources = extract_sources(selector)
     categories = extract_categories(selector)
@@ -111,7 +113,7 @@ def scrape_noticia(html_content):
       "title": title,
       "timestamp": timestamp,
       "writer": writer,
-      "shares_count": int(shares) if shares else 0,
+      "shares_count": int(shares),
       "comments_count": comments_count,
       "summary": summary,
       "sources": sources,
@@ -121,29 +123,25 @@ def scrape_noticia(html_content):
 
 
 # Requisito 5
-# Requisito feito com ajuda do repositório da Ana Ventura:
-# https://github.com/tryber/sd-010-a-tech-news/blob/5f3559c47a924df65977a6832d3b5b9f918a4c06/tech_news/scraper.py
 def get_tech_news(amount):
-    try:
-        URL = "https://www.tecmundo.com.br/novidades"
-        html_content = fetch(URL)
-        last_news_url = []
-        news_dict = []
+    URL = "https://www.tecmundo.com.br/novidades"
+    html_content = fetch(URL)
+    news_dict = []
 
-        last_news_url.extend(scrape_novidades(html_content))
+    last_news_url = scrape_novidades(html_content)
 
-        while len(last_news_url) < amount:
-            next_page_link = scrape_next_page_link(html_content)
-            next_page = fetch(next_page_link)
-            news_links = scrape_novidades(next_page)
-            last_news_url.extend(news_links)
+    while len(last_news_url) < amount:
+        next_page_link = scrape_next_page_link(html_content)
+        next_page = fetch(next_page_link)
+        news_links = scrape_novidades(next_page)
 
-        for url_news in last_news_url[:amount]:
-            page = fetch(url_news)
-            news_dict.append(scrape_noticia(page))
+        for news in news_links:
+            last_news_url.append(news)
 
-        create_news(news_dict)
+    for url_news in last_news_url[:amount]:
+        page = fetch(url_news)
+        news_dict.append(scrape_noticia(page))
 
-        return news_dict
-    except ValueError:
-        return ""
+    create_news(news_dict)
+
+    return news_dict
