@@ -23,6 +23,7 @@ def validate_date_str(datestring):
         raise ValueError("Data inválida")
 # Source:
 # Sobre validação de datas:
+# https://stackoverflow.com/questions/16870663/how-do-i-validate-a-date-string-format-in-python
 # https://www.codegrepper.com/code-examples/python/how+to+check+if+it+is+a+date+in+any+format+in+python
 # https://docs.python.org/3/library/datetime.html#datetime.date
 
