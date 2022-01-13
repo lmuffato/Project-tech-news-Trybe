@@ -35,8 +35,15 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     query = {
-        "sources": source
+        "sources": {
+            "$regex": source,
+            "$options": "i"
+        }
     }
+
+    news = search_news(query)
+
+    return [(new["title"], new["url"]) for new in news]
 
 
 # Requisito 9
