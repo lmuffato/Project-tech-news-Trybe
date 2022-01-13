@@ -9,7 +9,9 @@ def search_title():
 
 
 def search_date():
-    return search_engine.search_by_date(input("Digite a data no formato aaaa-mm-dd:"))
+    return search_engine.search_by_date(input(
+        "Digite a data no formato aaaa-mm-dd:"
+        ))
 
 
 def search_source():
