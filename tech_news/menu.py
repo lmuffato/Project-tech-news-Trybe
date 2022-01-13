@@ -40,23 +40,19 @@ def analyzer_menu():
         3: search_by_source,
         4: search_by_category,
         5: top_5_news(),
-        6: top_5_categories()
+        6: top_5_categories(),
+        7: 'Encerrando script'
     }
 
     user_choice = input()
     try:
-        if type(user_choice) != int:
-            print('Opção inválida', file=sys.stderr)
         if int(user_choice) in menu_option_mapping.keys():
             print(menu_option_mapping[int(user_choice)])
             func_param = input()
-            if int(user_choice) == 0:
-                menu_action_mapping[int(user_choice)](func_param)
-            else:
-                print(menu_action_mapping[int(user_choice)](func_param))
-        elif int(user_choice) in [5, 6]:
+            print(menu_action_mapping[int(user_choice)](func_param))
+        elif int(user_choice) in [5, 6, 7]:
             print(menu_action_mapping[int(user_choice)])
-        elif int(user_choice) == 7:
-            print('Encerrando script')
+        else:
+            print('Opção inválida', file=sys.stderr)
     except (ValueError, IndexError) as err:
         print(err, file=sys.stderr)
