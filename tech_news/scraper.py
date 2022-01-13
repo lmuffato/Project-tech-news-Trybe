@@ -55,7 +55,7 @@ def scrape_noticia(html_content):
     categories = [category.strip() for category in categories_selector]
 
     response = {
-        "url": selector.css("link[rel=amphtml]::attr(href)").get(),
+        "url": selector.css("link[rel=canonical]::attr(href)").get(),
         "title": selector.css("#js-article-title ::text").get(),
         "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
         "writer": writer,
