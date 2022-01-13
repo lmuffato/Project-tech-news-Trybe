@@ -35,6 +35,12 @@ def search_by_source(source):
         list.append(tupla)
     return list
 
+
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    data = search_news({"categories": {"$regex": category, "$options": 'i'}})
+    list = []
+    for category in data:
+        tupla = (category['title'], category['url'])
+        list.append(tupla)
+    return list
