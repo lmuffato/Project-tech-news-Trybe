@@ -2,6 +2,7 @@ import datetime
 from tech_news.database import db
 from tech_news.database import search_news
 
+
 # Requisito 6
 def search_by_title(title):
     query = {"title": {'$regex': title, '$options': 'i'}}
@@ -32,7 +33,8 @@ def search_by_date(date):
     except ValueError:
         raise ValueError("Data inválida")
 
-print(search_by_date('2022-01-13'))
+# print(search_by_date('2022-01-13'))
+
 
 # Requisito 8
 def search_by_source(source):
