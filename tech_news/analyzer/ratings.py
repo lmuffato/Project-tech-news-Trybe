@@ -65,6 +65,3 @@ def top_5_categories():
     final_list = sorted(list)
 
     return final_list
-
-
-print(top_5_categories())
