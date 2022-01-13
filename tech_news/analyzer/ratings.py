@@ -26,4 +26,20 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    top_categories = []
+
+    with client:
+        for new in db.news.aggregate([
+          {"$unwind": "$categories"},
+          {"$group": {"_id": "$categories"}},
+          {"$sort": {"_id": 1}},
+          {"$limit": 5}
+          ]):
+
+            top_categories.append((new["_id"]))
+
+    return top_categories
+
+# A execução desse requisito foi com ajuda dos links:
+# https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/
+# https://stackoverflow.com/questions/33134523/mongodb-group-by-values-in-an-array-field
