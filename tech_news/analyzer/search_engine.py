@@ -1,5 +1,6 @@
+import datetime
 from tech_news.database import db
-
+from tech_news.database import search_news
 
 # Requisito 6
 def search_by_title(title):
@@ -15,9 +16,23 @@ def search_by_title(title):
 
 
 # Requisito 7
+# Código da validação da data:
+# https://qastack.com.br/programming/16870663/how-do-i-validate-a-date-string-format-in-python
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    try:
+        datetime.datetime.strptime(date, '%Y-%m-%d')
+        query = {"timestamp": {'$regex': date, '$options': 'i'}}
+        news_dict = search_news(query)
+        tuplas_news = []
 
+        for n in news_dict:
+            tuplas_news.append((n["title"], n["url"]))
+
+        return tuplas_news
+    except ValueError:
+        raise ValueError("Data inválida")
+
+print(search_by_date('2022-01-13'))
 
 # Requisito 8
 def search_by_source(source):
