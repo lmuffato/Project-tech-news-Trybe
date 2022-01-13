@@ -76,11 +76,11 @@ def scrape_noticia(html_content):
 def get_tech_news(amount):
     recovered_news = []
     next_page_link = 'https://www.tecmundo.com.br/novidades'
-    while len(recovered_news) != amount:
+    while len(recovered_news) != int(amount):
         html_content = fetch(next_page_link)
         news_urls = scrape_novidades(html_content)
         for url in news_urls:
-            if len(recovered_news) == amount:
+            if len(recovered_news) == int(amount):
                 break
             page_content = fetch(url)
             news_data = scrape_noticia(page_content)
