@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -63,12 +64,14 @@ def extends_scrape_notia(selector):
     else:
         shares_count = int(shares_count.split(" ")[1])
 
-    comments_count = selector.css(
-            ".js-comments-btn::attr(data-count)"
-        ).get()
+    comments_count = (
+        selector.css(".js-comments-btn::attr(data-count)").get()
+        or selector.css("#js-comments-btn::attr(data-count)").get()
+    )
     if comments_count is None:
         comments_count = 0
-
+    else:
+        comments_count = int(comments_count)
     return {
         "url": link,
         "title": title,
@@ -81,10 +84,13 @@ def extends_scrape_notia(selector):
 
 def scrape_noticia(html_content):
     selector = Selector(text=html_content)
-
-    summary = "".join(selector.css(
-            "div.p402_premium p:nth-child(1) *::text"
-        ).getall())
+    css_seletor = "div.tec--article__body-grid>div.tec--article__body"
+    summary = (
+        selector.css(
+            f"{css_seletor}>p:nth-child(1) *::text"
+        ).getall()
+    )
+    summary = "".join(summary)
 
     sources = selector.css("div.z--mb-16 a.tec--badge::text").getall()
     new_sources = []
@@ -119,4 +125,25 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url_noticias = "https://www.tecmundo.com.br/novidades"
+    response = fetch(url_noticias)
+
+    list_noticias = scrape_novidades(response)
+
+    while len(list_noticias) < amount:
+        url_nex_page = scrape_next_page_link(response)
+        html_nex_page = fetch(url_nex_page)
+        new_list = scrape_novidades(html_nex_page)
+        list_noticias.extend(new_list)
+
+    noticias = []
+
+    for link in list_noticias:
+        html_noticia = fetch(link)
+        noticia = scrape_noticia(html_noticia)
+        noticias.append(noticia)
+        if len(noticias) == amount:
+            create_news(noticias)
+            break
+
+    return noticias
