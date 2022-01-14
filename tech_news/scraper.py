@@ -117,7 +117,7 @@ def get_tech_news(amount):
 
     tech_news = []
 
-    for url in urls[:amount]:
+    for url in urls:
         link = fetch(url)
         tech_news.append(scrape_noticia(link))
 
