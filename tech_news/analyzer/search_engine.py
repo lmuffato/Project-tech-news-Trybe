@@ -55,4 +55,14 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    list_mongo = find_news()
+    find_category = []
+    for obj in list_mongo:
+        for c in obj["categories"]:
+            if c.lower() == category.lower():
+                find_category.append(obj)
+
+    list_duple = []
+    for noticie in find_category:
+        list_duple.append((noticie["title"], noticie["url"]))
+    return list_duple
