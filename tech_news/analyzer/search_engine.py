@@ -40,7 +40,17 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    list_mongo = find_news()
+    find_source = []
+    for obj in list_mongo:
+        for s in obj["sources"]:
+            if s.lower() == source.lower():
+                find_source.append(obj)
+
+    list_duple = []
+    for noticie in find_source:
+        list_duple.append((noticie["title"], noticie["url"]))
+    return list_duple
 
 
 # Requisito 9
