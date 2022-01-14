@@ -91,4 +91,22 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    page_url = 'https://www.tecmundo.com.br/novidades'
+    news_urls = []
+    news_content = []
+
+    def get_news_urls(page_url):
+        html_content = fetch(page_url)
+        news_urls.extend(scrape_novidades(html_content))
+
+    while(len(news_urls) < amount):
+        get_news_urls(page_url)
+        html_content = fetch(page_url)
+        page_url = scrape_next_page_link(html_content)
+
+    for new_url in news_urls[0:amount]:
+        new_data = fetch(new_url)
+        scraped_new = scrape_noticia(new_data)
+        news_content.append(scraped_new)
+    create_news(news_content)
+    return(news_content)
