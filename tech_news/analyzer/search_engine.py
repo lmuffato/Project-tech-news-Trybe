@@ -17,7 +17,19 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    date_format = '%Y-%m-%d'
+    try:
+        strptime(date, date_format)
+    except ValueError:
+        raise ValueError('Data inválida')
+    query = {
+        'timestamp': {
+            '$regex': date
+        }
+    }
+    results = search_news(query)
+    news = [(result['title'], result['url']) for result in results]
+    return news
 
 
 # Requisito 8
