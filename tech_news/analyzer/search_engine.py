@@ -1,6 +1,15 @@
+from tech_news.database import find_news
+
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    list_mongo = find_news()
+    find_title = [t for t in list_mongo if t["title"].lower() == title.lower()]
+    list_duple = []
+    for noticie in find_title:
+        list_duple.append((noticie["title"], noticie["url"]))
+    print(list_duple)
+    return list_duple
 
 
 # Requisito 7
