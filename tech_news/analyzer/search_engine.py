@@ -42,4 +42,5 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    query = {"categories": re.compile(category, re.IGNORECASE)}
+    return get_formated_news(query)
