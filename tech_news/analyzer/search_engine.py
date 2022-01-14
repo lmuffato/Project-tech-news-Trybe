@@ -1,6 +1,17 @@
+from ..database import search_news
+
+
 # Requisito 6
 def search_by_title(title):
     """Seu código deve vir aqui"""
+    data = search_news({"title": title})
+    news = []
+
+    for item in data:
+        noticia = (item["title"], item["url"])
+        news.append(noticia)
+
+    return news
 
 
 # Requisito 7
