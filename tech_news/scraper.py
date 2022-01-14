@@ -4,6 +4,7 @@ from parsel import Selector
 import re
 from tech_news.database import create_news
 
+
 # Requisito 1
 def fetch(url):
     try:
