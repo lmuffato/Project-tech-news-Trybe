@@ -79,7 +79,7 @@ def scrape_noticia(html_content):
     print(sources)
     categories = []
     for category in selector.css(
-        ".z--px-16 #js-categories .tec--badge--primary::text"
+        "#js-categories a::text"
     ).getall():
         categories.append(category.strip())
     print(categories)
