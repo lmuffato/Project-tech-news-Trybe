@@ -41,7 +41,52 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = parsel.Selector(html_content)
+    url = selector.xpath('//link[contains(@rel, "canonical")]/@href').get()
+    title = selector.css("h1#js-article-title::text").get()
+    timestamp = selector.xpath('//time/@datetime').get()
+
+    writer = selector.css('.z--font-bold ::text').get()
+    if writer:
+        writer = writer.strip()
+    else:
+        writer = None
+
+    shares = selector.css('.tec--toolbar__item::text').get()
+    if shares:
+        shares_count = shares.split()[0]
+    else:
+        shares_count = 0
+
+    comments_count = selector.css('#js-comments-btn::attr(data-count)').get()
+    summary = "".join(
+        selector.css('.tec--article__body > p:first_child *::text').getall()
+        ).strip()
+
+    sources = []
+    getSources = selector.css('.z--mb-16 .tec--badge::text').getall()
+    for source in getSources:
+        sources.append(source.strip())
+
+    categories = []
+    getCategories = selector.css('#js-categories a::text').getall()
+    for categorie in getCategories:
+        categories.append(categorie.strip())
+
+    data = {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": int(shares_count),
+        "comments_count":
+            comments_count if comments_count is None
+            else (int(comments_count)),
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
+    return(data)
 
 
 # Requisito 5
