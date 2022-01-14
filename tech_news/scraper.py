@@ -75,7 +75,7 @@ def scrape_noticia(html_content):
     summary_selector = ".tec--article__body p:first-child *::text"
     summary_list = selector.css(summary_selector).getall()
     summary = "".join(summary_list)
-    
+
     sources_list = selector.css(".z--mb-16 .tec--badge::text").getall()
     sources = []
 
