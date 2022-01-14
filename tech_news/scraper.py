@@ -35,11 +35,74 @@ def scrape_novidades(html_content):
 # Requisito 3
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    url_next = selector.css("a.tec--btn--lg ::attr(href)").get()
+    return url_next
 
 
 # Requisito 4
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+
+    #  https://docs.scrapy.org/en/latest/topics/selectors.html
+    url = selector.xpath('//link[contains(@rel, "canonical")]/@href').get()
+    print(url)
+
+    title = selector.css("h1#js-article-title::text").get()
+
+    # TIMESTAMP = Data e Horas
+    timestamp = selector.xpath("//time/@datetime").get()
+
+    # WRITER = Autor da notícia
+    writer = selector.css(".z--font-bold ::text").get()
+    if writer:
+        # https://www.w3schools.com/python/ref_string_strip.asp
+        writer = writer.strip()
+    else:
+        writer = None
+
+    # SHARES = Número de compartilhamendo da noticia
+    newShares = selector.css(".tec--toolbar__item::text").get()
+    if newShares:
+        # https://www.w3schools.com/python/ref_string_split.asp
+        shares_count = newShares.split()[0]
+    else:
+        shares_count = 0
+
+    # COMMENTS = Número de comentários
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+
+    # SUMMARY =  O primeiro parágrafo da notícia
+    summary = "".join(
+        selector.css(".tec--article__body p:first_child *::text").getall()
+    ).strip()
+
+    # SOURCES = Lista contendo fontes da notícia
+    sources = []
+    newSources = selector.css(".z--mb-16 .tec--badge::text").getall()
+    for source in newSources:
+        sources.append(source.strip())
+
+    categories = []
+    newcategories = selector.css("#js-categories a::text").getall()
+    for category in newcategories:
+        categories.append(category.strip())
+
+    data = {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": int(shares_count),
+        "comments_count": comments_count
+        if comments_count is None
+        else (int(comments_count)),
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
+    return data
 
 
 # Requisito 5
