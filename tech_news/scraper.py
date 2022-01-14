@@ -2,6 +2,7 @@ import requests
 import time
 import parsel
 # import math
+from tech_news.database import create_news
 
 
 # Requisito 1
