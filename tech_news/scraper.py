@@ -1,4 +1,4 @@
-from parsel import Selector
+# from parsel import Selector
 import requests
 import time
 
