@@ -31,8 +31,27 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
+    news_by_source = search_news({
+        "sources": re.compile(source, re.IGNORECASE)})
+    if (len(news_by_source)):
+        return [(new["title"], new["url"]) for new in news_by_source]
+    else:
+        return []
 
 
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
+    news_by_category = search_news({
+        "categories": re.compile(category, re.IGNORECASE)})
+    if (len(news_by_category)):
+        return [(new["title"], new["url"]) for new in news_by_category]
+    else:
+        return []
+
+# foram realizadas consultas nos repositorios:
+# giovanni_maldonado;
+# anaventura1811;
+# flavio92ux
+# e também a questões postadas no slack pelos colegas de turma
+# para auxilio no entendimento de alguns requisitos.
