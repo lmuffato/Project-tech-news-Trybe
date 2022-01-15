@@ -9,12 +9,15 @@ URL = "https://www.tecmundo.com.br/novidades"
 
 def fetch(url):
     """Seu código deve vir aqui"""
+    # https://www.digitalocean.com/community/tutorials/how-to-get-started-with-the-requests-library-in-python-pt
+
     try:
         response = requests.get(url, timeout=3)
         time.sleep(1)
 
         if response.status_code == 200:
             return response.text
+
         else:
             return None
     except requests.Timeout:
@@ -22,12 +25,11 @@ def fetch(url):
 
 
 # Requisito 2
-# Estes links estão contidos na página Novidades
-# (https://www.tecmundo.com.br/novidades)
 
 
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    # Obtem links para várias páginas
     selector = Selector(html_content)
     data = selector.css("h3.tec--card__title a::attr(href)").getall()
     return data
@@ -36,6 +38,7 @@ def scrape_novidades(html_content):
 # Requisito 3
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    # Captura o botão 'Mostrar mais notícias'
     selector = Selector(html_content)
     url_next = selector.css("a.tec--btn--lg ::attr(href)").get()
     return url_next
@@ -44,6 +47,7 @@ def scrape_next_page_link(html_content):
 # Requisito 4
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
+    # Obtem as informações de uma única notícia
     selector = Selector(html_content)
 
     #  https://docs.scrapy.org/en/latest/topics/selectors.html
@@ -103,27 +107,33 @@ def scrape_noticia(html_content):
         "sources": sources,
         "categories": categories,
     }
+    print(data)
     return data
 
 
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
-    fetchUrl = fetch(URL)
+    # Utiliza as funções estruturadas acima
+    html = fetch(URL)
     urls = []
     newUrls = []
     # O .extend()método aumenta o comprimento da lista pelo número de elementos
     # fornecidos ao método, portanto, se você quiser adicionar vários elementos
     #  à lista, poderá usar    # esse método
-    urls.extend(scrape_novidades(fetchUrl))
+    urls.extend(scrape_novidades(html))
 
+    # while é uma das estruturas de repetição disponíveis
+    #  executa um ou mais comandos até que uma condição seja verdadeira
+    # len retorna o número de itens em ma lista
     while len(urls) < amount:
-        nextPage = scrape_next_page_link(fetchUrl)
+        nextPage = scrape_next_page_link(html)
         newPage = fetch(nextPage)
         urls.extend(scrape_novidades(newPage))
 
-    for index in urls[:amount]:
-        page = fetch(index)
+    for url in urls[:amount]:
+        page = fetch(url)
+        # O .append() adiciona um único elemento a uma lista
         newUrls.append(scrape_noticia(page))
 
     create_news(newUrls)
