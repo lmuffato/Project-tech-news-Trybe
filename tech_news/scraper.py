@@ -47,10 +47,8 @@ def scrape_noticia(html_content):
     shares_selector = selector.css(".tec--toolbar__item::text").get()
     shares_count = int(shares_selector.split()[0]) if shares_selector else 0
 
-    comments_selector = selector.css(
-        "#js-comments-btn::attr(data-count)"
-    ).get()
-    comments_count = int(comments_selector) if comments_selector else 0
+    comment_selector = selector.css("#js-comments-btn::attr(data-count)").get()
+    comments_count = int(comment_selector) if comment_selector else 0
 
     summary_selector = ".tec--article__body p:first-child *::text"
     summary = "".join(selector.css(summary_selector).getall()).strip()
