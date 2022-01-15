@@ -1,6 +1,18 @@
-# Requisito 1
+from ratelimit import limits, sleep_and_retry
+
+import requests
+
+
+@sleep_and_retry
+@limits(calls=1, period=1)
 def fetch(url):
-    """Seu código deve vir aqui"""
+    try:
+        response = requests.get(url, timeout=3)
+        if response.status_code != 200:
+            return None
+        return response.text
+    except requests.Timeout:
+        return None
 
 
 # Requisito 2
