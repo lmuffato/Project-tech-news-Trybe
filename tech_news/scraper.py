@@ -35,8 +35,48 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 4
+
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+
+    site_url = selector.css("meta[property='og:url']::attr(content)").get()
+    site_title = selector.css(".tec--article__header__title::text").get()
+    get_timestamp = selector.css(
+        ".tec--timestamp__item time::attr(datetime)"
+        ).get()
+    writer_1 = selector.css(".tec--author__info__link::text").get()
+    writer_2 = selector.css("div.tec--timestamp__item a::text").get()
+    writer_3 = selector.css("div.tec--author__info p.z--font-bold::text").get()
+    if writer_1:
+        writer = writer_1
+    elif writer_2:
+        writer = writer_2
+    else:
+        writer = writer_3
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+    summary = "".join(selector.css(
+        ".tec--article__body > p:first-child *::text"
+        ).getall())
+    # src: https://www.tutorialspoint.com/python3/string_strip.htm
+    sources = [item.strip() for item in selector.css(
+        "div.z--mb-16 div a::text"
+        ).getall()]
+    categories = [item.strip() for item in selector.css(
+        "#js-categories a::text"
+        ).getall()]
+
+    return {
+       "url": site_url,
+       "title": site_title,
+       "timestamp": get_timestamp,
+       "writer": writer.strip() if writer else None,
+       "shares_count": int(shares_count.split()[0]) if shares_count else 0,
+       "comments_count": int(comments_count) if comments_count else 0,
+       "summary": summary,
+       "sources": sources,
+       "categories": categories,
+    }
 
 
 # Requisito 5
