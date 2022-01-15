@@ -30,6 +30,13 @@ def scrape_novidades(html_content):
 # Requisito 3
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    selector.css("h3.tec--card__title a::attr(href)").getall()
+    show_more_news = selector.css(".tec--list a.tec--btn::attr(href)").get()
+    if (show_more_news):
+        return show_more_news
+    else:
+        return None
 
 
 # Requisito 4
