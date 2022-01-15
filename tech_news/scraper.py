@@ -1,8 +1,9 @@
 from parsel import Selector
 import requests
 import time
+from tech_news.database import create_news
 
-
+URL = "https://www.tecmundo.com.br/novidades"
 # Requisito 1
 
 
@@ -75,7 +76,7 @@ def scrape_noticia(html_content):
 
     # SUMMARY =  O primeiro parágrafo da notícia
     summary = "".join(
-        selector.css(".tec--article__body p:first_child *::text").getall()
+        selector.css(".tec--article__body > p:first_child *::text").getall()
     ).strip()
 
     # SOURCES = Lista contendo fontes da notícia
@@ -108,3 +109,22 @@ def scrape_noticia(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    fetchUrl = fetch(URL)
+    urls = []
+    newUrls = []
+    # O .extend()método aumenta o comprimento da lista pelo número de elementos
+    # fornecidos ao método, portanto, se você quiser adicionar vários elementos
+    #  à lista, poderá usar    # esse método
+    urls.extend(scrape_novidades(fetchUrl))
+
+    while len(urls) < amount:
+        nextPage = scrape_next_page_link(fetchUrl)
+        newPage = fetch(nextPage)
+        urls.extend(scrape_novidades(newPage))
+
+    for index in urls[:amount]:
+        page = fetch(index)
+        newUrls.append(scrape_noticia(page))
+
+    create_news(newUrls)
+    return newUrls
