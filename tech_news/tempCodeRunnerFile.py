@@ -1,8 +1,8 @@
 import sys
-from tech_news.scraper import get_tech_news
-from tech_news.analyzer.search_engine import (
+from scraper import get_tech_news
+from analyzer.search_engine import (
     search_by_source, search_by_title, search_by_date, search_by_category)
-from tech_news.analyzer.ratings import top_5_categories, top_5_news
+from analyzer.ratings import top_5_categories, top_5_news
 
 
 # Requisito 12
@@ -27,10 +27,7 @@ def analyzer_menu():
               '6': input_get_top_categories,
               '7': input_close_app}
 
-    if(inputs.get(option)):
-        inputs[option]()
-    else:
-        print('Opção inválida', file=sys.stderr)    
+    return inputs[option]()
 
 
 def input_get_title():
@@ -63,15 +60,20 @@ def input_close_app():
 
 
 def print_data(function, input_text):
-    value = input(input_text)
-    print(function(value))
+    try:
+        value = input(input_text)
+        print(function(value))
+    except ValueError as err:
+        print(err, file=sys.stderr)
 
 
 def input_get_news():
-    qty = input("Digite quantas notícias serão buscadas:")
-    print(get_tech_news(int(qty)))
+    try:
+        qty = input("Digite quantas notícias serão buscadas:")
+        print(get_tech_news(int(qty)))
+    except ValueError as err:
+        print(err, file=sys.stderr)
 
 
-
-# if(__name__ == '__main__'):
-#     analyzer_menu()
+if(__name__ == '__main__'):
+    analyzer_menu()
