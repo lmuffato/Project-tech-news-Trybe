@@ -1,4 +1,5 @@
 from ..database import search_news
+from datetime import datetime
 
 
 # Requisito 6
@@ -9,7 +10,13 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError("Data inválida")
+
+    all_news = search_news({"timestamp": {"$regex": date, "$options": "i"}})
+    return [(news['title'], news['url']) for news in all_news]
 
 
 # Requisito 8
