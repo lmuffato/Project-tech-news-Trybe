@@ -2,6 +2,7 @@ import requests
 import time
 import re
 from parsel import Selector
+from .database import create_news
 
 
 # Requisito 1
@@ -75,8 +76,10 @@ def scrape_noticia(html_content):
     else:
         share_count = int(re.findall('[0-9]+', share)[0])
 
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+
     synopsis = selector.css(
-        "article.tec--article div.tec--article__body p:first_child *::text"
+        ".tec--article__body > p:first-child *::text"
     ).getall()
 
     news_synopsis = "".join(synopsis).strip()
@@ -87,11 +90,9 @@ def scrape_noticia(html_content):
 
     news_source = [source.strip() for source in sources]
 
-    categorization = selector.css(
-        "article.tec--article div#js-categories a.tec--badge::text"
-    ).getall()
-
-    categories = [category.strip() for category in categorization]
+    categories = [item.strip() for item in selector.css(
+        "#js-categories a::text"
+        ).getall()]
 
     tecmundo_news = dict({
         "url": url,
@@ -99,7 +100,7 @@ def scrape_noticia(html_content):
         "timestamp": date,
         "writer": newswritter,
         "shares_count": share_count,
-        "comments_count": 0,
+        "comments_count": int(comments_count) if comments_count else 0,
         "summary": news_synopsis,
         "sources": news_source,
         "categories": categories,
@@ -110,4 +111,21 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    URL = "https://www.tecmundo.com.br/novidades"
+    count = 0
+    news_array = []
+
+    # cada count representa uma noticia
+    while count < amount:
+        content = fetch(URL)
+        news = scrape_novidades(content)
+        for new in news:
+            news_array.append(scrape_noticia(fetch(new)))
+            count += 1
+            if count % 10 == 0:
+                URL = scrape_next_page_link(content)
+            if count == amount:
+                break
+
+    create_news(news_array)
+    return news_array

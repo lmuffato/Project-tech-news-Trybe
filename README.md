@@ -439,7 +439,7 @@ Ubuntu: https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
 MacOS:  https://docs.mongodb.com/guides/server/install/
 Com o servidor rodando, o nosso módulo conseguirá acessá-lo sem problemas. Importe o módulo `tech_news/database.py` e chame as funções contidas nele.
 Não altere as funções deste módulo; elas serão utilizadas nos testes.
-
+     
 **🤖 O que será verificado pelo avaliador:**
 - A função `create_news` do `tech_news/database.py` foi chamada corretamente
 - A função retorna a quantidade correta de notícias
