@@ -42,11 +42,12 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    response = requests.get(html_content)
-    selector = Selector(text=response.text)
-    selected_class = "link[rel=amphtml]::attr(href)"
+    selector = Selector(text=html_content)
+
+    selected_class = "link[rel=canonical]::attr(href)"
     url = selector.css(selected_class).get()
-    selected_title = "title::text"
+
+    selected_title = "h1::text"
     title = selector.css(selected_title).get()
 
     select_writer = ".z--font-bold ::text"
@@ -55,10 +56,12 @@ def scrape_noticia(html_content):
     selected_summary = "meta[name=description]::attr(content)"
     summary = selector.css(selected_summary).get()
 
-    selected_sources = ".tec--badge ::text"
-    sources = selector.css(selected_sources).get().strip()
+    selected_sources = "a[rel='noopener nofollow']::text"
+    sources = selector.css(selected_sources).getall()
     list_sources = []
-    list_sources.append(sources)
+    for source in sources:
+        new_sources = source.strip()
+        list_sources.append(new_sources)
 
     selected_categories = ".tec--badge--primary ::text"
     categories = selector.css(selected_categories).getall()
@@ -67,17 +70,27 @@ def scrape_noticia(html_content):
         new_category = category.strip()
         new_list.append(new_category)
 
-    selected_comments = ".post-body p"
+    selected_comments = "button::attr(data-count)"
     comments = selector.css(selected_comments).get()
+
+    selected_shares = "div .tec--toolbar__item::text"
+    shares = selector.css(selected_shares).get()
+    shares_fat = shares[:3]
+    shares_int = shares_fat.strip()
+
+    selected_timestamp = "time::attr(datetime)"
+    timestamp = selector.css(selected_timestamp).get()
 
     return {
         "url": url,
         "title": title,
+        "timestamp": timestamp,
         "writer": writer,
+        "comments_count": int(comments),
+        "shares_count": int(shares_int),
         "summary": summary,
         "sources": list_sources,
         "categories": new_list,
-        "comments_count": comments,
     }
 
 
