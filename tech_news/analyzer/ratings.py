@@ -6,8 +6,9 @@ from tech_news.database import find_news
 def slice_5(items):
     return items[0:5]
 
+
 # itemgetter Source:
-# https://www.geeksforgeeks.org/ways-sort-list-dictionaries-values-python-using-itemgetter/ 
+# https://www.geeksforgeeks.org/ways-sort-list-dictionaries-values-python-using-itemgetter/
 def top_5_news():
     news = find_news()
     popularity = sorted([
@@ -22,8 +23,11 @@ def top_5_news():
     return [tuple((new['title'], new['url'])) for new in top_5]
 
 
-
-
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    news = find_news()
+    categories = sorted([
+            category for new in news
+            for category in new['categories']
+        ])
+    return slice_5(categories)
