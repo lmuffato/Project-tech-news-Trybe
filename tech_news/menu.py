@@ -30,7 +30,7 @@ def analyzer_menu():
     if(inputs.get(option)):
         inputs[option]()
     else:
-        print('Opção inválida', file=sys.stderr)    
+        print('Opção inválida', file=sys.stderr)
 
 
 def input_get_title():
@@ -70,8 +70,3 @@ def print_data(function, input_text):
 def input_get_news():
     qty = input("Digite quantas notícias serão buscadas:")
     print(get_tech_news(int(qty)))
-
-
-
-# if(__name__ == '__main__'):
-#     analyzer_menu()
