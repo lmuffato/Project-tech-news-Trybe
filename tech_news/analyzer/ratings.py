@@ -1,6 +1,5 @@
 from operator import itemgetter
 from tech_news.database import find_news
-# from operator import itemgetter
 
 
 def slice_5(items):
