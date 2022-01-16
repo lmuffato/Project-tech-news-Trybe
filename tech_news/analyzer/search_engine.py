@@ -1,6 +1,18 @@
+import re
+from tech_news.database import search_news
+
+# Visto o repositório do Alexandre Oliveira que esclareceu como
+# realizar estas atividades
+
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    titles = search_news({
+        "title": re.compile(title, re.IGNORECASE)})
+    if (len(titles)):
+        return [(new["title"], new["url"]) for new in titles]
+    else:
+        return []
 
 
 # Requisito 7
