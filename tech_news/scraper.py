@@ -10,6 +10,7 @@ def fetch(url):
         time.sleep(1)
     except requests.ReadTimeout:
         response = requests.get(url, timeout=3)
+        return None
     except HTTPError:
         return None
     finally:
