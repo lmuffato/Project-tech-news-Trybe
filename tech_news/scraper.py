@@ -2,6 +2,7 @@
 import time
 import requests
 
+
 def fetch(url):
     try:
         response = requests.get(url, timeout=3)
