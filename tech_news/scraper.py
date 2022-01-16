@@ -6,15 +6,17 @@ import requests
 
 def fetch(url):
     try:
-        response = requests.get(url, timeout=3)
         time.sleep(1)
-    except requests.ReadTimeout:
         response = requests.get(url, timeout=3)
-        return None
-    except HTTPError:
-        return None
-    finally:
+        if response.status_code != 200:
+            raise requests.exceptions.HTTPError
         return response.text
+    
+    except requests.ReadTimeout:
+        return None
+    except requests.HTTPError:
+        return None
+    
 
 
 # Requisito 2
