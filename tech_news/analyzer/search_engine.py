@@ -1,4 +1,5 @@
 from ..database import search_news
+import datetime
 
 
 # Requisito 6
@@ -15,8 +16,25 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
 
+    try:
+        format = "%Y-%m-%d"
+        datetime.datetime.strptime(date, format)
+    except ValueError:
+        raise ValueError("Data inválida")
+
+    db_data = search_news({"timestamp": {"$regex": date, "$options": "i"}})
+    news_list = []
+
+    for item in db_data:
+        news = (item["title"], item["url"])
+        news_list.append(news)
+
+    return news_list
+
+
+# Fonte req 7:
+# https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
 
 # Requisito 8
 def search_by_source(source):
