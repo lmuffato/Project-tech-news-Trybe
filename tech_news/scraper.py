@@ -75,8 +75,10 @@ def scrape_noticia(html_content):
 
     selected_shares = "div .tec--toolbar__item::text"
     shares = selector.css(selected_shares).get()
-    shares_fat = shares[:3]
-    shares_int = shares_fat.strip()
+    shares_count = ""
+    for share in shares:
+        if share.isdigit():
+            shares_count = shares_count + share
 
     selected_timestamp = "time::attr(datetime)"
     timestamp = selector.css(selected_timestamp).get()
@@ -87,7 +89,7 @@ def scrape_noticia(html_content):
         "timestamp": timestamp,
         "writer": writer,
         "comments_count": int(comments),
-        "shares_count": int(shares_int),
+        "shares_count": int(shares_count),
         "summary": summary,
         "sources": list_sources,
         "categories": new_list,
