@@ -41,4 +41,9 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    categories = search_news({
+        "categories": re.compile(category, re.IGNORECASE)})
+    if (len(categories)):
+        return [(new["title"], new["url"]) for new in categories]
+    else:
+        return []
