@@ -1,6 +1,15 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.project_util import (
+    get_writer,
+    get_summary,
+    get_categories,
+    get_comments_counts,
+    get_share_counts,
+    get_sources,
+    strip_list_intems,
+)
 
 
 # Requisito 1
@@ -38,28 +47,36 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    """
+    as query do css/xpath foram retiradas de 
+    https://devhints.io/xpath
+    https://devhints.io/css
+    """
     selector = Selector(html_content)
     url = selector.css("head link[rel=canonical]::attr(href)").get()
     title = selector.css("body .tec--article__header__title::text").get()
-    datetime = selector.css("div .tec--timestamp__item time::attr(datetime)").get()
+    datetime = selector.css(
+        "div .tec--timestamp__item time::attr(datetime)"
+    ).get()
+    writer = get_writer(selector)
+    shares_count = get_share_counts(selector)
+    comments_count = get_comments_counts(selector)
+    summary = get_summary(selector)
+    categories = get_categories(selector)
+    sources = get_sources(selector, categories)
 
     data = {
         "url": url,
         "title": title,
         "timestamp": datetime,
-        "write": '',
-        "shares_count": '',
-        "comments_count": '',
-        "summary": '',
-        "sources": '',
-        "categories": '',
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": comments_count,
+        "summary": summary,
+        "sources": strip_list_intems(sources),
+        "categories": strip_list_intems(categories),
     }
-    print(data)
     return data
-
-
-scrape_noticia((fetch("https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm")))
 
 
 # Requisito 5
