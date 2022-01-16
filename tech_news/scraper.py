@@ -1,5 +1,6 @@
 # Requisito 1
 import time
+from urllib.error import HTTPError
 import requests
 
 
@@ -9,8 +10,10 @@ def fetch(url):
         time.sleep(1)
     except requests.ReadTimeout:
         response = requests.get(url, timeout=3)
+    except HTTPError:
+        return None
     finally:
-        return response
+        return response.text
 
 
 # Requisito 2
