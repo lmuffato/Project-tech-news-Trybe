@@ -58,7 +58,6 @@ def search_by_source(source):
     return tuple_from_list_inside_dict(news, source, 'sources')
 
 
-# Requisito 9
 def search_by_category(category):
     reg = create_new_regex_ignore_case(category)
     news = search_news({'categories': reg})
