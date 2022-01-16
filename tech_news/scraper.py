@@ -10,12 +10,12 @@ def fetch(url):
         if response.status_code != 200:
             raise requests.exceptions.HTTPError
         return response.text
-    
+
     except requests.ReadTimeout:
         return None
     except requests.HTTPError:
         return None
-    
+
 
 # Requisito 2
 def scrape_novidades(html_content):
