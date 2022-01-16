@@ -1,8 +1,15 @@
 # Requisito 1
+import time
 import requests
 
 def fetch(url):
-    return requests.get(url)
+    try:
+        response = requests.get(url, timeout=3)
+        time.sleep(1)
+    except requests.ReadTimeout:
+        response = requests.get(url, timeout=3)
+    finally:
+        return response
 
 
 # Requisito 2
