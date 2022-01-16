@@ -1,6 +1,7 @@
 from tech_news.database import search_news
 from datetime import datetime
 
+
 # Requisito 6
 
 
@@ -35,8 +36,24 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
+    # Obtem a notícia do banco de acordo com a fonte
+    result = []
+    data = search_news({"sources": {"$regex": source, "$options": "i"}})
+
+    for notice in data:
+        sources = (notice["title"], notice["url"])
+        result.append(sources)
+    return result
 
 
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
+    # Obtem as notícias de acordo com a categoria
+    result = []
+    data = search_news({"categories": {"$regex": category, "$options": "i"}})
+
+    for notice in data:
+        categories = (notice["title"], notice["url"])
+        result.append(categories)
+    return result
