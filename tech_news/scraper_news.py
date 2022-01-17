@@ -58,3 +58,8 @@ def get_comments_count(selector):
     if comment is None:
         return 0
     return int(comment)
+
+
+def get_sources(selector):
+    source = selector.css('.z--mb-16 .tec--badge::text').getall()
+    return [item.strip() for item in source]
