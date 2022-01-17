@@ -1,6 +1,5 @@
 from datetime import datetime
 import tech_news.database as db
-from datetime import datetime
 
 
 def change_to_tuples(arr):
