@@ -1,6 +1,5 @@
 from typing import Union
 from requests.models import Response
-from math import ceil, floor
 import requests
 import time
 from functools import reduce
@@ -45,9 +44,8 @@ def scrape_noticia(html_content: str) -> dict:
                      and e.attrib['property'] == 'og:url']
     url = meta_with_url[0].attrib['content']
     title = selector.css('h1.tec--article__header__title::text').get()
-    timestamp = selector.css('#js-article-date').attrib['datetime'] 
-    writer = selector.css(
-        '.z--font-bold ::text').get()
+    timestamp = selector.css('#js-article-date').attrib['datetime']
+    writer = selector.css('.z--font-bold ::text').get()
     toolbar_items = selector.css('div.tec--toolbar__item::text').getall()
     shares_count = (reduce(lambda a, b: a + b, filter(
         str.isdigit, toolbar_items[0]))) if len(toolbar_items) > 0 else 0
@@ -98,6 +96,8 @@ def scrape_noticia(html_content: str) -> dict:
         news_data.append(parsed_data)
     create_news(news_data)
     return news_data """
+
+
 # Já a versão abaixo do Iago Ferreira funciona
 # https://github.com/tryber/sd-010-a-tech-news/pull/78/files
 def get_tech_news(amount):
