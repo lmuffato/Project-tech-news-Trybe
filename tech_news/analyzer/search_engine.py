@@ -50,10 +50,10 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    buscador = search_news({"categories": {"$regex": category, "$options": "i"}})
+    busca = search_news({"categories": {"$regex": category, "$options": "i"}})
 
     lista_de_noticias = []
-    for noticia in buscador:
+    for noticia in busca:
         noticia_selecionada = (noticia["title"], noticia["url"])
         lista_de_noticias.append(noticia_selecionada)
 
