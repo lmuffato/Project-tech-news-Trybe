@@ -51,3 +51,10 @@ def get_shares_count(selector):
         return 0
     count_shares = re.findall(r"\s(\d*)\s(...*)", share)
     return int(count_shares[0][0])
+
+
+def get_comments_count(selector):
+    comment = selector.css('#js-comments-btn::attr(data-count)').get()
+    if comment is None:
+        return 0
+    return int(comment)
