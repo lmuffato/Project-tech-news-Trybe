@@ -1,10 +1,12 @@
 from typing import Union
 from requests.models import Response
-
+from math import ceil, floor
 import requests
 import time
 from functools import reduce
 from parsel import Selector
+
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -37,13 +39,13 @@ def scrape_next_page_link(html_content: str) -> list:
 
 
 # Requisito 4
-def scrape_noticia(html_content: str):
+def scrape_noticia(html_content: str) -> dict:
     selector = Selector(text=html_content)
     meta_with_url = [e for e in selector.css('meta') if 'property' in e.attrib
                      and e.attrib['property'] == 'og:url']
     url = meta_with_url[0].attrib['content']
     title = selector.css('h1.tec--article__header__title::text').get()
-    timestamp = selector.css('#js-article-date').attrib['datetime']
+    timestamp = selector.css('#js-article-date').attrib['datetime'] 
     writer = selector.css(
         '.z--font-bold ::text').get()
     toolbar_items = selector.css('div.tec--toolbar__item::text').getall()
@@ -78,9 +80,40 @@ def scrape_noticia(html_content: str):
         }
 
 
-print(scrape_noticia(fetch('https://www.tecmundo.com.br/minha-serie/215168-10-viloes-animes-extremamente-inteligentes.htm')))
-
-
 # Requisito 5
+# A versão abaixo não funciona e não sei porque
+""" def get_tech_news(amount: int) -> list:
+    url = 'https://www.tecmundo.com.br/novidades'
+    html_content = fetch(url)
+    pages = 1 + floor((amount - 1)/20)
+    news_links = []
+    for _ in range(pages):
+        news_links.extend(scrape_novidades(html_content))
+        html_content = fetch(scrape_next_page_link(html_content))
+    news_data = []
+    for index in range(amount):
+        url = news_links[index]
+        data = fetch(url)
+        parsed_data = scrape_noticia(data)
+        news_data.append(parsed_data)
+    create_news(news_data)
+    return news_data """
+# Já a versão abaixo do Iago Ferreira funciona
+# https://github.com/tryber/sd-010-a-tech-news/pull/78/files
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    initial_page = "https://www.tecmundo.com.br/novidades"
+    page = fetch(initial_page)
+    URLS = scrape_novidades(page)
+    news = []
+    while len(URLS) < amount:
+        next_page_link = scrape_next_page_link(page)
+        page = fetch(next_page_link)
+        URLS += scrape_novidades(page)
+
+    for url in URLS[:amount]:
+        noticia = fetch(url)
+        news.append(scrape_noticia(noticia))
+
+    create_news(news)
+
+    return news
