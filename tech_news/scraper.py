@@ -34,18 +34,24 @@ def scrape_next_page_link(html_content):
         return None
 
 
+def vral(html_content):
+    selector = parsel.Selector(html_content)
+    try:
+        count_shares = int(''.join(filter(
+            str.isdigit, selector.css('.tec--toolbar__item::text').getall()[0]
+        )))
+        return count_shares
+    except IndexError:
+        count_shares = 0
+
+
 def scrape_noticia(html_content):
     selector = parsel.Selector(html_content)
     try:
         writer = selector.css('.z--font-bold').css('*::text').get().strip()
     except AttributeError:
         writer = ''
-    try:
-        count_shares = int(''.join(filter(
-            str.isdigit, selector.css('.tec--toolbar__item::text').getall()[0]
-        )))
-    except IndexError:
-        count_shares = 0
+        count_shares = vral(html_content)
     try:
         count_comments = int(selector.css(
             '#js-comments-btn::attr(data-count)'
