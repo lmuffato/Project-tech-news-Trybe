@@ -12,3 +12,9 @@ def get_timestamp(selector):
     datetime = '.tec--timestamp__item time::attr(datetime)'
     timestamp = selector.css(datetime).get()
     return timestamp
+
+
+def get_summary(selector):
+    summaries = 'div.tec--article__body > p:nth-child(1) *::text'
+    summary = selector.css(summaries).getall()
+    return ''.join(summary)
