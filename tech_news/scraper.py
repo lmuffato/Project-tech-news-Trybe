@@ -110,6 +110,3 @@ def get_tech_news(amount):
     create_news(to_return)
     print(to_return)
     return to_return
-
-
-print(scrape_noticia(fetch("https://www.tecmundo.com.br/dispositivos-moveis/215245-remover-conta-mi-cloud-dispositivo-xiaomi.htm")))
