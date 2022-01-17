@@ -59,7 +59,7 @@ def scrape_noticia(html_content):
     for i in selector.css("#js-categories a::text").getall():
         categories.append(i.strip())
 
-    s = selector.css(".tec--article__body p:first-child *::text").getall()
+    s = selector.css(".tec--article__body > p:nth-child(1) *::text").getall()
     response = {
         "url": url,
         "title": selector.css(".tec--article__header__title::text").get(),
@@ -82,8 +82,11 @@ def get_tech_news(amount):
     while len(news_urls) < amount:
         novidades = scrape_novidades(page_html)
         news_urls += novidades
-        next_page = scrape_next_page_link(page_html)
-        page_html = fetch(next_page)
+        try:
+            next_page = scrape_next_page_link(page_html)
+            page_html = fetch(next_page)
+        except FileNotFoundError:
+            pass
 
     my_news_urls = news_urls[0:amount]
     news = []
