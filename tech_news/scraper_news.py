@@ -1,3 +1,6 @@
+import re
+
+
 def get_url(selector):
     url = selector.css('head link[rel=canonical]::attr(href)').get()
     return url
@@ -40,3 +43,11 @@ def get_writer(selector):
     if len(author) == 0:
         return None
     return author[0]
+
+
+def get_shares_count(selector):
+    share = selector.css('.tec--toolbar div:first-child::text').get()
+    if share is None or not ('Compartilharam') in share:
+        return 0
+    count_shares = re.findall(r"\s(\d*)\s(...*)", share)
+    return int(count_shares[0][0])
