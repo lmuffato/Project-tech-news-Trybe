@@ -1,6 +1,19 @@
+from tech_news.database import search_news
+
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    # {"$regex": title, "$options": "i"} => Serve para indicar que a busca
+    # pelo título não é Case Sensitive. Fonte de pesquisa abaixo:
+    # https://docs.mongodb.com/manual/reference/operator/query/regex/
+    buscador = search_news({"title": {"$regex": title, "$options": "i"}})
+
+    lista_de_noticias = []
+    for noticia in buscador:
+        noticia_selecionada = (noticia["title"], noticia["url"])
+        lista_de_noticias.append(noticia_selecionada)
+
+    return lista_de_noticias
 
 
 # Requisito 7
