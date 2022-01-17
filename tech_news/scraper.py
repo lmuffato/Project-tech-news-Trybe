@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 from tech_news.project_util import (
     get_writer,
     get_summary,
@@ -48,7 +49,7 @@ def scrape_next_page_link(html_content):
 # Requisito 4
 def scrape_noticia(html_content):
     """
-    as query do css/xpath foram retiradas de 
+    as query do css/xpath foram retiradas de
     https://devhints.io/xpath
     https://devhints.io/css
     """
@@ -80,5 +81,35 @@ def scrape_noticia(html_content):
 
 
 # Requisito 5
+def get_first_n_urls(amount):
+    URL = "https://www.tecmundo.com.br/novidades"
+    html_content = fetch(URL)
+    url_arr = [*scrape_novidades(html_content)]
+
+    while len(url_arr) < amount:
+        next_page_link = scrape_next_page_link(html_content)
+        next_page = fetch(next_page_link)
+        url_arr = [*url_arr, *scrape_novidades(next_page)]
+        html_content = next_page
+
+    return url_arr[:amount]
+
+
+def get_news_info_by_batch(url_list):
+    news_list = []
+    for url in url_list:
+        content = fetch(url)
+        news_info = scrape_noticia(content)
+        news_list.append(news_info)
+    return news_list
+
+
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    news_url = get_first_n_urls(amount)
+    to_return = get_news_info_by_batch(news_url)
+    create_news(to_return)
+    print(to_return)
+    return to_return
+
+
+print(scrape_noticia(fetch("https://www.tecmundo.com.br/dispositivos-moveis/215245-remover-conta-mi-cloud-dispositivo-xiaomi.htm")))

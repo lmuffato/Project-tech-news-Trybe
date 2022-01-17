@@ -33,12 +33,8 @@ def get_categories(selector):
 
 
 def get_sources(selector, categories):
-    """uso do filter:
-    https://www.pythonpip.com/python-tutorials/how-to-filter-a-list-in-python/
-    """
-    sources_arr_unfilted = selector.css(".tec--badge::text").getall()
-    sources_arr = filter(lambda a: a not in categories, sources_arr_unfilted)
-    return list(sources_arr)
+    sources_arr = selector.css("div.z--mb-16 a::text").getall()
+    return sources_arr
 
 
 def strip_list_intems(list):
