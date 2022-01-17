@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -53,33 +54,33 @@ def scrape_noticia(html_content):
     title = selector.css("h1#js-article-title::text").get()
 
     timestamp = selector.css(
-            ".tec--timestamp__item time::attr(datetime)"
-        ).get()
+        ".tec--timestamp__item time::attr(datetime)"
+    ).get()
 
-    writer = selector.css('.z--font-bold ::text').get()
+    writer = selector.css(".z--font-bold ::text").get()
     if writer:
         writer = writer.strip()
     else:
         writer = None
 
-    shares = selector.css('.tec--toolbar__item::text').get()
+    shares = selector.css(".tec--toolbar__item::text").get()
     if shares:
         shares_count = shares.split()[0]
     else:
         shares_count = 0
 
-    comments_count = selector.css('#js-comments-btn::attr(data-count)').get()
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
     summary = "".join(
-        selector.css('.tec--article__body > p:first_child *::text').getall()
-        ).strip()
+        selector.css(".tec--article__body > p:first_child *::text").getall()
+    ).strip()
 
     sources = []
-    source = selector.css('.z--mb-16 .tec--badge::text').getall()
+    source = selector.css(".z--mb-16 .tec--badge::text").getall()
     for s in source:
         sources.append(s.strip())
 
     categories = []
-    category = selector.css('#js-categories a::text').getall()
+    category = selector.css("#js-categories a::text").getall()
     for categorie in category:
         categories.append(categorie.strip())
 
@@ -94,9 +95,30 @@ def scrape_noticia(html_content):
         "sources": sources,
         "categories": categories,
     }
-    return(data)
+    return data
 
 
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    url = "https://www.tecmundo.com.br/novidades"
+
+    link = fetch(url)
+    news_urls = scrape_novidades(link)
+    noticias = []
+
+    while len(news_urls) < amount:
+
+        url = scrape_next_page_link(link)
+        link = fetch(url)
+        add_url = scrape_novidades(link)
+        news_urls.extend(add_url)
+
+    for new_url in news_urls:
+        if len(noticias) < amount:
+            new_content = fetch(new_url)
+            scraped = scrape_noticia(new_content)
+            noticias.append(scraped)
+
+    create_news(noticias)
+    return noticias
