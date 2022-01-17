@@ -6,3 +6,9 @@ def get_url(selector):
 def get_title(selector):
     title = selector.css('.tec--article__header__title::text').get()
     return title
+
+
+def get_timestamp(selector):
+    datetime = '.tec--timestamp__item time::attr(datetime)'
+    timestamp = selector.css(datetime).get()
+    return timestamp
