@@ -20,7 +20,8 @@ def fetch(url):
 def scrape_novidades(html_content):
     news_urls = []
     selector = Selector(text=html_content)
-    news_urls = selector.css('main .tec--card__title__link::attr(href)').getall()
+    css_query = 'main .tec--card__title__link::attr(href)'
+    news_urls = selector.css(css_query).getall()
 
     return news_urls
 
