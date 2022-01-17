@@ -56,12 +56,14 @@ def scrape_noticia(html_content):
     selected_summary = "meta[name=description]::attr(content)"
     summary = selector.css(selected_summary).get()
 
-    selected_sources = "a[rel='noopener nofollow']::text"
+    selected_sources = ".z--mb-16 .tec--badge::text"
     sources = selector.css(selected_sources).getall()
     list_sources = []
     for source in sources:
         new_sources = source.strip()
         list_sources.append(new_sources)
+
+    print(list_sources)
 
     selected_categories = ".tec--badge--primary ::text"
     categories = selector.css(selected_categories).getall()
@@ -73,12 +75,8 @@ def scrape_noticia(html_content):
     selected_comments = "button::attr(data-count)"
     comments = selector.css(selected_comments).get()
 
-    selected_shares = "div .tec--toolbar__item::text"
-    shares = selector.css(selected_shares).get()
-    shares_count = ""
-    for share in shares:
-        if share.isdigit():
-            shares_count = shares_count + share
+    selected_shares = ".tec--toolbar__item::text"
+    shares_count = selector.css(selected_shares).get()
 
     selected_timestamp = "time::attr(datetime)"
     timestamp = selector.css(selected_timestamp).get()
@@ -89,7 +87,7 @@ def scrape_noticia(html_content):
         "timestamp": timestamp,
         "writer": writer,
         "comments_count": int(comments),
-        "shares_count": int(shares_count),
+        "shares_count": int(shares_count.split()[0]) if shares_count else 0,
         "summary": summary,
         "sources": list_sources,
         "categories": new_list,
