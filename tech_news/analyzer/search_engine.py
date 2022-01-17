@@ -26,6 +26,7 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     try:
+        """vlw maurício pela dica do strptime"""
         datetime.strptime(date, "%Y-%m-%d")
         news = db.search_news({
             "timestamp": {
@@ -41,7 +42,15 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    news = db.search_news({
+        "title": {
+            "$regex": source,
+            "$options": "i",
+        },
+    })
+    to_return = change_to_tuples(news)
+    
+    return to_return
 
 
 # Requisito 9
