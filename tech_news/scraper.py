@@ -44,7 +44,45 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    url = selector.css("meta[property='og:url']::attr(content)").get()
+    title = selector.css(".tec--article__header__title::text").get()
+    timestamp = selector.css("time::attr(datetime)").get()
+    writer1 = selector.css(".tec--author__info__link::text").get()
+    writer2 = selector.css("div.tec--timestamp__item a::text").get()
+    writer3 = selector.css("div.tec--author__info p.z--font-bold::text").get()
+    shares_count = selector.css("div.tec--toolbar__item::text").get()
+    comments_count = selector.css(
+        "#js-comments-btn::attr(data-count)"
+    ).get()
+    summary = "".join(selector.css(
+        "div.tec--article__body > p:first-child *::text"
+    ).getall())
+    sources = [item.strip() for item in selector.css(
+        "div.z--mb-16 div a::text"
+    ).getall()]
+    categories = [item.strip() for item in selector.css(
+        "div#js-categories a::text"
+    ).getall()]
+
+    if writer1:
+        writer = writer1
+    elif writer2:
+        writer = writer2
+    else:
+        writer = writer3
+
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer.strip() if writer else None,
+        "shares_count": int(shares_count.split()[0]) if shares_count else 0,
+        "comments_count": int(comments_count) if comments_count else 0,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
 
 
 # Requisito 5
