@@ -113,7 +113,7 @@ def get_tech_news(amount):
         link = fetch(url)
         add_url = scrape_novidades(link)
         news_urls.extend(add_url)
-
+    # teste subindo o arquivo de novo
     for new_url in news_urls:
         if len(noticias) < amount:
             new_content = fetch(new_url)
