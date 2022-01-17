@@ -1,5 +1,6 @@
 import requests
 import time
+from parsel import Selector
 
 
 # Requisito 1
@@ -18,7 +19,10 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    content = Selector(html_content)
+    # Fonte: https://parsel.readthedocs.io/en/latest/usage.html
+    news_list = content.css("h3.tec--card__title a::attr(href)").getall()
+    return news_list
 
 
 # Requisito 3
