@@ -8,12 +8,10 @@ def fetch(url):
     time.sleep(1)
     try:
         response = requests.get(url, timeout=3)
-
         if response.status_code == 200:
             return response.text
         else:
             return None
-
     except requests.ReadTimeout:
         return None
 
@@ -22,12 +20,17 @@ def fetch(url):
 def scrape_novidades(html_content):
     novidades = parsel.Selector(html_content)
     return novidades.css(
-        "h3.tec--card__title a.tec--card__title__link::attr(href)"
-    ).getall()
+        "h3.tec--card__title a.tec--card__title__link::attr(href)").getall()
+
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    conteudoHtml = parsel.Selector(html_content)
+    url = conteudoHtml.css("a.tec--btn::attr(href)").get()
+    if url:
+        return url
+    else:
+        return None
 
 
 # Requisito 4
