@@ -4,6 +4,7 @@ from parsel import Selector
 from .scraper_news import get_url, get_title, get_timestamp, get_summary
 from .scraper_news import get_writer, get_shares_count, get_comments_count
 from .scraper_news import get_sources, get_categories
+from .database import create_news
 
 
 URL_BASE = 'https://www.tecmundo.com.br/novidades'
@@ -61,4 +62,21 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    new_list = []
+    html = fetch(URL_BASE)
+
+    new_list.extend(scrape_novidades(html))
+
+    while len(new_list) <= amount:
+        next_page_link = scrape_next_page_link(html)
+        next_page = fetch(next_page_link)
+        new_list.extend(scrape_novidades(next_page))
+
+    result = []
+
+    for item in new_list[:amount]:
+        page = fetch(item)
+        result.append(scrape_noticia(page))
+
+    create_news(result)
+    return result
