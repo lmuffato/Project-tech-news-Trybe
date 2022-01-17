@@ -107,7 +107,9 @@ def scrape_noticia(html_content):
 
     comentarios = int(conteudo.css("button.tec--btn::attr(data-count)").get())
     sumario = "".join(
-        conteudo.css("div.tec--article__body p:first-child *::text").getall()
+        # Precisou usar o ">" da linha abaixo para passar no requisito 5
+        # Ele faz parar exatamente no conteúdo da <p> ... </p>
+        conteudo.css("div.tec--article__body > p:first-child *::text").getall()
     )
     fontes = fontes_da_noticia(conteudo)
     categorias = lista_de_categorias(conteudo)
