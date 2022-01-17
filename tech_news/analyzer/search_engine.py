@@ -43,7 +43,7 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     news = db.search_news({
-        "title": {
+        "sources": {
             "$regex": source,
             "$options": "i",
         },
@@ -55,4 +55,12 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    news = db.search_news({
+        "categories": {
+            "$regex": category,
+            "$options": "i",
+        },
+    })
+    to_return = change_to_tuples(news)
+    
+    return to_return
