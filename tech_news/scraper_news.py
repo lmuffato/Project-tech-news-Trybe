@@ -63,3 +63,8 @@ def get_comments_count(selector):
 def get_sources(selector):
     source = selector.css('.z--mb-16 .tec--badge::text').getall()
     return [item.strip() for item in source]
+
+
+def get_categories(selector):
+    category = selector.css('#js-categories a::text').getall()
+    return [item.strip() for item in category]
