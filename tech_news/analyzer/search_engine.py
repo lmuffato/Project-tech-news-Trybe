@@ -1,4 +1,5 @@
 from tech_news.database import search_news
+import time
 
 
 # Requisito 6
@@ -18,7 +19,21 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    try:
+        # 1º verifica se a data é válida. Se for continua o código.
+        time.strptime(date, "%Y-%m-%d")
+
+        buscador = search_news({"timestamp": {"$regex": date}})
+
+        lista_de_noticias = []
+        for noticia in buscador:
+            noticia_selecionada = (noticia["title"], noticia["url"])
+            lista_de_noticias.append(noticia_selecionada)
+
+        return lista_de_noticias
+
+    except ValueError:
+        raise ValueError("Data inválida")
 
 
 # Requisito 8
