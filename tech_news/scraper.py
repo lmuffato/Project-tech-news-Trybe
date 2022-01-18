@@ -33,8 +33,72 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 4
+def __get_writer(content):
+    selectors = [
+        ".tec--author__info__link::text",
+        ".tec--timestamp a::text",
+        "#js-author-bar > div p::text",
+    ]
+    for selector in selectors:
+        result = content.css(selector).get()
+        if result is not None:
+            return result.strip()
+    return None
+
+
+def __get_comments_count(content):
+    comments = 0
+    try:
+        comments = int(
+            # Fonte:https://docs.python.org/pt-br/3/library/re.html
+            # https://www.youtube.com/watch?v=wBI0yv2FG6U
+            # https://parsel.readthedocs.io/en/latest/usage.html 
+            # (Using selectors with regular expressions)
+            content.css("#js-comments-btn::text").re(r"\d+")[0]
+        )
+    except IndexError:
+        return 0
+    finally:
+        if comments is not None:
+            return comments
+    return 0
+
+
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    content = Selector(html_content)
+
+    url = content.css("head > link[rel=canonical]::attr(href)").get()
+    title = content.css(".tec--article__header__title::text").get()
+    timestamp = content.css("time::attr(datetime)").get()
+    writer = __get_writer(content)
+    shares_count = content.css(".tec--toolbar__item::text").get()
+    comments_count = __get_comments_count(content)
+    summary = "".join(content.css(
+        ".tec--article__body > p:nth-child(1) *::text"
+    ).getall())
+    sources = [
+        source.strip()
+        for source in content.css(".z--mb-16 > div > a::text").getall()
+        if source not in [" ", "Fontes"]
+    ]
+
+    categories = [
+        category.strip()
+        for category in content.css("#js-categories *::text").getall()
+        if category != " "
+    ]
+
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": int(shares_count.split()[0]) if shares_count else 0,
+        "comments_count": comments_count,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
 
 
 # Requisito 5
