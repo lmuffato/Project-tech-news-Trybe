@@ -30,9 +30,15 @@ def scrape_novidades(html_content):
     return links
 
 
-# Requisito 3
+# REQUISITO 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    code = parsel.Selector(html_content)
+    button = code.css("a.tec--btn::attr(href)").get()
+
+    if button:
+        return button
+    else:
+        return None
 
 
 # Requisito 4
