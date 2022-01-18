@@ -58,7 +58,7 @@ def scrape_noticia(html_content):
     comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
     news_comments_count = comments_count if comments_count else 0
     summary = selector.css(
-        ".tec--article__body p:first-child *::text"
+        ".tec--article__body > p:first-child *::text"
     ).getall()
     news_summary = "".join(summary)
 
