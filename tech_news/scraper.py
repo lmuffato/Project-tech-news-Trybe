@@ -1,6 +1,7 @@
 import requests
 import time
 import parsel
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -61,7 +62,8 @@ def scrape_noticia(html_content):
     for source in sources:
         formated_source = source.strip()
         formated_sources.append(formated_source)
-    summary = notice_selector.css("div.tec--article__body p:nth-child(1) *::text").getall()
+    summary_class = "div.tec--article__body p:nth-child(1) *::text"
+    summary = notice_selector.css(summary_class).getall()
 
     formated_summary = ''.join(summary)
     categories = notice_selector.css("#js-categories a::text").getall()
@@ -81,11 +83,28 @@ def scrape_noticia(html_content):
         "categories": formated_categories,
     }
 
-# fonte de consulta para o método strip: https://www.tutorialspoint.com/python3/string_strip.htm
+# fonte de consulta para o método strip: 
+# https://www.tutorialspoint.com/python3/string_strip.htm
 
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    tec_mundo_url = "https://www.tecmundo.com.br/novidades"
+    noticia_result = fetch(tec_mundo_url)
+    noticias_links = scrape_novidades(noticia_result)
+    news = []
 
-    #js-main > div > article > div.tec--article__body-grid > div.z--pt-40.z--pb-24 >
-    # div.z--flex.z--items-center > div.tec--timestamp.tec--timestamp--lg >
+    while len(news) < amount: 
+        for link in noticias_links:
+            if len(news) < amount:
+                noticia_result_atualizada = scrape_noticia(fetch(link))
+                news.append(noticia_result_atualizada)
+        if len(news) < amount:
+            tec_mundo_url = scrape_next_page_link(noticia_result)
+            noticias_links = scrape_novidades(noticia_result)
+
+    create_news(news)
+    return news
+
+
+get_tech_news(20)
