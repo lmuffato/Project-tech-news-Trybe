@@ -54,3 +54,12 @@ def search_by_source(source):
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
+    find_bd_news = search_news({"categories": {"$regex": category,
+                                               "$options": 'i'}})
+    new_tupla = []
+    for new in find_bd_news:
+        if new is not []:
+            new_tupla.append((new["title"], new["url"]))
+        else:
+            return []
+    return new_tupla
