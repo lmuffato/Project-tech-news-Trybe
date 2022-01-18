@@ -35,7 +35,44 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    tecmundo = parsel.Selector(html_content)
+    url = tecmundo.css("head link[rel=canonical]::attr(href)").get()
+    titulo = tecmundo.css("h1.tec--article__header__title::text").get()
+    data_hora = tecmundo.css("time#js-article-date::attr(datetime)").get()
+    autor_1 = tecmundo.css(".tec--author__info__link::text").get()
+    autor_2 = tecmundo.css("div.tec--timestamp__item a::text").get()
+    autor_3 = tecmundo.css("div.tec--author__info p.z--font-bold::text").get()
+
+    if autor_1:
+        autor = autor_1
+    elif autor_2:
+        autor = autor_2
+    else:
+        autor = autor_3
+
+    compartilhamento = tecmundo.css(".tec--toolbar__item::text").get()
+    comentarios = tecmundo.css("#js-comments-btn::attr(data-count)").get()
+    resumo = "".join(tecmundo.css(
+        ".tec--article__body > p:first-child *::text").getall())
+    fonte = [item.strip() for item in tecmundo.css(
+        "div.z--mb-16 div a::text"
+        ).getall()]
+    categoria = [item.strip() for item in tecmundo.css(
+        "#js-categories a::text"
+        ).getall()]
+
+    return {
+        "url": url,
+        "title": titulo,
+        "timestamp": data_hora,
+        "writer": autor.strip() if autor else None,
+        "shares_count": int(
+            compartilhamento.split()[0]) if compartilhamento else 0,
+        "comments_count": int(comentarios) if comentarios else 0,
+        "summary": resumo,
+        "sources": fonte,
+        "categories": categoria,
+    }
 
 
 # Requisito 5
