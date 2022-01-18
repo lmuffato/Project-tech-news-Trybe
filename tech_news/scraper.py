@@ -1,6 +1,7 @@
 import requests
 import parsel
 import time
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -29,6 +30,7 @@ def scrape_next_page_link(html_content):
     return selector.css("div.tec--list.tec--list--lg > a"+attr).get()
 
 
+# Requisito 4
 def get_news_url(html_content):
     selector = parsel.Selector(html_content)
     links = selector.css("meta::attr(content)").getall()
@@ -52,7 +54,6 @@ def get_news_timestamp(html_content):
     return datetime
 
 
-# Requisito 4
 def get_news_author(html_content):
     selector = parsel.Selector(html_content)
     author = selector.css(
@@ -86,7 +87,9 @@ def get_news_shares_count(html_content):
 def get_news_comments_count(html_content):
     selector = parsel.Selector(html_content)
     comments = selector.css("#js-comments-btn::attr(data-count)").get()
-    return int(comments)
+    if type(comments) == str:
+        return int(comments)
+    return 0
 
 
 # *::text selects all descendant text nodes of the current selector context:
@@ -94,7 +97,7 @@ def get_news_comments_count(html_content):
 def get_news_summary(html_content):
     selector = parsel.Selector(html_content)
     summary = selector.css(
-        ".tec--article__body p:nth-child(1) *::text"
+        ".tec--article__body > p:nth-child(1) *::text"
     ).getall()
     return "".join(summary).strip()
 
@@ -148,4 +151,18 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = "https://www.tecmundo.com.br/novidades"
+    news_links = []
+    while len(news_links) < amount:
+        html_content = fetch(url)
+        news_links.extend(scrape_novidades(html_content))
+        url = scrape_next_page_link(html_content)
+
+    news = []
+    for index in range(amount):
+        html_news = fetch(news_links[index])
+        news_data = scrape_noticia(html_news)
+        news.append(news_data)
+
+    create_news(news)
+    return news
