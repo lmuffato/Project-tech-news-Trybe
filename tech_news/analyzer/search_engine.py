@@ -48,4 +48,11 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    db_news = search_news({"categories": {"$regex": category, "$options": "i"}})
+    list_of_news = []
+
+    for news in db_news:
+        news_to_be_added = (news["title"], news["url"])
+        list_of_news.append(news_to_be_added)
+
+    return list_of_news
