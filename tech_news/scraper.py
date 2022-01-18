@@ -45,7 +45,8 @@ def scrape_next_page_link(html_content):
 def scrape_noticia(html_content):
     # """Seu código deve vir aqui"""
     selector = Selector(text=html_content)
-    news_url = selector.css("head link[rel=canonical::attr(href)").get()
+
+    news_url = selector.css("head link[rel=canonical]::attr(href)").get()
     news_title = selector.css(".tec--article__header__title::text").get()
     news_timestamp = selector.css("#js-article-date::attr(datetime)").get()
     author = selector.css(".z--font-bold *::text").get()
@@ -68,6 +69,7 @@ def scrape_noticia(html_content):
     news_categories = []
     for category in selector.css("#js-categories a::text").getall():
         news_categories.append(category.strip())
+
     return {
         "url": news_url,
         "title": news_title,
