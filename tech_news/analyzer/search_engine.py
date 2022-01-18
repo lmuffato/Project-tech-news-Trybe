@@ -45,7 +45,9 @@ def search_by_source(source):
 def search_by_category(category):
     """Seu código deve vir aqui"""
     noticia = []
-    data_base = search_news({"categories": {"$regex": category, "$options": "i"}})
+    data_base = search_news(
+        {"categories": {"$regex": category, "$options": "i"}}
+    )
     for data in data_base:
         categoria = (data["title"], data["url"])
         noticia.append(categoria)
