@@ -33,6 +33,12 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
+    query = {"sources": {"$regex": f"{source}", "$options": "-i"}}
+    arrNews = search_news(query)
+    if arrNews:
+        return [(new["title"], new["url"]) for new in arrNews]
+    else:
+        return []
 
 
 # Requisito 9
