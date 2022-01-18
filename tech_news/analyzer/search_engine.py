@@ -3,12 +3,14 @@ from ..database import search_news
 
 # Requisito 6
 def search_by_title(title):
-    result = []
     data = search_news({"title": {"$regex": title, "$options": "i"}})
-    for notice in data:
-        titles = (notice["title"], notice["url"])
+    result = []
+
+    for item in data:
+        titles = (item["title"], item["url"])
         result.append(titles)
-    return
+
+    return result
 
 
 # Requisito 7
