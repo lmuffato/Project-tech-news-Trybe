@@ -17,7 +17,7 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     # https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
-    format = "%Y-%m-d"
+    format = "%Y-%m-%d"
 
     try:
         datetime.datetime.strptime(date, format)
