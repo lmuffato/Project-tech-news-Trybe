@@ -1,4 +1,3 @@
-from posixpath import supports_unicode_filenames
 import requests
 import time
 import parsel
