@@ -1,9 +1,10 @@
 import time
 import requests
 import parsel
+from .database import create_news
 
 
-# Requisito 1
+# REQUISITO 1
 def fetch(url):
     try:
         time.sleep(1)
@@ -18,7 +19,7 @@ def fetch(url):
         return None
 
 
-# Requisito 2
+# REQUISITO 2
 def scrape_novidades(html_content):
     html_code = parsel.Selector(html_content)
     links = []
@@ -30,7 +31,7 @@ def scrape_novidades(html_content):
     return links
 
 
-# Requisito 3
+# REQUISITO 3
 def scrape_next_page_link(html_content):
     html_code = parsel.Selector(html_content)
     btn = html_code.css("a.tec--btn::attr(href)").get()
@@ -41,7 +42,7 @@ def scrape_next_page_link(html_content):
         return None
 
 
-# Requisito 4
+# REQUISITO 4
 def categories_list(html_code):
     categories = []
     search_categories = html_code.css("div#js-categories a::text").getall()
@@ -100,6 +101,21 @@ def scrape_noticia(html_content):
     return info
 
 
-# Requisito 5
+# REQUISITO 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = fetch("https://www.tecmundo.com.br/novidades")
+    links_info = scrape_novidades(url)
+
+    while len(links_info) < amount:
+        more_pages = scrape_next_page_link(url)
+        next_page_info = fetch(more_pages)
+        links_info.extend(scrape_novidades(next_page_info))
+
+    info = []
+    for index in links_info[:amount]:
+        new_html_code = fetch(index)
+        new_info = scrape_noticia(new_html_code)
+        info.append(new_info)
+
+    create_news(info)
+    return info
