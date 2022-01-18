@@ -44,42 +44,35 @@ def scrape_next_page_link(html_content):
 def scrape_noticia(html_content):
     selector = Selector(text=html_content)
 
-    selected_class = "link[rel=canonical]::attr(href)"
-    url = selector.css(selected_class).get()
+    def scrape_strip(list_item):
+        new_list = []
+        for item in list_item:
+            new_item = item.strip()
+            new_list.append(new_item)
 
-    selected_title = "h1::text"
-    title = selector.css(selected_title).get()
+        return new_list
 
-    select_writer = ".z--font-bold ::text"
-    writer = selector.css(select_writer).get().strip()
-
-    selected_summary = "meta[name=description]::attr(content)"
-    summary = selector.css(selected_summary).get()
-
-    selected_sources = ".z--mb-16 .tec--badge::text"
-    sources = selector.css(selected_sources).getall()
-    list_sources = []
+    url = selector.css("link[rel=canonical]::attr(href)").get()
+    title = selector.css("h1::text").get()
+    writer = selector.css(".z--font-bold ::text").get().strip()
+    summary = selector.css("meta[name=description]::attr(content)").get()
+    sources = selector.css(".z--mb-16 .tec--badge::text").getall()
+    """ list_sources = []
     for source in sources:
         new_sources = source.strip()
         list_sources.append(new_sources)
 
-    print(list_sources)
+    print(list_sources)"""
 
-    selected_categories = ".tec--badge--primary ::text"
-    categories = selector.css(selected_categories).getall()
-    new_list = []
+    categories = selector.css(".tec--badge--primary ::text").getall()
+    """ new_list = []
     for category in categories:
         new_category = category.strip()
-        new_list.append(new_category)
+        new_list.append(new_category)"""
 
-    selected_comments = "button::attr(data-count)"
-    comments = selector.css(selected_comments).get()
-
-    selected_shares = ".tec--toolbar__item::text"
-    shares_count = selector.css(selected_shares).get()
-
-    selected_timestamp = "time::attr(datetime)"
-    timestamp = selector.css(selected_timestamp).get()
+    comments = selector.css("button::attr(data-count)").get()
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    timestamp = selector.css("time::attr(datetime)").get()
 
     return {
         "url": url,
@@ -89,8 +82,8 @@ def scrape_noticia(html_content):
         "comments_count": int(comments),
         "shares_count": int(shares_count.split()[0]) if shares_count else 0,
         "summary": summary,
-        "sources": list_sources,
-        "categories": new_list,
+        "sources": scrape_strip(sources),
+        "categories": scrape_strip(categories),
     }
 
 
