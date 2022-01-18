@@ -1,7 +1,6 @@
 from time import sleep
 import requests
 from parsel import Selector
-URL_BASE = 'https://www.tecmundo.com.br/novidades'
 
 
 # Requisito 1
@@ -42,7 +41,42 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    # """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    news_url = selector.css("head link[rel=canonical::attr(href)").get()
+    news_title = selector.css(".tec--article__header__title::text").get()
+    news_timestamp = selector.css("#js-article-date::attr(datetime)").get()
+    author = selector.css(".z--font-bold *::text").get()
+    news_author = author.strip() if author else None
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    news_shares_count = (
+        shares_count.strip().split(" ")[0] if shares_count else 0
+    )
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+    news_comments_count = comments_count if comments_count else 0
+    summary = selector.css(
+        ".tec--article__body p:first-child *::text"
+    ).getall()
+    news_summary = "".join(summary)
+
+    news_sources = []
+    for source in selector.css(".z--mb-16 div a::text").getall():
+        news_sources.append(source.strip())
+
+    news_categories = []
+    for category in selector.css("#js-categories a::text").getall():
+        news_categories.append(category.strip())
+    return {
+        "url": news_url,
+        "title": news_title,
+        "timestamp": news_timestamp,
+        "writer": news_author,
+        "shares_count": int(news_shares_count),
+        "comments_count": int(news_comments_count),
+        "summary": news_summary,
+        "sources": news_sources,
+        "categories": news_categories,
+    }
 
 
 # Requisito 5
