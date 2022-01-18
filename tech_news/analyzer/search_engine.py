@@ -40,6 +40,7 @@ def search_by_source(source):
         noticia.append(source)
     return noticia
 
+
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
