@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from .database import create_news
 
 
 # Requisito 1
@@ -102,5 +103,25 @@ def scrape_noticia(html_content):
 
 
 # Requisito 5
+def add_news(news):
+    news_list = []
+    for url in news:
+        content = fetch(url)
+        new = scrape_noticia(content)
+        news_list.append(new)
+    create_news(news_list)
+    return news_list
+
+
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    pagination = ""
+    url = "https://www.tecmundo.com.br/novidades"
+    content = fetch(url + pagination)
+    last_news = scrape_novidades(content)
+
+    while len(last_news) < amount:
+        pagination = (scrape_next_page_link(content)).split("/novidades")[1]
+        content = fetch(url + pagination)
+        last_news.extend(scrape_novidades(content))
+    news = last_news[:amount]
+    return add_news(news)
