@@ -1,3 +1,4 @@
+# Começando o projeto
 # Este é o arquivo de funções de acesso ao banco de dados. Basta importar e
 # chamar as funçoes
 # Atenção: este arquivo não deve ser alterado. Mudanças aqui não serão
