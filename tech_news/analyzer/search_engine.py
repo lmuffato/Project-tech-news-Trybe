@@ -1,4 +1,4 @@
-from database import search_news
+from tech_news.database import search_news
 
 
 # Requisito 6
