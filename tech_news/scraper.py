@@ -1,6 +1,7 @@
 import time
 import requests
 import parsel
+from tech_news.database import create_news
 
 AUTHOR = ".z--font-bold ::text"
 
@@ -18,7 +19,7 @@ BAR_AUTHOR = "#js-author-bar > nav > div:nth-child(1)::text"
 
 COMMENTS = "#js-comments-btn::attr(data-count)"
 
-SUMMARY = ".tec--article__body p:first_child *::text"
+SUMMARY = ".tec--article__body > p:first_child *::text"
 
 
 def fetch(url):
@@ -100,6 +101,22 @@ def scrape_noticia(html_content):
     }
 
 
-# Requisito 5
+# Requisito 5 com ajuda do Daniel Ribeiro T10A
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    checker = 0
+    URL = "https://www.tecmundo.com.br/novidades"
+    infos = []
+
+    while checker < amount:
+        link = fetch(URL)
+        content = scrape_novidades(link)
+        for new in content:
+            infos.append(scrape_noticia(fetch(new)))
+            checker += 1
+            if checker % 10 == 0:
+                URL = scrape_next_page_link(link)
+            if checker == amount:
+                break
+
+    create_news(infos)
+    return infos
