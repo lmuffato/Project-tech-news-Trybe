@@ -38,34 +38,59 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
+    # source: https://github.com/tryber/sd-010-a-tech-news/pull/33/files
     # *::text usar no seletor qndo houver tag ancestral
     selector = Selector(html_content)
+
     url = selector.css('head link[rel=canonical]::attr(href)').get()
+
     title = selector.css('.tec--article__header__title::text').get()
-    timestamp = selector.css("time::attr(datetime)").get()
+
+    timestamp = selector.css(
+        ".tec--timestamp__item time::attr(datetime)"
+    ).get()
+
+    writer = selector.css(".z--font-bold *::text").get()
+    if writer:
+        writer = writer.strip()
+
     shares_count = selector.css(".tec--toolbar__item::text").get()
     if shares_count:
         shares_count = int(shares_count.strip()[0])
     else:
         shares_count = 0
-    author = selector.css(".z--font-bold *::text").get()
-    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
-    summary_selector = ".tec--article__body > p:first-child *::text"
-    summary = "".join(selector.css(summary_selector).getall()).strip()
-    sources_selector = ".z--mb-16 a.tec--badge::text"
-    sources_list = selector.css(sources_selector).getall()
-    sources = [source.strip() for source in sources_list]
-    categories_selector = "#js-categories a::text"
-    categories_list = selector.css(categories_selector).getall()
-    categories = [category.strip() for category in categories_list]
+
+    comments_count = selector.css(
+        "#js-comments-btn::attr(data-count)"
+    ).get()
+
+    summary = ''.join(
+        selector.css(
+            ".tec--article__body > p:nth-child(1) *::text"
+        ).getall()
+    )
+
+    sources = [
+        source.strip()
+        for source in selector.css(
+            ".z--mb-16 .tec--badge::text"
+        ).getall()
+    ]
+
+    categories = [
+        category.strip()
+        for category in selector.css(
+            "#js-categories a::text"
+        ).getall()
+    ]
 
     return {
         "url": url,
         "title": title,
         "timestamp": timestamp,
-        "writer": author if author else None,
-        "shares_count": int(shares_count.split()[0]) if shares_count else 0,
-        "comments_count": int(comments_count) if comments_count else 0,
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": int(comments_count),
         "summary": summary,
         "sources": sources,
         "categories": categories
