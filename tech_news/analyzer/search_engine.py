@@ -1,6 +1,17 @@
+import re
+from tech_news.database import search_news
+
+
 # Requisito 6
+# Busca por regex no pymongo consultado no StackOverflow:
+# https://stackoverflow.com/questions/3483318/performing-regex-queries-with-pymongo
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    title_regex = re.compile(title, re.IGNORECASE)
+    all_news = search_news({"title": title_regex})
+    result = []
+    for news in all_news:
+        result.append((news["title"], news["url"]))
+    return result
 
 
 # Requisito 7
