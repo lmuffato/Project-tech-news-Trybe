@@ -21,7 +21,7 @@ def scrape_novidades(html_content):
     selector = Selector(html_content)
     links_list = []
     for link in selector.css("h3.tec--card__title"):
-        links = link.css("a.tec--card_title_link::attr(href)").getall()
+        links = link.css("a.tec--card_title_link::attr(href)").get()
         links_list.append(links)
     return links_list
 
