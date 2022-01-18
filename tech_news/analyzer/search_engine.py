@@ -1,4 +1,5 @@
 import re
+import datetime
 from tech_news.database import search_news
 
 
@@ -15,8 +16,21 @@ def search_by_title(title):
 
 
 # Requisito 7
+# Validação da data consultada em:
+# https://www.kite.com/python/answers/how-to-validate-a-date-string-format-in-python
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    format = "%Y-%m-%d"
+    try:
+        datetime.datetime.strptime(date, format)
+    except ValueError:
+        raise ValueError("Data inválida")
+
+    date_regex = re.compile(date)
+    all_news = search_news({"timestamp": date_regex})
+    result = []
+    for news in all_news:
+        result.append((news["title"], news["url"]))
+    return result
 
 
 # Requisito 8
