@@ -2,6 +2,24 @@ import time
 import requests
 import parsel
 
+AUTHOR = ".z--font-bold ::text"
+
+URL = "head > link[rel=canonical]::attr(href)"
+
+TITLE = "#js-article-title::text"
+
+TIMESTAMP = "#js-article-date::attr(datetime)"
+
+SRC = ".z--mb-16 .tec--badge::text"
+
+CATEGORIE = "#js-categories a::text"
+
+BAR_AUTHOR = "#js-author-bar > nav > div:nth-child(1)::text"
+
+COMMENTS = "#js-comments-btn::attr(data-count)"
+
+SUMMARY = ".tec--article__body p:first_child *::text"
+
 
 def fetch(url):
     try:
@@ -36,9 +54,50 @@ def scrape_next_page_link(html_content):
         return None
 
 
-# Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = parsel.Selector(text=html_content)
+
+    url = selector.css(URL).get()
+
+    title = selector.css(TITLE).get()
+
+    timestamp = selector.css(TIMESTAMP).get()
+
+    writer = selector.css(AUTHOR).get()
+
+    if writer:
+        writer = writer.strip()
+    else:
+        writer = None
+
+    sources = [source.strip() for source in selector.css(SRC).getall()]
+
+    categories = [
+        category.strip() for category in selector.css(CATEGORIE).getall()
+    ]
+
+    shares_count = selector.css(BAR_AUTHOR).get()
+
+    if shares_count:
+        shares_count = shares_count.split()[0]
+    else:
+        shares_count = 0
+
+    comments_count = selector.css(COMMENTS).get()
+
+    summary = "".join(selector.css(SUMMARY).getall())
+
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "sources": sources,
+        "categories": categories,
+        "shares_count": int(shares_count),
+        "comments_count": int(comments_count),
+        "summary": summary,
+    }
 
 
 # Requisito 5
