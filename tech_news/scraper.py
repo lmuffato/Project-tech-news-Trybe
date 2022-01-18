@@ -1,7 +1,7 @@
 from time import sleep
 import requests
 from parsel import Selector
-from tech_news.database import create_news
+from .database import create_news
 URL_BASE = 'https://www.tecmundo.com.br/novidades'
 
 
