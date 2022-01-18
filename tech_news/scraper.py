@@ -37,18 +37,30 @@ def scrape_next_page_link(html_content):
 # Requisito 4
 
 
+def select_writer(html_content):
+    selector = parsel.Selector(html_content)
+    class_1_name = ".tec--author__info__link::text"
+    class_1 = selector.css(class_1_name).get()
+    class_2_name = ".tec--timestamp__item.z--font-bold > a::text"
+    class_2 = selector.css(class_2_name).get()
+    class_3_name = ".z--m-none.z--truncate.z--font-bold::text"
+    class_3 = selector.css(class_3_name).get()
+    if class_1:
+        return class_1.strip()
+    elif class_2:
+        return class_2.strip()
+    elif class_3:
+        return class_3.strip()
+    return None
+
+
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
     selector = parsel.Selector(html_content)
     link = selector.css("head link[rel=canonical]::attr(href)").get()
     title = selector.css(".tec--article__header__title::text").get()
     timestamp = selector.css("#js-article-date::attr(datetime)").get()
-    writer = (selector.css(".tec--author__info__link::text").get()
-    or selector.css(".tec--timestamp__item.z--font-bold > a::text").get()
-    or selector.css(".z--m-none.z--truncate.z--font-bold::text").get()
-    or None)
-    if writer:
-        writer = writer.strip()
+    writer = select_writer(html_content)
     shares_count = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
     comments_count = selector.css("#js-comments-btn::text").re_first(r"\d+")
     if comments_count is None:
