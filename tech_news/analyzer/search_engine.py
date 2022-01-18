@@ -36,10 +36,19 @@ def search_by_date(date):
     return new_tupla
 
 
-
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
+    find_bd_news = search_news({"sources": {"$regex": source,
+                                            "$options": 'i'}})
+    # print(find_bd_news)
+    new_tupla = []
+    for new in find_bd_news:
+        if new is not []:
+            new_tupla.append((new["title"], new["url"]))
+        else:
+            return []
+    return new_tupla
 
 
 # Requisito 9
