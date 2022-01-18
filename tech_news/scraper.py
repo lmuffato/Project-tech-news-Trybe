@@ -3,6 +3,8 @@ import time
 
 from parsel import Selector
 
+from tech_news.database import create_news
+
 
 # Requisito 1
 def fetch(url):
@@ -60,13 +62,17 @@ def scrape_noticia(html_content):
     shares_text = selector.css("div.tec--toolbar__item::text").get()
     shares_count = extract_number_from_string(shares_text)
 
-    comments_text = selector.css("button#js-comments-btn::text").getall()[1]
+    comments_text = (
+        selector.css("button#js-comments-btn::text").re_first(r"\d+")
+    )
     comments_count = extract_number_from_string(comments_text)
 
-    summary_list = selector.xpath(
-        '//div[has-class("tec--article__body")] //p[1]//text()'
+    summary_list = selector.css(
+        ".tec--article__body > p:first_child *::text"
     ).getall()
-    summary = "".join(summary_list)
+    summary = ""
+    if summary_list:
+        summary = "".join(summary_list)
 
     sources = selector.css("div.z--mb-16 a.tec--badge::text").getall()
     formated_sources = remove_spaces(sources)
@@ -107,4 +113,25 @@ def extract_number_from_string(string):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    noticie = []
+    html = fetch("https://www.tecmundo.com.br/novidades")
+
+    while amount > len(noticie):
+        page_news_list = scrape_novidades(html)
+
+        for page in page_news_list:
+            fetch_pages = fetch(page)
+            news = scrape_noticia(fetch_pages)
+            noticie.append(news)
+
+        if amount <= len(noticie):
+            break
+
+        new_page = scrape_next_page_link(html)
+        html = fetch(new_page)
+
+    create_news(noticie[:amount])
+    return noticie[:amount]
+
+
+# print(get_tech_news(2))
