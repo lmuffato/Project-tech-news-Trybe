@@ -2,6 +2,7 @@ from tech_news.database import search_news
 from datetime import datetime
 
 
+# source: https://github.com/tryber/sd-010-a-tech-news/pull/25/files
 # Requisito 6
 def search_by_title(title):
     data = search_news({"title": {"$regex": title, "$options": "i"}})
@@ -32,9 +33,22 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    data = search_news({"sources": {"$regex": source, "$options": "i"}})
+    news_list = []
+
+    for item in data:
+        news = (item["title"], item["url"])
+        news_list.append(news)
+    return news_list
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    data = search_news({"categories": {"$regex": category, "$options": "i"}})
+    news_list = []
+
+    for item in data:
+        news = (item["title"], item["url"])
+        news_list.append(news)
+
+    return news_list
