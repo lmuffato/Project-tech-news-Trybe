@@ -30,7 +30,12 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    fonte = search_news({"sources": {"$regex": source, "$options": "i"}})
+    noticias = []
+    for noticia in fonte:
+        nova_noticia = (noticia["title"], noticia["url"])
+        noticias.append(nova_noticia)
+    return noticias
 
 
 # Requisito 9
