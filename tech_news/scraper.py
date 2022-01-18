@@ -40,8 +40,68 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 4
+def author_selector(site_content):
+    mode1 = site_content.css("a.tec--author__info__link::text").get()
+    mode2 = site_content.css(".tec--author__info > p:first-child::text").get()
+    mode3 = site_content.css(".tec--timestamp__item a::text").get()
+    if mode1 is not None:
+        author = mode1.strip()
+        return author
+    elif mode2 is not None:
+        author = mode2.strip()
+        return author
+    elif mode3 is not None:
+        author = mode3.strip()
+        return author
+    else:
+        return None
+
+
+def source_news(site_content):
+    list = []
+    search_by_sources = site_content.css("div.z--mb-16 a::text").getall()
+
+    for search in search_by_sources:
+        list.append(search.strip())
+
+    return list
+
+
+def categories_list(site_content):
+    categories = []
+    search_categories = site_content.css("div#js-categories a::text").getall()
+
+    for search in search_categories:
+        categories.append(search.strip())
+
+    return categories
+
+
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    site_content = parsel.Selector(html_content)
+    news = {}
+    url = site_content.css("head link[rel=canonical]::attr(href)").get()
+    title = site_content.css("h1.tec--article__header__title::text").get()
+    date = site_content.css("time#js-article-date::attr(datetime)").get()
+    author = author_selector(site_content)
+
+    share = site_content.css("div.tec--toolbar__item::text").re_first(r"\d+")
+    send_news = int(share) if share else 0
+
+    comments = int(site_content.css("button.tec--btn::attr(data-count)").get())
+    summary = "".join(
+        site_content.css(
+            "div.tec--article__body > p:first-child *::text"
+        ).getall()
+    )
+    sources = source_news(site_content)
+    categories = categories_list(site_content)
+
+    news.update(url=url, title=title, timestamp=date, writer=author)
+    news.update(shares_count=send_news, comments_count=comments)
+    news.update(summary=summary, sources=sources, categories=categories)
+
+    return news
 
 
 # Requisito 5
