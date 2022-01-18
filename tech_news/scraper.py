@@ -42,13 +42,6 @@ def vral(selector):
     else:
         numberTexto = re.findall(r"\d+", texto.get())[0]
         return int(numberTexto)
-    # count_shares = int(''.join(filter(
-    #         str.isdigit, selector.css('.tec--toolbar__item::text').getall()[0]
-    #     )))
-    # if count_shares:
-    #     return count_shares
-    # else:
-    #     return 0
 
 
 def scrape_noticia(html_content):
