@@ -64,7 +64,7 @@ def scrape_noticia(html_content):
     cat = selector.css('.tec--badge--primary ::text').getall()
     fon = selector.css('.z--mb-16 .tec--badge ::text').getall()
 
-    noticia_organized = {
+    return {
         "url": selector.css('link[rel=canonical]::attr(href)').get(),
         "title": selector.css('.tec--article__header__title::text').get(),
         "timestamp": selector.css('time::attr(datetime)').get(),
@@ -75,7 +75,6 @@ def scrape_noticia(html_content):
         "sources": [font.strip() for font in fon],
         "categories": [categoria.strip() for categoria in cat]
     }
-    return noticia_organized
 
 
 # Requisito 5
