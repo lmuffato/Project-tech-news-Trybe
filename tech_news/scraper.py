@@ -35,41 +35,42 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 4
+
+
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
-    notice_selector = parsel.Selector(html_content)
-    link = notice_selector.css("head link[rel=canonical]::attr(href)").get()
-    title = notice_selector.css(".tec--article__header__title::text").get()
-    timestamp = notice_selector.css("#js-article-date::attr(datetime)").get()
-    writer = (notice_selector.css(".tec--author__info__link::text").get()
-    or notice_selector.css(".tec--timestamp__item.z--font-bold > a::text").get()
-    or notice_selector.css(".z--m-none.z--truncate.z--font-bold::text").get()
+    selector = parsel.Selector(html_content)
+    link = selector.css("head link[rel=canonical]::attr(href)").get()
+    title = selector.css(".tec--article__header__title::text").get()
+    timestamp = selector.css("#js-article-date::attr(datetime)").get()
+    writer = (selector.css(".tec--author__info__link::text").get()
+    or selector.css(".tec--timestamp__item.z--font-bold > a::text").get()
+    or selector.css(".z--m-none.z--truncate.z--font-bold::text").get()
     or None)
     if writer:
         writer = writer.strip()
-    shares_count = notice_selector.css(".tec--toolbar__item::text").re_first(r"\d+")
-    comments_count = notice_selector.css("#js-comments-btn::text").re_first(r"\d+")
-    if comments_count == None:
+    shares_count = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
+    comments_count = selector.css("#js-comments-btn::text").re_first(r"\d+")
+    if comments_count is None:
         comments_count = 0
     else:
         comments_count = int(comments_count)
-    if shares_count == None:
+    if shares_count is None:
         shares_count = 0
     else:
         shares_count = int(shares_count)
-    sources = notice_selector.css(".z--mb-16 .tec--badge::text").getall()
+    sources = selector.css(".z--mb-16 .tec--badge::text").getall()
     formated_sources = []
     for source in sources:
         formated_source = source.strip()
         formated_sources.append(formated_source)
-    summary_class = "div.tec--article__body p:nth-child(1) *::text"
-    summary = notice_selector.css(summary_class).getall()
-
-    formated_summary = ''.join(summary)
-    categories = notice_selector.css("#js-categories a::text").getall()
+    summary_class = "div.tec--article__body > p:nth-child(1) *::text"
+    summary = selector.css(summary_class).getall()
+    formated_summary = "".join(summary)
+    categories = selector.css("#js-categories a::text").getall()
     formated_categories = []
     for categorie in categories:
-        formated_categorie = categorie.strip(" ")
+        formated_categorie = categorie.strip()
         formated_categories.append(formated_categorie)
     return {
         "url": link,
@@ -83,10 +84,12 @@ def scrape_noticia(html_content):
         "categories": formated_categories,
     }
 
-# fonte de consulta para o método strip: 
+# fonte de consulta para o método strip:
 # https://www.tutorialspoint.com/python3/string_strip.htm
 
 # Requisito 5
+
+
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
     tec_mundo_url = "https://www.tecmundo.com.br/novidades"
@@ -94,17 +97,14 @@ def get_tech_news(amount):
     noticias_links = scrape_novidades(noticia_result)
     news = []
 
-    while len(news) < amount: 
+    while len(news) < amount:
         for link in noticias_links:
             if len(news) < amount:
                 noticia_result_atualizada = scrape_noticia(fetch(link))
                 news.append(noticia_result_atualizada)
         if len(news) < amount:
             tec_mundo_url = scrape_next_page_link(noticia_result)
-            noticias_links = scrape_novidades(noticia_result)
-
+            noticias_links = scrape_novidades(fetch(tec_mundo_url))
     create_news(news)
+    print(len(news))
     return news
-
-
-get_tech_news(20)
