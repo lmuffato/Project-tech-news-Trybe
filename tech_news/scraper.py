@@ -44,7 +44,7 @@ def scrape_next_page_link(html_content):
 # Requisito 4
 def scrape_noticia(html_content):
     # """Seu código deve vir aqui"""
-    selector = Selector(html_content)
+    selector = Selector(text=html_content)
     news_url = selector.css("head link[rel=canonical::attr(href)").get()
     news_title = selector.css(".tec--article__header__title::text").get()
     news_timestamp = selector.css("#js-article-date::attr(datetime)").get()
