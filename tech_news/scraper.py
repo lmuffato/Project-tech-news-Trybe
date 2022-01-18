@@ -19,11 +19,14 @@ def fetch(url):
 # Requisito 2
 def scrape_novidades(html_content):
     selector = Selector(html_content)
-    links_list = []
+    return selector.css(
+        'h3.tec--card__title a.tec--card__title__link::attr(href)'
+    ).getall()
+    """ links_list = []
     for link in selector.css("h3.tec--card__title"):
         links = link.css("a.tec--card_title_link::attr(href)").get()
         links_list.append(links)
-    return links_list
+    return links_list """
 
 
 # Requisito 3
@@ -35,7 +38,38 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    # *::text usar no seletor qndo houver tag ancestral
+    selector = Selector(html_content)
+    url = selector.css('head link[rel=canonical]::attr(href)').get()
+    title = selector.css('.tec--article__header__title::text').get()
+    timestamp = selector.css("time::attr(datetime)").get()
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    if shares_count:
+        shares_count = int(shares_count.strip()[0])
+    else:
+        shares_count = 0
+    author = selector.css(".z--font-bold *::text").get()
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+    summary_selector = ".tec--article__body > p:first-child *::text"
+    summary = "".join(selector.css(summary_selector).getall()).strip()
+    sources_selector = ".z--mb-16 a.tec--badge::text"
+    sources_list = selector.css(sources_selector).getall()
+    sources = [source.strip() for source in sources_list]
+    categories_selector = "#js-categories a::text"
+    categories_list = selector.css(categories_selector).getall()
+    categories = [category.strip() for category in categories_list]
+
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": author if author else None,
+        "shares_count": int(shares_count.split()[0]) if shares_count else 0,
+        "comments_count": int(comments_count) if comments_count else 0,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories
+    }
 
 
 # Requisito 5
