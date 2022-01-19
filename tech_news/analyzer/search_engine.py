@@ -1,4 +1,5 @@
 import tech_news.database as database
+from tech_news.database import search_news
 from datetime import datetime
 import re
 
@@ -26,7 +27,7 @@ def search_by_date(date):
         raise ValueError("Data inválida")
 
     regex = re.compile(date)
-    all_news = database.search_news({"timestamp": regex})
+    all_news = search_news({"timestamp": regex})
     result = []
     for news in all_news:
         result.append((news["title"], news["url"]))
