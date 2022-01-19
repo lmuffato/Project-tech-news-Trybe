@@ -1,4 +1,3 @@
-from telnetlib import SE
 import requests
 import time
 from parsel import Selector
