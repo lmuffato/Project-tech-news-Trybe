@@ -21,9 +21,7 @@ def search_by_date(date):
     except ValueError:
         raise ValueError("Data inválida")
 
-    find_news = search_news(
-        {"timestamp": {"$regex": date, "$options": "i"}}
-    )
+    find_news = search_news({"timestamp": {"$regex": date, "$options": "i"}})
     list_news = []
 
     for news in find_news:
@@ -35,7 +33,14 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    find_news = search_news({"sources": {"$regex": source, "$options": "i"}})
+    list_news = []
+
+    for news in find_news:
+        result = (news["title"], news["url"])
+        list_news.append(result)
+
+    return list_news
 
 
 # Requisito 9
@@ -45,3 +50,5 @@ def search_by_category(category):
 
 print(search_by_title("Sherlock"))
 print(search_by_date("2022-01-18"))
+print("busca por source")
+print(search_by_source("Screen Rant"))
