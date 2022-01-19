@@ -2,6 +2,7 @@ import requests
 from requests.exceptions import ReadTimeout
 import time
 import parsel
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -38,12 +39,6 @@ def scrape_next_page_link(html_content):
     return next_page_link
 
 
-# def get_author(html_content):
-#     """Função auxiliar que navega até o perfil do autor e busca o seu nome"""
-#     selector = parsel.Selector(html_content)
-#     url_author = selector.css
-
-
 # Requisito 4
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
@@ -68,7 +63,7 @@ def scrape_noticia(html_content):
         selector.css("#js-comments-btn::text").getall()[1].split()[0]
     )
     summary = "".join(
-        selector.css(".p402_premium p:first-child *::text").getall()
+        selector.css(".tec--article__body > p:first-child *::text").getall()
     )
     sources = selector.css(".z--mb-16 a *::text").getall()
     sources = [source.strip() for source in sources]
@@ -85,9 +80,25 @@ def scrape_noticia(html_content):
         "sources": sources,
         "categories": categories,
     }
-    # return writer
 
 
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    data = []
+    initial_page_html = fetch('https://www.tecmundo.com.br/novidades')
+    notices_links = scrape_novidades(initial_page_html)
+
+    while len(notices_links) < amount:
+        next_page_link = scrape_next_page_link(initial_page_html)
+        next_page_content = fetch(next_page_link)
+        additional_notices_links = scrape_novidades(next_page_content)
+        notices_links += additional_notices_links
+
+    for link in notices_links[:amount]:
+        content_page_notice = fetch(link)
+        notice_scraped = scrape_noticia(content_page_notice)
+        data.append(notice_scraped)
+
+    create_news(data)
+    return data
