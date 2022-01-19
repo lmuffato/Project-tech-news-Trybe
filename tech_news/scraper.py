@@ -5,11 +5,14 @@ from parsel import Selector
 
 # Requisito 1
 def fetch(url):
-    response = requests.get(url)
-    time.sleep(1)
-    if response.status_code == 200:
-        return response.text
-    else:
+    try:
+        res = requests.get(url)
+        time.sleep(1)
+        if res.status_code == 200:
+            return res.text
+        else:
+            return None
+    except requests.Timeout:
         return None
 
 
