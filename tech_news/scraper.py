@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -32,6 +33,7 @@ def scrape_next_page_link(html_content):
     query = '.tec--btn::attr(href)'
 
     next_button_url = selector.css(query).get()
+    print(next_button_url)
     if next_button_url == '':
         return None
     return next_button_url
@@ -58,10 +60,10 @@ class Noticia:
 
         sources_and_categs = [sc.strip() for sc in sources_and_categs]
 
-        return [tag for tag in sources_and_categs if tag not in categories]
+        return sources_and_categs[0:-len(categories)]
 
     def get_summary(self):
-        summary_query = '.tec--article__body p:first-child *::text'
+        summary_query = '.tec--article__body > p:first-child *::text'
 
         return ''.join(self.selector.css(summary_query).getall())
 
@@ -128,5 +130,31 @@ def scrape_noticia(html_content):
 
 
 # Requisito 5
+def get_tech_news_urls(amount):
+    page = fetch('https://www.tecmundo.com.br/novidades')
+    all_news_urls = []
+
+    while amount > len(all_news_urls):
+        news_urls = scrape_novidades(page)
+        all_news_urls += news_urls
+
+        next_link = scrape_next_page_link(page)
+        print(next_link)
+        page = fetch(next_link)
+
+    return all_news_urls[0:amount]
+
+
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    news_urls = get_tech_news_urls(amount)
+
+    news_htmls = [fetch(news_url) for news_url in news_urls]
+
+    news_data = []
+    for news in news_htmls:
+        data = scrape_noticia(news)
+        news_data.append(data)
+
+    create_news(news_data)
+
+    return news_data
