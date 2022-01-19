@@ -45,7 +45,7 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    data = search_news({"sources": {"$regex": category, "$options": "i"}})
+    data = search_news({"categories": {"$regex": category, "$options": "i"}})
     news = []
 
     for i in data:
