@@ -45,4 +45,13 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """insira"""
+    query = {"categories": {"$regex": category, "$options": "i"}}
+    data = search_news(query)
+
+    result = []
+    for news in data:
+        found = (news["title"], news["url"])
+        result.append(found)
+
+    return result
+
