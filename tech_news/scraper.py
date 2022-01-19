@@ -55,15 +55,9 @@ def scrape_noticia(html_content):
     else:
         shares_count = 0
     comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
-    # if comments_count is not None:
-    #     comments_count = int(comments_count.strip()[0])
-    # else:
-    #     comments_count = 0
     summary = "".join(
         selector.css(".tec--article__body > p:nth-child(1) *::text").getall()
     )
-    # summary = selector.css("head
-    # meta[name*=description]::attr(content)").get()
     sources = selector.css(".z--mb-16 .tec--badge::text").getall()
     categories = selector.css(".tec--badge--primary *::text").getall()
 
@@ -98,5 +92,4 @@ def get_tech_news(amount):
         if list_url.index(new) <= amount - 1
     ]
     create_news(tech_news)
-    print(len(tech_news))
     return tech_news
