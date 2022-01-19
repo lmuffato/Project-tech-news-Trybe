@@ -21,9 +21,11 @@ def scrape_novidades(html_content):
     if html_content == "":
         return []
     selector = Selector(text=html_content)
-    list = selector.css('div.tec--card__title a::attr(href)').getall()
-    print(list)
-    print(len(list))
+    list = selector.css(
+        "#js-main > div > div > div.z--col.z--w-2-3 > div.tec--list"
+        ".tec--list--lg article > div > h3 > a ::attr(href)"
+    ).getall()
+    return list
 
 
 # Requisito 3
