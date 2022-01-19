@@ -1,5 +1,7 @@
+from telnetlib import SE
 import requests
 import time
+from parsel import Selector
 
 
 # Requisito 1
@@ -16,12 +18,22 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    if html_content == "":
+        return []
+    selector = Selector(text=html_content)
+    list = selector.css('div.tec--card__title a::attr(href)').getall()
+    print(list)
+    print(len(list))
 
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    link = selector.css(
+        "#js-main > div > div > div.z--col.z--w-2-3 > "
+        "div.tec--list.tec--list--lg > a ::attr(href)"
+    ).get()
+    return link
 
 
 # Requisito 4
