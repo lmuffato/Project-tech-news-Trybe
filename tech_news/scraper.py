@@ -78,5 +78,19 @@ def scrape_noticia(html_content):
 
 
 # Requisito 5
+# requisito feito observando o do repositorio do Iago Ferreira
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = "https://www.tecmundo.com.br/novidades"
+    result = fetch(url)
+    news = scrape_novidades(result)
+    news_array = []
+    while len(news) < amount:
+        next_page_link = scrape_next_page_link(result)
+        result = fetch(next_page_link)
+        new_to_array = scrape_novidades(result)
+        news += new_to_array
+    for adress in news[:amount]:
+        the_new = fetch(adress)
+        news_array.append(scrape_noticia(the_new))
+    create_news(news_array)
+    return news_array
