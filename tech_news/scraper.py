@@ -1,4 +1,5 @@
 import requests
+import parsel
 import time
 
 
@@ -7,19 +8,19 @@ def fetch(url):
     time.sleep(1)
     try:
         response = requests.get(url=url, timeout=3)
-        if(response.ok):
+        if response.ok:
             return response.text
         else:
             return None
     except requests.exceptions.ReadTimeout:
         return None
 
-print(fetch("https://httpbin.org/delay/5"))
-
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = parsel.Selector(text=html_content)
+    res = selector.css('.tec--list .tec--card__title__link')
+    return list(map(lambda x: x.attrib['href'], res))
 
 
 # Requisito 3
