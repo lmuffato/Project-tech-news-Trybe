@@ -1,6 +1,7 @@
 from parsel import Selector
-import time
 import requests
+import time
+import re
 
 
 # Requisito 1
@@ -38,7 +39,52 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+
+    get_writer = selector.css(".z--font-bold ::text").get()
+    if not get_writer:
+        writer = None
+    else:
+        writer = get_writer.strip()
+
+    get_shares = selector.css("article.tec--article div.tec--toolbar__item::text").get()
+    if not get_shares:
+        shares_count = 0
+    else:
+        shares_count = int(re.findall('[0-9]+', get_shares)[0])
+
+    get_comments = selector.css("button#js-comments-btn::text").getall()[1]
+    if not get_comments:
+        comments_count = 0
+    else:
+        comments_count = int(re.findall('[0-9]+', get_comments)[0])
+
+    get_summary = selector.css(
+      "article.tec--article div.tec--article__body > p:first_child *::text"
+      ).getall()
+    summary = "".join(get_summary).strip()
+
+    news_item = dict({
+        "url": selector.css("meta[property='og:url']::attr(content)").get(),
+        "title": selector.css("h1.tec--article__header__title::text").get(),
+        "timestamp": selector.css("div.tec--timestamp__item time::attr(datetime)").get(),
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": comments_count,
+        "summary": summary,
+        "sources": [source.strip() for source in selector.css(
+            "article.tec--article div.z--mb-16 a.tec--badge::text"
+        ).getall()],
+        "categories": [category.strip() for category in selector.css(
+            "#js-categories a::text"
+        ).getall()]
+    })
+    
+    return news_item
+
+# Referências para fazer requisito 4:
+   # https://github.com/tryber/sd-010-a-tech-news/pull/17/commits/1188328a1ec8e1428cf364b6cd3dafc61f1a0d74
+   # https://www.guru99.com/python-regular-expressions-complete-tutorial.html
 
 
 # Requisito 5
