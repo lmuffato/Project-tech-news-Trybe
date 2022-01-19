@@ -54,28 +54,6 @@ def test_fetch(mocker):
     assert request_counter <= 5
 
 
-# Req.2
-def test_scrape_novidades():
-    with open("tests/assets/tecmundo_pages/novidades.html") as f:
-        html_content = f.read()
-    expected = urls_from_novidades
-    # retorna os dados esperados quando chamada com os parâmetros corretos
-    assert scrape_novidades(html_content) == expected
-    # retorna uma lista vazia quando chamada com parâmetros incorretos
-    assert scrape_novidades("") == []
-
-
-# Req.3
-def test_scrape_next_page_link():
-    with open("tests/assets/tecmundo_pages/novidades.html") as f:
-        html_content = f.read()
-    expected = "https://www.tecmundo.com.br/novidades?page=2"
-    # retorna os dados esperados quando chamada com os parâmetros corretos
-    assert scrape_next_page_link(html_content) == expected
-    # retorna None quando chamada com os parâmetros incorretos
-    assert scrape_next_page_link("") is None
-
-
 @pytest.fixture
 def noticia_html_v1():
     path = (
@@ -118,11 +96,33 @@ def noticia_html_v3():
         return f.read()
 
 
-# Req.4
+# Req.2
 def test_scrape_noticia(noticia_html_v1, noticia_html_v2, noticia_html_v3):
     assert scrape_noticia(noticia_html_v1) == all_news[15]
     assert scrape_noticia(noticia_html_v2) == all_news[1]
     assert scrape_noticia(noticia_html_v3) == all_news[11]
+
+
+# Req.3
+def test_scrape_novidades():
+    with open("tests/assets/tecmundo_pages/novidades.html") as f:
+        html_content = f.read()
+    expected = urls_from_novidades
+    # retorna os dados esperados quando chamada com os parâmetros corretos
+    assert scrape_novidades(html_content) == expected
+    # retorna uma lista vazia quando chamada com parâmetros incorretos
+    assert scrape_novidades("") == []
+
+
+# Req.4
+def test_scrape_next_page_link():
+    with open("tests/assets/tecmundo_pages/novidades.html") as f:
+        html_content = f.read()
+    expected = "https://www.tecmundo.com.br/novidades?page=2"
+    # retorna os dados esperados quando chamada com os parâmetros corretos
+    assert scrape_next_page_link(html_content) == expected
+    # retorna None quando chamada com os parâmetros incorretos
+    assert scrape_next_page_link("") is None
 
 
 def mocked_fetch(url):

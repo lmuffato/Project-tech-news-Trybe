@@ -63,25 +63,8 @@ def test_buscar_noticia_pela_data():
     db.news.delete_many({})
     db.news.insert_one(NEW_NOTICE)
     with pytest.raises(ValueError, match="Data inválida"):
-        search_by_date("2001-02-31")
+        search_by_date("1968-02-30")
 
-    # data inválida retorna erro
-    db.news.delete_many({})
-    db.news.insert_one(NEW_NOTICE)
-    with pytest.raises(ValueError, match="Data inválida"):
-        search_by_date("2020-31-02")
-
-    # data inválida retorna erro
-    db.news.delete_many({})
-    db.news.insert_one(NEW_NOTICE)
-    with pytest.raises(ValueError, match="Data inválida"):
-        search_by_date("1988-14-25")
-
-    # data inválida retorna erro
-    db.news.delete_many({})
-    db.news.insert_one(NEW_NOTICE)
-    with pytest.raises(ValueError, match="Data inválida"):
-        search_by_date("1997-02-31")
 
 def test_buscar_noticia_pela_fonte():
     db.news.delete_many({})
