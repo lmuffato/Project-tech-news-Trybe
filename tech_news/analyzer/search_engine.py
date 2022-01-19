@@ -1,3 +1,4 @@
+import datetime
 from tech_news.database import search_news
 
 
@@ -13,6 +14,14 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     """Seu código deve vir aqui"""
+    # Validar formato de data
+    # https://qastack.com.br/programming/16870663/how-do-i-validate-a-date-string-format-in-python
+    try:
+        datetime.datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError("Data inválida")
+    news = search_news({"timestamp": {"$regex": date, "$options": "i"}})
+    return [(new["title"], new["url"]) for new in news]
 
 
 # Requisito 8
