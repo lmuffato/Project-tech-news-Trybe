@@ -1,6 +1,20 @@
+import requests
+import time
+
+
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
+    time.sleep(1)
+    try:
+        response = requests.get(url=url, timeout=3)
+        if(response.ok):
+            return response.text
+        else:
+            return None
+    except requests.exceptions.ReadTimeout:
+        return None
+
+print(fetch("https://httpbin.org/delay/5"))
 
 
 # Requisito 2
