@@ -47,7 +47,8 @@ def scrape_noticia(html_content):
     else:
         writer = get_writer.strip()
 
-    get_shares = selector.css("article.tec--article div.tec--toolbar__item::text").get()
+    get_shares = selector.css(
+        "article.tec--article div.tec--toolbar__item::text").get()
     if not get_shares:
         shares_count = 0
     else:
@@ -67,7 +68,9 @@ def scrape_noticia(html_content):
     news_item = dict({
         "url": selector.css("meta[property='og:url']::attr(content)").get(),
         "title": selector.css("h1.tec--article__header__title::text").get(),
-        "timestamp": selector.css("div.tec--timestamp__item time::attr(datetime)").get(),
+        "timestamp": selector.css(
+            "div.tec--timestamp__item time::attr(datetime)"
+            ).get(),
         "writer": writer,
         "shares_count": shares_count,
         "comments_count": comments_count,
@@ -79,12 +82,12 @@ def scrape_noticia(html_content):
             "#js-categories a::text"
         ).getall()]
     })
-    
+
     return news_item
 
-# Referências para fazer requisito 4:
-   # https://github.com/tryber/sd-010-a-tech-news/pull/17/commits/1188328a1ec8e1428cf364b6cd3dafc61f1a0d74
-   # https://www.guru99.com/python-regular-expressions-complete-tutorial.html
+    # Referências para fazer requisito 4:
+    # https://github.com/tryber/sd-010-a-tech-news/pull/17/commits/1188328a1ec8e1428cf364b6cd3dafc61f1a0d74
+    # https://www.guru99.com/python-regular-expressions-complete-tutorial.html
 
 
 # Requisito 5
