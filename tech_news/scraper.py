@@ -46,9 +46,8 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    arr = []
     html_content = fetch("https://www.tecmundo.com.br/novidades")
-    arr.extend(scrape_novidades(html_content))
+    arr = scrape_novidades(html_content)
     while len(arr) < amount:
         next = scrape_next_page_link(html_content)
         page = fetch(next)
@@ -56,8 +55,9 @@ def get_tech_news(amount):
 
     news = []
     for item in arr[:amount]:
-        html_content = fetch(item)
-        news.append(scrape_noticia(html_content))
+        new_page = fetch(item)
+        new_news = scrape_noticia(new_page)
+        news.append(new_news)
 
     create_news(news)
     return news
