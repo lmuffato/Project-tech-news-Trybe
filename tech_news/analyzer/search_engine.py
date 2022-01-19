@@ -18,18 +18,19 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     # """Seu código deve vir aqui"""
+
+    date_format = "%Y-%m-%d"
     try:
-        datetime.strptime(date, "%Y-%m-%d")
-        res = database.search_news({"timestamp": re.compile(date)})
-        # re - Regular expression - forma de regex utilizada em python:
-        # src https://www.hashtagtreinamentos.com/regular-expressions-no-python 
-        news = []
-        if res:
-            for noticia in res:
-                news.append((noticia["title"], noticia["url"]))
-            return news
+        datetime.datetime.strptime(date, date_format)
     except ValueError:
         raise ValueError("Data inválida")
+
+    regex = re.compile(date)
+    all_news = database.search_news({"timestamp": regex})
+    result = []
+    for news in all_news:
+        result.append((news["title"], news["url"]))
+    return result
 
 
 # Requisito 8
