@@ -74,6 +74,10 @@ class Noticia:
         shares_count_query = '.tec--toolbar__item::text'
 
         shares_string = self.selector.css(shares_count_query).get()
+
+        if shares_string is None:
+            return 0
+
         shares_count = [
             int(c) for c in shares_string.split() if c.isdigit()
         ][0]
@@ -81,10 +85,14 @@ class Noticia:
         return shares_count
 
     def get_writer(self):
-        writer_query = '.tec--author__info__link::text'
+        writer_query_1 = '.z--font-bold a::text'
+        writer_query_2 = '.z--font-bold::text'
 
-        writer = self.selector.css(writer_query).get()
-        print(writer)
+        writer = self.selector.css(writer_query_1).get()
+
+        if writer is None:
+            writer = self.selector.css(writer_query_2).get()
+
         return writer.strip()
 
     def get_timestamp(self):
