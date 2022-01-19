@@ -54,4 +54,3 @@ def search_by_category(category):
         result.append(found)
 
     return result
-
