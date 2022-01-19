@@ -1,6 +1,14 @@
+from tech_news.database import search_news
+
+
+# https://pt.stackoverflow.com/questions/496212/fazer-uma-consulta-com-pymongo-filtrando-por-uma-string-ignorando-letras-maiuscu
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    news_by_title = search_news({"title": {"$regex": title, "$options": "i"}})
+    return [(news["title"], news["url"]) for news in news_by_title]
+
+
+# print(search_by_title(""))
 
 
 # Requisito 7
