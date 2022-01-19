@@ -33,7 +33,7 @@ def scrape_next_page_link(html_content):
     query = '.tec--btn::attr(href)'
 
     next_button_url = selector.css(query).get()
-    print(next_button_url)
+
     if next_button_url == '':
         return None
     return next_button_url
