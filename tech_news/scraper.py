@@ -28,14 +28,17 @@ def scrape_novidades(html_content):
     return list_href
 
 
-html = fetch("https://www.tecmundo.com.br/novidades")
-# print(html)
-scrape_novidades(html)
+# html = fetch("https://www.tecmundo.com.br/novidades")
+# # print(html)
+# scrape_novidades(html)
 
 
 # Requisito 3
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    list_href = selector.css(".tec--list a[href*=page]::attr(href)").get()
+    return list_href
 
 
 # Requisito 4
