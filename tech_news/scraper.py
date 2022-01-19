@@ -3,6 +3,8 @@ import requests
 import parsel
 import re
 
+from tech_news.database import create_news
+
 
 def fetch(url):
     try:
@@ -78,4 +80,18 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = 'https://www.tecmundo.com.br/novidades'
+    listNotce = []
+    urlList = scrape_novidades(fetch(url))
+
+    while(len(urlList) < amount):
+        if(len(urlList) < amount):
+            url = scrape_next_page_link(fetch(url))
+            urlList.extend(scrape_novidades(fetch(url)))
+
+    for notice in urlList[0:amount]:
+        info = scrape_noticia(fetch(notice))
+        listNotce.append(info)
+
+    create_news(listNotce)
+    return listNotce
