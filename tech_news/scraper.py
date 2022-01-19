@@ -18,19 +18,21 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    selector = Selector(text=html_content)
-    array = []
-    if len(array) == 0:
+    selector = Selector(html_content)
+    arr = []
+    if len(arr) == 0:
         return selector.css(
             ".tec--list .tec--card__title__link::attr(href)"
             ).getall()
     else:
-        return array
+        return arr
 
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    next = selector.css(".tec--btn-primary::attr(href)").get()
+    return next
 
 
 # Requisito 4
