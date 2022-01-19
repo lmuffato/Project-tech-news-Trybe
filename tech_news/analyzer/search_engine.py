@@ -29,9 +29,17 @@ def search_by_date(date):
         raise ValueError("Data inválida")
 
 
-# Requisito 8
+# REQUISITO 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    fetch_by_source = search_news(
+        {"sources": {"$regex": source, "$options": "i"}})
+
+    fetch_result = []
+    for news in fetch_by_source:
+        found_note = (news["title"], news["url"])
+        fetch_result.append(found_note)
+
+    return fetch_result
 
 
 # Requisito 9
