@@ -31,8 +31,11 @@ def scrape_novidades(html_content):
 # Requisito 3
 def scrape_next_page_link(html_content):
     selector = Selector(html_content)
-    next = selector.css(".tec--btn-primary::attr(href)").get()
-    return next
+    next = selector.css(".tec--btn::attr(href)").get()
+    if next != "":
+        return next
+    else:
+        return None
 
 
 # Requisito 4
