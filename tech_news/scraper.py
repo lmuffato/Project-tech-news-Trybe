@@ -1,3 +1,4 @@
+from tech_news.database import create_news
 from parsel import Selector
 import requests
 import time
@@ -69,8 +70,7 @@ def scrape_noticia(html_content):
         "url": selector.css("meta[property='og:url']::attr(content)").get(),
         "title": selector.css("h1.tec--article__header__title::text").get(),
         "timestamp": selector.css(
-            "div.tec--timestamp__item time::attr(datetime)"
-            ).get(),
+            "div.tec--timestamp__item time::attr(datetime)").get(),
         "writer": writer,
         "shares_count": shares_count,
         "comments_count": comments_count,
@@ -92,4 +92,21 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = "https://www.tecmundo.com.br/novidades"
+    content = fetch(url)
+    latest_news = scrape_novidades(content)
+    tech_news_list = []
+
+    while len(latest_news) < amount:
+        url = scrape_next_page_link(content)
+        content = fetch(url)
+        latest_news.extend(scrape_novidades(content))
+
+    for url_news in latest_news:
+        if len(tech_news_list) < amount:
+            new_news = fetch(url_news)
+            scraped_news = scrape_noticia(new_news)
+            tech_news_list.append(scraped_news)
+
+    create_news(tech_news_list)
+    return tech_news_list
