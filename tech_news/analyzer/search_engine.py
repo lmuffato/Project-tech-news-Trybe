@@ -5,7 +5,7 @@ from datetime import datetime
 
 # Requisito 6
 def search_by_title(title):
-    # """Seu código deve vir aqui"""
+
     news = database.find_news()
 
     return [
@@ -17,7 +17,6 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    # """Seu código deve vir aqui"""
 
     try:
         datetime.strptime(date, "%Y-%m-%d")
@@ -25,12 +24,12 @@ def search_by_date(date):
         raise ValueError("Data inválida")
     news = search_news({"timestamp": {"$regex": date}})
     return [(item["title"], item["url"]) for item in news]
-    # Src: pr de felipe flores - teste
+    # Src: pr de felipe flores
 
 
 # Requisito 8
 def search_by_source(source):
-    # """Seu código deve vir aqui"""
+
     news = database.find_news()
     return [
         (report['title'], report['url'])
@@ -42,7 +41,7 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+
     news = database.find_news()
     return [
         (report['title'], report['url'])

@@ -7,7 +7,7 @@ URL_BASE = 'https://www.tecmundo.com.br/novidades'
 
 # Requisito 1
 def fetch(url):
-    # """Seu código deve vir aqui"""
+
     sleep(1)
     # Garante o intervalo de 1 segundo entre cada requisição.
     try:
@@ -23,7 +23,7 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    # """Seu código deve vir aqui"""
+
     selector = Selector(html_content)
     return selector.css(
         'main .tec--card__title__link::attr(href)'
@@ -43,7 +43,7 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    # """Seu código deve vir aqui"""
+
     selector = Selector(text=html_content)
 
     news_url = selector.css("head link[rel=canonical]::attr(href)").get()
@@ -85,7 +85,7 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    # """Seu código deve vir aqui"""
+
     news_list = []
     html = fetch(URL_BASE)
 
