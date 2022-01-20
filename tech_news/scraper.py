@@ -2,6 +2,8 @@ from parsel import Selector
 import requests
 import time
 
+from .database import create_news
+
 
 # Requisito 1
 def fetch(url):
@@ -52,10 +54,16 @@ def scrape_noticia(html_content):
 
         return new_list
 
+    def scrape_join(list_item):
+        new_list = "".join(list_item)
+        return new_list
+
     url = selector.css("link[rel=canonical]::attr(href)").get()
     title = selector.css("h1::text").get()
     writer = selector.css(".z--font-bold ::text").get()
-    summary = selector.css("meta[name=description]::attr(content)").get()
+    summary = selector.css(
+        ".tec--article__body > p:first-child *::text"
+    ).getall()
     sources = selector.css(".z--mb-16 .tec--badge::text").getall()
     categories = selector.css(".tec--badge--primary ::text").getall()
     comments = selector.css("#js-comments-btn::attr(data-count)").get()
@@ -69,7 +77,7 @@ def scrape_noticia(html_content):
         "writer": writer.strip() if writer else None,
         "comments_count": int(comments) if comments else 0,
         "shares_count": int(shares_count.split()[0]) if shares_count else 0,
-        "summary": summary,
+        "summary": scrape_join(summary),
         "sources": scrape_strip(sources),
         "categories": scrape_strip(categories),
     }
@@ -81,16 +89,15 @@ def get_tech_news(amount):
 
     def fetch_for_page(url):
         response_fetch = fetch(url)
-        link_next_page = scrape_next_page_link(response_fetch)
-        print(link_next_page)
+        # link_next_page = scrape_next_page_link(response_fetch)
         return response_fetch
 
     def quant_noticias(urls_noticias, next_url):
         if len(urls_noticias) < amount:
             more_pages = fetch_for_page(next_url)
-            link2 = scrape_novidades(more_pages)
+            more_link = scrape_novidades(more_pages)
             next_url = scrape_next_page_link(more_pages)
-            urls_noticias.extend(link2)
+            urls_noticias.extend(more_link)
             quant_noticias(urls_noticias, next_url)
 
     response_fetch = fetch_for_page(urls_base)
@@ -105,10 +112,10 @@ def get_tech_news(amount):
         noticia = fetch(url)
         resumo = scrape_noticia(noticia)
         list_noticias.append(resumo)
+
+    create_news(list_noticias)
     return list_noticias
 
 
-teste = get_tech_news(30)
-
-print(f" print {teste}")
-print(f" quant {len(teste)}")
+data = get_tech_news(20)
+print(f" quant {len(data)}")
