@@ -54,23 +54,11 @@ def scrape_noticia(html_content):
 
     url = selector.css("link[rel=canonical]::attr(href)").get()
     title = selector.css("h1::text").get()
-    writer = selector.css(".z--font-bold ::text").get().strip()
+    writer = selector.css(".z--font-bold ::text").get()
     summary = selector.css("meta[name=description]::attr(content)").get()
     sources = selector.css(".z--mb-16 .tec--badge::text").getall()
-    """ list_sources = []
-    for source in sources:
-        new_sources = source.strip()
-        list_sources.append(new_sources)
-
-    print(list_sources)"""
-
     categories = selector.css(".tec--badge--primary ::text").getall()
-    """ new_list = []
-    for category in categories:
-        new_category = category.strip()
-        new_list.append(new_category)"""
-
-    comments = selector.css("button::attr(data-count)").get()
+    comments = selector.css("#js-comments-btn::attr(data-count)").get()
     shares_count = selector.css(".tec--toolbar__item::text").get()
     timestamp = selector.css("time::attr(datetime)").get()
 
@@ -78,8 +66,8 @@ def scrape_noticia(html_content):
         "url": url,
         "title": title,
         "timestamp": timestamp,
-        "writer": writer,
-        "comments_count": int(comments),
+        "writer": writer.strip() if writer else None,
+        "comments_count": int(comments) if comments else 0,
         "shares_count": int(shares_count.split()[0]) if shares_count else 0,
         "summary": summary,
         "sources": scrape_strip(sources),
@@ -89,4 +77,38 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    urls_base = "https://www.tecmundo.com.br/novidades"
+
+    def fetch_for_page(url):
+        response_fetch = fetch(url)
+        link_next_page = scrape_next_page_link(response_fetch)
+        print(link_next_page)
+        return response_fetch
+
+    def quant_noticias(urls_noticias, next_url):
+        if len(urls_noticias) < amount:
+            more_pages = fetch_for_page(next_url)
+            link2 = scrape_novidades(more_pages)
+            next_url = scrape_next_page_link(more_pages)
+            urls_noticias.extend(link2)
+            quant_noticias(urls_noticias, next_url)
+
+    response_fetch = fetch_for_page(urls_base)
+    urls_noticias = scrape_novidades(response_fetch)
+    next_url = scrape_next_page_link(response_fetch)
+    quant_noticias(urls_noticias, next_url)
+
+    list_noticias = []
+
+    for index in range(amount):
+        url = urls_noticias[index]
+        noticia = fetch(url)
+        resumo = scrape_noticia(noticia)
+        list_noticias.append(resumo)
+    return list_noticias
+
+
+teste = get_tech_news(30)
+
+print(f" print {teste}")
+print(f" quant {len(teste)}")
