@@ -10,10 +10,10 @@ def fetch(url):
     try:
         html = requests.get(url, timeout=3)
 
-        response = {"status": html.status_code, "data": html.text}
+        response = {"status": html.status_code, "document": html.text}
 
         if response["status"] == 200:
-            return response["data"]
+            return response["document"]
 
         else:
             return None
@@ -24,16 +24,16 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    data = Selector(text=html_content)
-    url_news = data.css(".tec--card__info h3 a::attr(href)").getall()
+    document = Selector(text=html_content)
+    url_news = document.css(".tec--card__info h3 a::attr(href)").getall()
 
     return url_news
 
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    data = Selector(text=html_content)
-    url_to_next_page = data.css(
+    document = Selector(text=html_content)
+    url_to_next_page = document.css(
         ".z--col.z--w-2-3 .tec--list.tec--list--lg div + a::attr(href)"
     ).get()
 
@@ -42,18 +42,20 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    data = Selector(text=html_content)
+    document = Selector(text=html_content)
 
-    url = data.css("head link[rel=canonical]::attr(href)").get()
+    url = document.css("head link[rel=canonical]::attr(href)").get()
 
-    title = data.css("#js-article-title::text").get()
+    title = document.css("#js-article-title::text").get()
 
-    timestamp = data.css(".tec--timestamp__item time::attr(datetime)").get()
+    timestamp = document.css(
+        ".tec--timestamp__item time::attr(datetime)"
+    ).get()
 
     writer = (
-        data.css(".tec--timestamp__item.z--font-bold a::text").get()
-        or data.css(".z--m-none.z--truncate.z--font-bold a::text").get()
-        or data.css(
+        document.css(".tec--timestamp__item.z--font-bold a::text").get()
+        or document.css(".z--m-none.z--truncate.z--font-bold a::text").get()
+        or document.css(
             ".tec--author__info.z--min-w-none.z--flex.z--flex-col p::text"
         ).get()
     )
@@ -61,27 +63,31 @@ def scrape_noticia(html_content):
     if writer is not None:
         writer = writer.strip()
 
-    shares_count = data.css(".tec--toolbar__item::text").get() or 0
+    shares_count = document.css(".tec--toolbar__item::text").get() or 0
 
     if shares_count != 0:
         shares_count = int(shares_count.split()[0])
 
-    comments_count = int(data.css("#js-comments-btn::attr(data-count)").get())
+    comments_count = int(
+        document.css("#js-comments-btn::attr(data-count)").get()
+    )
 
     summary = "".join(
-        data.css(
+        document.css(
             ".tec--article__body.p402_premium p:first-child *::text"
         ).getall()
     )
 
     sources = [
         source.strip()
-        for source in data.css(".z--mb-16 h2 + div .tec--badge::text").getall()
+        for source in document.css(
+            ".z--mb-16 h2 + div .tec--badge::text"
+        ).getall()
     ]
 
     categories = [
         categorie.strip()
-        for categorie in data.css("#js-categories a::text").getall()
+        for categorie in document.css("#js-categories a::text").getall()
     ]
 
     return {
