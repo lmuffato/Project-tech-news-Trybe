@@ -41,7 +41,7 @@ def scrape_next_page_exemple(link):
     response = requests.get(link)
     selector = parsel.Selector(text=response.text)
     next_page_url = selector.css(
-        ".tec--btn.tec--btn--lg.tec--btn--primary.z--mx-auto.z--mt-48::attr(href)"
+        ".tec--btn.tec--btn--lg.tec--btn--primary.z--mt-48::attr(href)"
     ).get()
     print(next_page_url)
 
