@@ -139,7 +139,7 @@ def get_tech_news_urls(amount):
         all_news_urls += news_urls
 
         next_link = scrape_next_page_link(page)
-        print(next_link)
+
         page = fetch(next_link)
 
     return all_news_urls[0:amount]
