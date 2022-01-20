@@ -28,5 +28,5 @@ def top_5_categories():
         c[0] for c in
         sorted(categories_count.items(), key=lambda item: (item[1], item[0]))
     ]
- 
+
     return sorted_tuples[0:5]
