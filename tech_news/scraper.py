@@ -1,6 +1,7 @@
 import requests
 from time import sleep
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -68,9 +69,11 @@ def scrape_noticia(html_content):
     if shares_count != 0:
         shares_count = int(shares_count.split()[0])
 
-    comments_count = int(
-        document.css("#js-comments-btn::attr(data-count)").get()
-    )
+    comments_count = document.css("#js-comments-btn::attr(data-count)").get()
+    if comments_count is not None:
+        comments_count = int(comments_count)
+    elif comments_count is None:
+        comments_count = 0
 
     summary = "".join(
         document.css(
@@ -105,4 +108,35 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""  # Meu código vai aonde eu quiser parceiro
+    document = fetch("https://www.tecmundo.com.br/novidades")
+    news = scrape_novidades(document)
+    length_news = len(news)
+    while length_news < amount:
+        next_page = scrape_next_page_link(document)
+        document = fetch(next_page)
+        more_news = scrape_novidades(document)
+        for new in more_news:
+            news.append(new)
+            length_news += 1
+
+    amount_news = list(news[index] for index in range(amount))
+    data = list(scrape_noticia(fetch(new)) for new in amount_news)
+    create_news(data)
+    return data
+
+
+# amount = 5
+# document = fetch("https://www.tecmundo.com.br/novidades")
+# news = scrape_novidades(document)
+# length_news = len(news)
+# while length_news < amount:
+#     next_page = scrape_next_page_link(document)
+#     document = fetch(next_page)
+#     more_news = scrape_novidades(document)
+#     for new in more_news:
+#         news.append(new)
+#         length_news += 1
+
+# amount_news = list(news[index] for index in range(amount))
+# data = list(scrape_noticia(fetch(new)) for new in amount_news)
+# print(data)
