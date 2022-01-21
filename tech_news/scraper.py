@@ -76,11 +76,13 @@ def getAuthor(content):
 def getShares(content):
     selector = Selector(text=content)
     shares = selector.css(".tec--toolbar__item ::text").get()
-    if shares.split(" "):
+
+    if type(shares) != int:
         amount = shares.split(" ")
         if amount[1] == "0" or amount[1] == "":
             return 0
-        return amount[1]
+        return int(amount[1])
+
     return int(shares)
 
 
@@ -148,6 +150,16 @@ def scrape_noticia(html_content):
     return news
 
 
+def mount_news(all_news):
+    news = []
+    for each_news in all_news:
+        html_content = fetch(each_news)
+        get_news = scrape_noticia(html_content)
+        news.append(get_news)
+
+    return news
+
+
 # Requisito 5
 def get_tech_news(amount):
     url = "https://www.tecmundo.com.br/novidades"
@@ -155,7 +167,6 @@ def get_tech_news(amount):
     news = scrape_novidades(html_content)
     next_page = scrape_next_page_link(html_content)
     news_right_number = []
-    formated_news_to_return = []
 
     while len(news) < amount:
         html_content = fetch(next_page)
@@ -168,9 +179,7 @@ def get_tech_news(amount):
         if len(news_right_number) < amount:
             news_right_number.append(each_news)
 
-    for each_news in news_right_number:
-        html_content = fetch(each_news)
-        news = scrape_noticia(html_content)
-        formated_news_to_return.append(news)
+    formated_news_to_return = mount_news(news_right_number)
 
     create_news(formated_news_to_return)
+    return formated_news_to_return
