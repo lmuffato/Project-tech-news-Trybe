@@ -41,6 +41,31 @@ def scrape_next_page_link(html_content):
     return url_to_next_page
 
 
+def scrape_summary_in_noticia(document):
+    try:
+        summary = "".join(
+            (
+                Selector(
+                    text=document.css(
+                        ".tec--article__body.p402_premium p:first-child"
+                    ).getall()[0]
+                )
+                .css("p *::text")
+                .getall()
+            )
+        )
+
+        return summary
+    except IndexError:
+        summary = "".join(
+            document.css(
+                ".tec--article__body.z--px-16 p:first-child *::text"
+            ).getall()
+        )
+
+        return summary
+
+
 # Requisito 4
 def scrape_noticia(html_content):
     document = Selector(text=html_content)
@@ -80,6 +105,8 @@ def scrape_noticia(html_content):
             ".tec--article__body.p402_premium p:first-child *::text"
         ).getall()
     )
+
+    summary = scrape_summary_in_noticia(document)
 
     sources = [
         source.strip()
