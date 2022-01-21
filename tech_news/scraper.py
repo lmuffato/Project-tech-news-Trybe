@@ -1,7 +1,7 @@
 import requests
 import time
 from parsel import Selector
-from .database import create_news
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -53,14 +53,14 @@ def scrape_noticia(html_content):
     noticias['writer'] = writer.strip() if writer else None
     shares_count = selector.css(
             'div.tec--toolbar__item::text'
-            ).re_first(r"\d+")
+            ).re_first(r'\d+')
     noticias['shares_count'] = int(shares_count) if shares_count else 0
     comments_count = selector.css(
             '#js-comments-btn::attr(data-count)'
             ).get()
     noticias['comments_count'] = int(comments_count)
-    summary = "".join(selector.css(
-            'div.tec--article__body p:first-child *::text'
+    summary = ''.join(selector.css(
+            'div.tec--article__body > p:first-child *::text'
             ).getall())
     noticias['summary'] = summary
     sources = selector.css(
@@ -78,7 +78,7 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    url = "https://www.tecmundo.com.br/novidades"
+    url = 'https://www.tecmundo.com.br/novidades'
     html_content = fetch(url)
     links = scrape_novidades(html_content)
     while len(links) < amount:
