@@ -57,15 +57,29 @@ def getTimestamp(content):
 
 def getAuthor(content):
     selector = Selector(text=content)
-    author = selector.css(".tec--author__info__link ::text").get()
-    return author
+    author = selector.css("a.tec--author__info__link ::text").get()
+    if author:
+        return author.strip()
+
+    author = selector.css(".tec--timestamp__item a ::text").get()
+    if author:
+        return author.strip()
+
+    author = selector.css(".tec--author__info > p:first-child ::text").get()
+    if author:
+        return author.strip()
+
+    return None
 
 
 def getShares(content):
     selector = Selector(text=content)
     shares = selector.css(".tec--toolbar__item ::text").get()
     amount = shares.split(" ")
-    return int(amount[1])
+    if amount[1] == "0" or amount[1] == "":
+        return 0
+
+    return amount[1]
 
 
 def getComments(content):
@@ -85,8 +99,21 @@ def getSummary(content):
 
 def getSources(content):
     selector = Selector(text=content)
-    sources = selector.css(".tec--badge ::text").getall()
-    return sources
+    sources = selector.css(
+        "#js-main > div > article > div.tec--article__body-grid > "
+        "div.z--mb-16 > div > a ::text"
+    ).getall()
+    stripedSources = []
+    counter = 0
+
+    while counter < len(sources):
+        if len(sources[counter]) == 1:
+            counter += 1
+        else:
+            stripedSources.append(sources[counter].strip())
+            counter += 1
+
+    return stripedSources
 
 
 def getCategories(content):
@@ -94,9 +121,9 @@ def getCategories(content):
     categories = selector.css("#js-categories ::text").getall()
     formatedCategories = []
     counter = 0
-    while (counter < len(categories)):
-        if (categories[counter] != " "):
-            formatedCategories.append(categories[counter])
+    while counter < len(categories):
+        if categories[counter] != " ":
+            formatedCategories.append(categories[counter].strip())
         counter += 1
 
     return formatedCategories
