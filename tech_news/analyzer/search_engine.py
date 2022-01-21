@@ -1,5 +1,5 @@
 from ..database import search_news
-import datetime
+import time
 
 
 # Requisito 6
@@ -25,17 +25,17 @@ def search_by_date(date):
         raise ValueError("Data inválida")
 
     data = search_news({"timestamp": {"$regex": date}})
-     news_list = []
+    news_list = []
     for item in data:
         news = (item["title"], item["url"])
-         news_list.append(news)
+        news_list.append(news)
     return
 
 
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
-        db_data = search_news({"sources": {"$regex": source, "$options": "i"}})
+    db_data = search_news({"sources": {"$regex": source, "$options": "i"}})
     news_list = []
 
     for item in db_data:
@@ -44,6 +44,15 @@ def search_by_source(source):
 
     return news_list
 
+
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
+    data = search_news({"categories": {"$regex": category, "$options": "i"}})
+    news_list = []
+
+    for item in data:
+        news = (item["title"], item["url"])
+        news_list.append(news)
+
+    return news_list
