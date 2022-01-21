@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -75,11 +76,12 @@ def getAuthor(content):
 def getShares(content):
     selector = Selector(text=content)
     shares = selector.css(".tec--toolbar__item ::text").get()
-    amount = shares.split(" ")
-    if amount[1] == "0" or amount[1] == "":
-        return 0
-
-    return amount[1]
+    if shares.split(" "):
+        amount = shares.split(" ")
+        if amount[1] == "0" or amount[1] == "":
+            return 0
+        return amount[1]
+    return int(shares)
 
 
 def getComments(content):
@@ -148,4 +150,27 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = "https://www.tecmundo.com.br/novidades"
+    html_content = fetch(url)
+    news = scrape_novidades(html_content)
+    next_page = scrape_next_page_link(html_content)
+    news_right_number = []
+    formated_news_to_return = []
+
+    while len(news) < amount:
+        html_content = fetch(next_page)
+        other_news = scrape_novidades(html_content)
+
+        for each_news in other_news:
+            news.append(each_news)
+
+    for each_news in news:
+        if len(news_right_number) < amount:
+            news_right_number.append(each_news)
+
+    for each_news in news_right_number:
+        html_content = fetch(each_news)
+        news = scrape_noticia(html_content)
+        formated_news_to_return.append(news)
+
+    create_news(formated_news_to_return)
