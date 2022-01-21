@@ -2,6 +2,7 @@
 import time
 import requests
 from parsel import Selector
+import util
 
 
 def fetch(url):
@@ -49,24 +50,16 @@ def scrape_noticia(html_content):
         "div.tec--timestamp__item.z--font-bold > a ::text"
         ).get()
 
-    shares_count = selector.css(
-        "#js-author-bar > nav >"
-        "div:nth-child(1)::text"
-        ).get()
-
-    if shares_count is None or not ('Compartilharam'):
-        shares_count = 0
-
     return {
         "url": url,
         "title": title,
         "timestamp": timestamp,
         "writer": writer,
-        "shares_count": shares_count,
-        "comments_count": 1,
-        "summary": "",
-        "sources": [""],
-        "categories": [""],
+        "shares_count": util.get_shares_count(selector),
+        "comments_count": util.get_comments(selector),
+        "summary": util.get_summary,
+        "sources": util.get_sources,
+        "categories": util.get_categories,
     }
 
 
