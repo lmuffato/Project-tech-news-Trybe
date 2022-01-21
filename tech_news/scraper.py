@@ -39,6 +39,14 @@ def scrape_next_page_link(html_content):
 ######################################################################################
 # AUX
 
+def get_timestamp(selector):
+    ts = selector.css(
+        ".tec--timestamp__item time::attr(datetime)"
+    ).get()
+
+    return ts
+
+
 def get_writer(selector):
     writer1 = '.z--font-bold a ::text'
     writer2 = '.z--font-bold ::text'
@@ -53,21 +61,16 @@ def get_writer(selector):
 
 def get_shares_count(selector):
     shares_count = selector.css(
-        "#js-author-bar > nav >"
-        "div:nth-child(1)::text"
+        ".tec--toolbar__item::text"
         ).get()
 
-    if shares_count is None or not ('Compartilharam'):
-        shares_count = 0
-
-    return shares_count
+    return int(shares_count.split()[0]) if shares_count else 0
 
 
 def get_comments(selector):
     comments_count = selector.css(
-        "#button#js-comments-btn"
-        "::attr(data-count)"
-        ).get()
+        "#js-comments-btn::attr(data-count)"
+    ).get()
     if comments_count is None:
         comments_count = 0
 
@@ -77,7 +80,7 @@ def get_comments(selector):
 def get_summary(selector):
     summary = "".join(
         selector.css(
-            "div.tec--article__body > p:first-child *::text"
+            ".tec--article__body > p:first-child *::text"
         ).getall()
     )
     return summary
@@ -85,7 +88,7 @@ def get_summary(selector):
 
 def get_sources(selector):
     arr = []
-    get_sources = selector.css("div.z--mb-16 a::text").getall()
+    get_sources = selector.css(".z--mb-16 a.tec--badge::text").getall()
 
     for source in get_sources:
         arr.append(source.strip())
@@ -94,30 +97,24 @@ def get_sources(selector):
 
 
 def get_categories(selector):
-    arr = []
-    categories = selector.css(
-            "#js-categories ::text"
-            ).getall()
+    arr = selector.css("#js-categories a::text").getall()
+    categories = [category.strip() for category in arr]
 
-    for cat in categories:
-        arr.append(cat.strip())
-    return arr
+    return categories
 
 
 # Requisito 4
 def scrape_noticia(html_content):
     selector = Selector(html_content)
 
-    url = selector.css("link[rel=canonical] ::attr(href)").get()
-    title = selector.css("#js-article-title ::text").get()
-    timestamp = selector.css("#js-article-date > strong ::text").get()
-    writer = get_writer(selector)
+    url = selector.css("meta[property='og:url']::attr(content)").get()
+    title = selector.css(".tec--article__header__title::text").get()
 
     return {
         "url": url,
         "title": title,
-        "timestamp": timestamp,
-        "writer": writer,
+        "timestamp": get_timestamp(selector),
+        "writer": get_writer(selector),
         "shares_count": get_shares_count(selector),
         "comments_count": get_comments(selector),
         "summary": get_summary(selector),
