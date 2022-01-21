@@ -29,7 +29,7 @@ def search_by_date(date):
     for item in data:
         news = (item["title"], item["url"])
         news_list.append(news)
-    return
+    return news_list
 
 
 # Requisito 8
