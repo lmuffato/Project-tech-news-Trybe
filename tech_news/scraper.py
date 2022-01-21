@@ -16,6 +16,9 @@ def fetch(url):
         return None
 
 
+html = fetch("https://www.tecmundo.com.br/novidades")
+
+
 # Requisito 2
 def scrape_novidades(html_content):
     selector = parsel.Selector(text=html_content)
@@ -43,10 +46,11 @@ def scrape_next_page_exemple(link):
     next_page_url = selector.css(
         ".tec--btn.tec--btn--lg.tec--btn--primary.z--mt-48::attr(href)"
     ).get()
-    print(next_page_url)
+    return next_page_url
 
 
 # scrape_next_page_exemple('https://www.tecmundo.com.br/novidades')
+print(scrape_next_page_exemple("https://www.tecmundo.com.br/novidades?page=2 "))
 
 
 # Requisito 4
@@ -120,7 +124,12 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    html_content = fetch("https://www.tecmundo.com.br/novidades")
+    news_list = []
+    news_list.append(scrape_novidades(html_content))
+    while len(news_list) <= 0:
+        nxt_page = scrape_next_page_link(html_content)
+    scrape_noticia
 
 
 # def noticia_html_v3():
