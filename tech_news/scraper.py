@@ -150,20 +150,3 @@ def get_tech_news(amount):
     data = list(scrape_noticia(fetch(new)) for new in amount_news)
     create_news(data)
     return data
-
-
-# amount = 5
-# document = fetch("https://www.tecmundo.com.br/novidades")
-# news = scrape_novidades(document)
-# length_news = len(news)
-# while length_news < amount:
-#     next_page = scrape_next_page_link(document)
-#     document = fetch(next_page)
-#     more_news = scrape_novidades(document)
-#     for new in more_news:
-#         news.append(new)
-#         length_news += 1
-
-# amount_news = list(news[index] for index in range(amount))
-# data = list(scrape_noticia(fetch(new)) for new in amount_news)
-# print(data)
