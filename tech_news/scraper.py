@@ -64,13 +64,14 @@ def getAuthor(content):
 def getShares(content):
     selector = Selector(text=content)
     shares = selector.css(".tec--toolbar__item ::text").get()
-    return shares
+    amount = shares.split(" ")
+    return int(amount[1])
 
 
 def getComments(content):
     selector = Selector(text=content)
     comments = selector.css("#js-comments-btn ::attr(data-count)").get()
-    return comments
+    return int(comments)
 
 
 def getSummary(content):
@@ -78,7 +79,8 @@ def getSummary(content):
     summary = selector.css(
         ".tec--article__body > p:first_child *::text"
     ).getall()
-    return summary
+    paragraph = "".join(summary)
+    return paragraph
 
 
 def getSources(content):
@@ -90,34 +92,31 @@ def getSources(content):
 def getCategories(content):
     selector = Selector(text=content)
     categories = selector.css("#js-categories ::text").getall()
-    return categories
+    formatedCategories = []
+    counter = 0
+    while (counter < len(categories)):
+        if (categories[counter] != " "):
+            formatedCategories.append(categories[counter])
+        counter += 1
+
+    return formatedCategories
 
 
 # Requisito 4
 def scrape_noticia(html_content):
-    url = getUrl(html_content)
-    title = getTitle(html_content)
-    timestamp = getTimestamp(html_content)
-    author = getAuthor(html_content)
-    shares = getShares(html_content)
-    comments = getComments(html_content)
-    summary = getSummary(html_content)
-    sources = getSources(html_content)
-    categories = getCategories(html_content)
-
     news = {
-        "url": url,
-        "title": title,
-        "timestamp": timestamp,
-        "writer": author,
-        "shares_count": shares,
-        "comments_count": comments,
-        "summary": summary,
-        "sources": sources,
-        "categories": categories
+        "url": getUrl(html_content),
+        "title": getTitle(html_content),
+        "timestamp": getTimestamp(html_content),
+        "writer": getAuthor(html_content),
+        "shares_count": getShares(html_content),
+        "comments_count": getComments(html_content),
+        "summary": getSummary(html_content),
+        "sources": getSources(html_content),
+        "categories": getCategories(html_content),
     }
 
-    print(news)
+    return news
 
 
 # Requisito 5
