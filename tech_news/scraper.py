@@ -37,8 +37,7 @@ def scrape_next_page_link(html_content):
     return next_page_buttons
 
 
-######################################################################################
-# AUX
+# AUX 4
 
 def get_timestamp(selector):
     ts = selector.css(
