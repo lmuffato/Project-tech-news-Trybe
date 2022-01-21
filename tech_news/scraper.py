@@ -47,7 +47,7 @@ def scrape_noticia(html_content):
     writer = selector.css(
         "div.z--pt-40.z--pb-24 > div.z--flex.z--items-center"
         "> div.tec--timestamp.tec--timestamp--lg >"
-        "div.tec--timestamp__item.z--font-bold > a ::text"
+        "div.tec--timestamp__item.z--font-bold > a *::text"
         ).get()
 
     return {
@@ -57,9 +57,9 @@ def scrape_noticia(html_content):
         "writer": writer,
         "shares_count": util.get_shares_count(selector),
         "comments_count": util.get_comments(selector),
-        "summary": util.get_summary,
-        "sources": util.get_sources,
-        "categories": util.get_categories,
+        "summary": util.get_summary(selector),
+        "sources": util.get_sources(selector),
+        "categories": util.get_categories(selector),
     }
 
 
