@@ -2,6 +2,7 @@ import requests
 import time
 from parsel import Selector
 
+
 # Requisito 1
 limit_time = 3
 status_ok = 200
@@ -42,5 +43,3 @@ def scrape_noticia(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
-
-scrape_novidades(fetch('https://www.tecmundo.com.br/novidades'))
