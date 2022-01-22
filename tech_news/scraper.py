@@ -1,4 +1,6 @@
 import requests
+import time
+
 
 # Requisito 1
 def fetch(url):
@@ -10,6 +12,8 @@ def fetch(url):
         return None
 
     time.sleep(1)
+
+
 
 # Requisito 2
 def scrape_novidades(html_content):
