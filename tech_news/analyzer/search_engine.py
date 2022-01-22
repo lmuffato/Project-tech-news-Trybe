@@ -35,11 +35,7 @@ def search_by_date(date):
 def search_by_source(source):
     return map_answer(
         search_news(
-            {
-                "sources": {
-                    "$elemMatch": {"$regex": source, "$options": "i"}
-                }
-            }
+            {"sources": {"$elemMatch": {"$regex": source, "$options": "i"}}}
         )
     )
 
