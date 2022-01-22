@@ -1,5 +1,6 @@
 import requests
 import time
+from parsel import Selector
 
 # Requisito 1
 limit_time = 3
@@ -21,6 +22,11 @@ def fetch(url):
 # Requisito 2
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    url_list = selector.css('h3.tec--card__title a::attr(href)').getall()
+    if(url_list):
+        return url_list
+    return []
 
 
 # Requisito 3
@@ -36,3 +42,5 @@ def scrape_noticia(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+
+scrape_novidades(fetch('https://www.tecmundo.com.br/novidades'))
