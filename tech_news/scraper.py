@@ -1,6 +1,7 @@
 import requests
 import time
 import parsel
+from database import create_news
 
 
 # Requisito 1
@@ -49,8 +50,10 @@ def scrape_next_page_exemple(link):
     return next_page_url
 
 
-# scrape_next_page_exemple('https://www.tecmundo.com.br/novidades')
-print(scrape_next_page_exemple("https://www.tecmundo.com.br/novidades?page=2 "))
+# print(scrape_next_page_link(html))
+# print(scrape_next_page_exemple(
+    # "https://www.tecmundo.com.br/novidades?page=2 "
+# ))
 
 
 # Requisito 4
@@ -115,23 +118,28 @@ def scrape_noticia(html_content):
         "sources": sources,
         "categories": get_categories(selector),
     }
-    # print(scrape_new)
     return scrape_new
-
-
-# print(scrape_noticia('https://www.tecmundo.com.br/dispositivos-moveis/215327-pixel-5a-tera-lancamento-limitado-devido-escassez-chips.htm'))
 
 
 # Requisito 5
 def get_tech_news(amount):
     html_content = fetch("https://www.tecmundo.com.br/novidades")
     news_list = []
-    news_list.append(scrape_novidades(html_content))
-    while len(news_list) <= 0:
+    result = []
+    while len(news_list) < amount:
+        news_list.append(scrape_novidades(html_content))
         nxt_page = scrape_next_page_link(html_content)
-    scrape_noticia
+        html_content = fetch(nxt_page)
+    for news in range(amount):
+        content = fetch(news_list[news])
+        result.append(scrape_noticia(content))
+        # print(f'\n{news_list[news]}')
+    create_news(result)
+    print(result)
+    return result
 
 
+get_tech_news(2)
 # def noticia_html_v3():
 #     path = (
 #         "tests/"
