@@ -1,6 +1,7 @@
 from tech_news.database import search_news
 import time
 
+
 # Requisito 6
 def search_by_title(title):
     arr_news = search_news({"title": {"$regex": title, "$options": "i"}})
@@ -20,9 +21,11 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    arr_news = search_news({"sources": {"$regex": source, "$options": "i"}})
+    return [(news["title"], news["url"]) for news in arr_news]
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    arr_news = search_news({"categories": {"$regex": category, "$options": "i"}})
+    return [(news["title"], news["url"]) for news in arr_news]
