@@ -14,11 +14,9 @@ def fetch(url):
     time.sleep(1)
 
 
-
 # Requisito 2
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
-
 
 # Requisito 3
 def scrape_next_page_link(html_content):
