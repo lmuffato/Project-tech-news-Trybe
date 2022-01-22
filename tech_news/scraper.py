@@ -100,11 +100,10 @@ def scrape_noticia(html_content):
     elif comments_count is None:
         comments_count = 0
 
-    summary = "".join(
-        document.css(
-            ".tec--article__body.p402_premium p:first-child *::text"
-        ).getall()
-    )
+    # Verssão do murilo muito mais eficiente \/
+    # summary = "".join(
+    #     document.css(".tec--article__body > p:first-child ::text").getall()
+    # )
 
     summary = scrape_summary_in_noticia(document)
 

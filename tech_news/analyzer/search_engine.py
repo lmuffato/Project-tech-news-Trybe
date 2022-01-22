@@ -1,5 +1,6 @@
 import re
 from tech_news.database import db
+from datetime import datetime
 
 
 # source :
@@ -11,9 +12,17 @@ def search_by_title(title):
     return titles_and_urls
 
 
+# source:
+# https://stackoverflow.com/questions/4709652/python-regex-to-match-dates
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+        news = list(db.news.find({"timestamp": {"$regex": date}}))
+        titles_and_urls = [(new["title"], new["url"]) for new in news]
+        return titles_and_urls
+    except ValueError:
+        raise ValueError("Data inválida")
 
 
 # Requisito 8
