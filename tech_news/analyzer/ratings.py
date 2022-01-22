@@ -8,25 +8,24 @@ def map_answer(news_list):
 # Requisito 10
 def top_5_news():
     set1 = {
-      "$set": {
-        "popularity": {
-          "$add": ["$shares_count", "$comments_count"]
-        }
-      }
+        "$set": {"popularity": {"$add": ["$shares_count", "$comments_count"]}}
     }
-    sort1 = {
-      "$sort": {
-        "popularity": -1,
-        "title": 1
-      }
-    }
-    limit1 = {
-      "$limit": 5
-    }
+    sort1 = {"$sort": {"popularity": -1, "title": 1}}
+    limit1 = {"$limit": 5}
 
     return map_answer(list(db.news.aggregate([set1, sort1, limit1])))
 
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    parcial_result = list(
+        db.news.aggregate(
+            [
+                {"$unwind": "$categories"},
+                {"$group": {"_id": "$categories", "total": {"$count": {}}}},
+                {"$sort": {"total": -1, "_id": 1}},
+                {"$limit": 5},
+            ]
+        )
+    )
+    return list(map(lambda x: x["_id"], parcial_result))
