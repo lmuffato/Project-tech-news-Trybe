@@ -1,6 +1,7 @@
 import time
 import requests
 from parsel import Selector
+from .database import create_news
 
 
 # Requisito 1
@@ -34,35 +35,55 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    noticia = {}
     selector = Selector(text=html_content)
+
     url = selector.css("head link[rel=canonical]::attr(href)").get()
-    noticia["url"] = url
-    title = selector.css("h1.tec--article__header__title::text").get()
-    noticia["title"] = title
-    timestamp = selector.css("time::attr(datetime)").get()
-    noticia["timestamp"] = timestamp
+    title = selector.css(".tec--article__header__title::text").get()
+    timestamp = selector.css("#js-article-date::attr(datetime)").get()
     writer = selector.css(".z--font-bold *::text").get()
-    noticia["writer"] = writer.strip() if writer else None
-    shares_count = selector.css("div.tec--toolbar__item::text").re_first(
-        r"\d+"
-    )
-    noticia["shares_count"] = int(shares_count) if shares_count else 0
+    writer = writer.strip() if writer else None
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    shares_count = shares_count.strip().split(" ")[0] if shares_count else 0
     comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
-    noticia["comments_count"] = int(comments_count)
-    summary = "".join(
-        selector.css("div.tec--article__body p:first-child *::text").getall()
-    )
-    noticia["summary"] = summary
-    sources = selector.css("div.z--mb-16 a::text").getall()
-    sources = [s.strip() for s in sources]
-    noticia["sources"] = sources
-    categories = selector.css("div#js-categories a.tec--badge::text").getall()
-    categories = [c.strip() for c in categories]
-    noticia["categories"] = categories
-    return noticia
+    comments_count = comments_count if comments_count else 0
+    summary = selector.css(
+        ".tec--article__body > p:first-child *::text"
+    ).getall()
+    summary = "".join(summary)
+    sources = [
+        source.strip()
+        for source in selector.css(".z--mb-16 div a::text").getall()
+    ]
+    categories = [
+        category.strip()
+        for category in selector.css("#js-categories a::text").getall()
+    ]
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": int(shares_count),
+        "comments_count": int(comments_count),
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
 
 
 # Requisito 5
+# https://github.com/tryber/sd-010-a-tech-news/pull/92/commits/c3783b51a7c7dc97c9b23de5a96c9b1d44825723
+
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = fetch("https://www.tecmundo.com.br/novidades")
+    links = scrape_novidades(url)
+
+    while len(links) < amount:
+        more_pages = scrape_next_page_link(url)
+        next_page = fetch(more_pages)
+        links.extend(scrape_novidades(next_page))
+
+    notes = [scrape_noticia(fetch(element)) for element in links[:amount]]
+
+    create_news(notes)
+    return notes
