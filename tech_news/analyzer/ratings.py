@@ -13,13 +13,13 @@ def sum_comments_and_shares(list):
 
 # Requisito 10
 def top_5_news():
-    order_news = []
-    counter = 0
+    # order_news = []
+    # counter = 0
     all_news = find_news()
     sum = sum_comments_and_shares(all_news)
-    
+
     print(sum)
-        
+    pass
 
 
 # Requisito 11

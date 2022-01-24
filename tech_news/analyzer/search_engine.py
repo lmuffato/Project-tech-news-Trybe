@@ -55,9 +55,6 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     results = search_news({"sources": {"$regex": source, "$options": "i"}})
-
-    # print("RESULTSSSSS", results)
-
     result = mount_tupla(results)
     return result
 
