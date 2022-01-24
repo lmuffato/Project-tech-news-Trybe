@@ -1,7 +1,7 @@
 import requests
 import time
 import parsel
-from database import create_news
+from .database import create_news
 
 
 # Requisito 1
@@ -15,9 +15,6 @@ def fetch(url):
             return None
     except requests.ReadTimeout:
         return None
-
-
-html = fetch("https://www.tecmundo.com.br/novidades")
 
 
 # Requisito 2
@@ -48,12 +45,6 @@ def scrape_next_page_exemple(link):
         ".tec--btn.tec--btn--lg.tec--btn--primary.z--mt-48::attr(href)"
     ).get()
     return next_page_url
-
-
-# print(scrape_next_page_link(html))
-# print(scrape_next_page_exemple(
-    # "https://www.tecmundo.com.br/novidades?page=2 "
-# ))
 
 
 # Requisito 4
@@ -93,13 +84,15 @@ def scrape_noticia(html_content):
     timestamp = selector.css(
         ".tec--timestamp__item time::attr(datetime)"
         ).get()
-    comments_count = int(selector.css(
+    comments_count = selector.css(
         "#js-comments-btn ::attr(data-count)"
-        ).get())
-    if comments_count == '':
+        ).get()
+    if comments_count == '' or None:
         comments_count = 0
+    else:
+        comments_count = int(comments_count)
     summary_list = selector.css(
-        ".tec--article__body p:first_child *::text"
+        ".tec--article__body > p:first_child *::text"
         ).getall()
     summary = ''.join(summary_list)
     sources_list = selector.css(".z--mb-16 .tec--badge ::text").getall()
@@ -124,12 +117,15 @@ def scrape_noticia(html_content):
 # Requisito 5
 def get_tech_news(amount):
     html_content = fetch("https://www.tecmundo.com.br/novidades")
-    news_list = []
+    news_list = scrape_novidades(html_content)
     result = []
     while len(news_list) < amount:
-        news_list.append(scrape_novidades(html_content))
         nxt_page = scrape_next_page_link(html_content)
         html_content = fetch(nxt_page)
+        news_to_include = (scrape_novidades(html_content))
+        if (amount - len(news_list)) <= len(news_to_include):
+            for i in range(amount - len(news_list)):
+                news_list.append(news_to_include[i])
     for news in range(amount):
         content = fetch(news_list[news])
         result.append(scrape_noticia(content))
