@@ -5,8 +5,7 @@ from datetime import datetime
 # Requisito 6
 def search_by_title(title):
     """Seu código deve vir aqui"""
-    title = title.title()
-    query = {"title": title}
+    query = {"title": {"$regex": title, "$options": "i"}}
     results = search_news(query)
     return [(result["title"], result["url"]) for result in results]
 
