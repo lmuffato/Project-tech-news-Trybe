@@ -24,7 +24,7 @@ def search_by_title(title):
         return []
 
 
-def mount_tupla(list):
+def mount_tuple(list):
     list_to_mount = []
 
     if len(list) == 0:
@@ -46,7 +46,7 @@ def search_by_date(date):
 
         if valid_date:
             results = search_news({"timestamp": {"$regex": date}})
-            result = mount_tupla(results)
+            result = mount_tuple(results)
             return result
     except ValueError:
         raise ValueError("Data inválida")
@@ -55,7 +55,7 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     results = search_news({"sources": {"$regex": source, "$options": "i"}})
-    result = mount_tupla(results)
+    result = mount_tuple(results)
     return result
 
 
@@ -64,5 +64,5 @@ def search_by_category(category):
     results = search_news(
         {"categories": {"$regex": category, "$options": "i"}}
     )
-    result = mount_tupla(results)
+    result = mount_tuple(results)
     return result
