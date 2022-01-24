@@ -24,6 +24,19 @@ def search_by_title(title):
         return []
 
 
+def mount_tupla(list):
+    list_to_mount = []
+
+    for result in list:
+        list_to_mount.append(result["title"])
+        list_to_mount.append(result["url"])
+
+    if len(list_to_mount) > 0:
+        return [tuple(list_to_mount)]
+    else:
+        return []
+
+
 # Requisito 7
 def search_by_date(date):
     try:
@@ -32,17 +45,9 @@ def search_by_date(date):
         valid_date = datetime.strptime(date, "%Y-%m-%d")
 
         if valid_date:
-            formated_return = []
             results = search_news({"timestamp": {"$regex": date}})
-
-            for result in results:
-                formated_return.append(result["title"])
-                formated_return.append(result["url"])
-
-            if len(formated_return) > 0:
-                return [tuple(formated_return)]
-            else:
-                return []
+            result = mount_tupla(results)
+            return result
 
     except ValueError:
         return "Data inválida"
