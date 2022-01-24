@@ -1,4 +1,5 @@
 from tech_news.database import search_news
+from datetime import datetime
 
 
 # Requisito 6
@@ -11,8 +12,8 @@ def search_by_title(title):
     response = []
 
     for result in results:
-        title_search = result['title']
-        url_search = result['url']
+        title_search = result["title"]
+        url_search = result["url"]
 
         response.append(title_search)
         response.append(url_search)
@@ -25,7 +26,26 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    try:
+        # fonte:
+        # https://stackoverflow.com/questions/47771911/python-regular-expression-date-yyyy-mm-dd-hhmmss
+        valid_date = datetime.strptime(date, "%Y-%m-%d")
+
+        if valid_date:
+            formated_return = []
+            results = search_news({"timestamp": {"$regex": date}})
+
+            for result in results:
+                formated_return.append(result["title"])
+                formated_return.append(result["url"])
+
+            if len(formated_return) > 0:
+                return [tuple(formated_return)]
+            else:
+                return []
+
+    except ValueError:
+        return "Data inválida"
 
 
 # Requisito 8
