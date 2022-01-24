@@ -1,5 +1,4 @@
 from tech_news.database import find_news
-from tech_news.analyzer.search_engine import mount_tuple
 
 
 def sort_filter(e):
