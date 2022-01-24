@@ -48,9 +48,8 @@ def search_by_date(date):
             results = search_news({"timestamp": {"$regex": date}})
             result = mount_tupla(results)
             return result
-
     except ValueError:
-        return "Data inválida"
+        raise ValueError("Data inválida")
 
 
 # Requisito 8
