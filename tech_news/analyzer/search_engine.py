@@ -27,14 +27,14 @@ def search_by_title(title):
 def mount_tupla(list):
     list_to_mount = []
 
+    if len(list) == 0:
+        return []
+
     for result in list:
         list_to_mount.append(result["title"])
         list_to_mount.append(result["url"])
 
-    if len(list_to_mount) > 0:
-        return [tuple(list_to_mount)]
-    else:
-        return []
+    return [tuple(list_to_mount)]
 
 
 # Requisito 7
@@ -54,9 +54,15 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    results = search_news({"writer": {"$regex": source, "$options": "i"}})
+    if len(source) == 0:
+        return []
+
+    results = search_news(
+        {"writer": {"$regex": source, "$options": "i"}}
+    )
+    print("RESULTSSSSS", results)
     result = mount_tupla(results)
-    print(result)
+    return result
 
 
 # Requisito 9
