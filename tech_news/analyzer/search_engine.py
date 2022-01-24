@@ -54,12 +54,7 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    if len(source) == 0:
-        return []
-
-    results = search_news(
-        {"writer": {"$regex": source, "$options": "i"}}
-    )
+    results = search_news({"writer": {"$regex": source, "$options": "i"}})
     print("RESULTSSSSS", results)
     result = mount_tupla(results)
     return result
@@ -67,4 +62,8 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    results = search_news(
+        {"categories": {"$regex": category, "$options": "i"}}
+    )
+    result = mount_tupla(results)
+    return result
