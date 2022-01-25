@@ -20,6 +20,7 @@ def top_5_news():
 
 # Ref: https://stackoverflow.com/questions/8966538/syntax-behind-sortedkey-lambda
 
+
 # Requisito 11
 def top_5_categories():
     """Seu código deve vir aqui"""
