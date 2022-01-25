@@ -67,7 +67,6 @@ def analyzer_menu():
         selected == "3"
         or selected == "4"
         or selected == "5"
-        or selected == "6"
     ):
         return select_option_three_to_five(selected)
     else:
