@@ -28,16 +28,13 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    try:
-        db_list = find_news()
-        filtered_news = []
-        for news in db_list:
-            for fonte in news["sources"]:
-                if fonte.upper() == source.upper():
-                    filtered_news.append(news)
-        return [(news["title"], news["url"]) for news in filtered_news]
-    except ValueError:
-        raise ValueError("Data inválida")
+    db_list = find_news()
+    filtered_news = []
+    for news in db_list:
+        for fonte in news["sources"]:
+            if fonte.upper() == source.upper():
+                filtered_news.append(news)
+    return [(news["title"], news["url"]) for news in filtered_news]
 
 
 # Requisito 9
