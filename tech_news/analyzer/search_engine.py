@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 from tech_news.database import find_news
 
 
@@ -25,9 +25,6 @@ def search_by_date(date):
         return [(news["title"], news["url"]) for news in filtered_news]
     except ValueError:
         raise ValueError("Data inválida")
-
-
-print(search_by_date("2020-11-11"))
 
 
 # Requisito 8
