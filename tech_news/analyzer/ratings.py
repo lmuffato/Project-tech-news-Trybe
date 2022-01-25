@@ -38,4 +38,4 @@ def top_5_categories():
     sum_list = sort_categories(all_news)
     print(all_news)
     print("SUM_LIST", sum_list)
-    pass
+    return sum_list
