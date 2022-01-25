@@ -18,7 +18,8 @@ def top_5_news():
 
     return result
 
-# Ref: https://stackoverflow.com/questions/8966538/syntax-behind-sortedkey-lambda
+# Ref:
+# https://stackoverflow.com/questions/8966538/syntax-behind-sortedkey-lambda
 
 
 # Requisito 11
