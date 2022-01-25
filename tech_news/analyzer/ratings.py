@@ -18,6 +18,10 @@ def sum_comments_and_shares(list):
     return sum_list
 
 
+def sort_categories(list):
+    pass
+
+
 # Requisito 10
 def top_5_news():
     all_news = find_news()
@@ -30,4 +34,8 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    all_news = find_news()
+    sum_list = sort_categories(all_news)
+    print(all_news)
+    print("SUM_LIST", sum_list)
+    pass
