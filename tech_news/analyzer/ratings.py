@@ -8,7 +8,7 @@ def top_5_news():
     result = []
 
     data.sort(
-        key=lambda item: (item["shares_count"] + item["comments_count"]),
+        key=lambda news: (news["shares_count"] + news["comments_count"]),
         reverse=True
     )
 
@@ -18,6 +18,7 @@ def top_5_news():
 
     return result
 
+# Ref: https://stackoverflow.com/questions/8966538/syntax-behind-sortedkey-lambda
 
 # Requisito 11
 def top_5_categories():
