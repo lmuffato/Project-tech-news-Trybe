@@ -10,18 +10,19 @@ from tech_news.analyzer.ratings import top_5_news, top_5_categories
 
 
 def menu():
-    select = input(
+    menu = (
         "Selecione uma das opções a seguir:\n"
-        " 0 - Popular o banco com notícias;\n"
-        " 1 - Buscar notícias por título;\n"
-        " 2 - Buscar notícias por fonte;\n"
-        " 4 - Buscar notícias por categoria;\n"
-        " 5 - Listar top 5 notícias;\n"
-        " 6 - Listar top 5 categorias;\n"
-        " 7 - Sair.\n"
+        + " 0 - Popular o banco com notícias;\n"
+        + " 1 - Buscar notícias por título;\n"
+        + " 2 - Buscar notícias por data;\n"
+        + " 3 - Buscar notícias por fonte;\n"
+        + " 4 - Buscar notícias por categoria;\n"
+        + " 5 - Listar top 5 notícias;\n"
+        + " 6 - Listar top 5 categorias;\n"
+        + " 7 - Sair."
     )
 
-    return select
+    return input(menu)
 
 
 def select_option_zero_to_two(option):
@@ -51,7 +52,7 @@ def select_option_six_and_seven(option):
     if option == "6":
         return top_5_categories()
     if option == "7":
-        return print("Encerrando script")
+        return print("Encerrando script\n")
     else:
         return sys.stderr.write("Opção inválida\n")
 
@@ -61,13 +62,13 @@ def analyzer_menu():
     selected = menu()
 
     if selected == "0" or selected == "1" or selected == "2":
-        select_option_zero_to_two(selected)
+        return select_option_zero_to_two(selected)
     elif (
         selected == "3"
         or selected == "4"
         or selected == "5"
         or selected == "6"
     ):
-        select_option_three_to_five(selected)
+        return select_option_three_to_five(selected)
     else:
-        select_option_six_and_seven(selected)
+        return select_option_six_and_seven(selected)
