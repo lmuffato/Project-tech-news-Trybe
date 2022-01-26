@@ -1,8 +1,7 @@
 from parsel import Selector
 import requests
 import time
-
-from .database import create_news
+from database import create_news
 
 
 # Requisito 1
