@@ -17,7 +17,16 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    if date == "":
+        return []
+    news_list = []
+    response = search_news({"date": date})
+    if len(response) == 0:
+        return response
+    for item in response:
+        news_typle = item["title"], item["url"]
+        news_list.append(news_typle)
+    return news_list
 
 
 # Requisito 8
