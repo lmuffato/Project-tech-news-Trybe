@@ -6,7 +6,7 @@ from tech_news.analyzer.search_engine import (
     search_by_category,
 )
 from tech_news.analyzer.ratings import top_5_news, top_5_categories
-
+import sys
 
 # Requisito 12
 OPTIONS = "\n ".join(
@@ -56,7 +56,7 @@ def four():
 
 def seven():
     print("Encerrando script\n")
-    return exit()
+    # return exit()
 
 
 FUNCTIONS = {
@@ -79,4 +79,5 @@ def analyzer_menu():
 
         return function()
     except KeyError:
-        return "Opção inválida"
+        sys.stderr.write("Opção inválida\n")  # Vlw Murilo!
+        # exit()
