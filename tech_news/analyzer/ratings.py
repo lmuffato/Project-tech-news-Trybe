@@ -27,3 +27,32 @@ def top_5_news():
 # Requisito 11
 def top_5_categories():
     """Seu código deve vir aqui"""
+    query = [
+        {
+            "$unwind": "$categories",
+        },
+        {
+            "$group": {
+                "_id": "$categories",
+                "qnt": {"$sum": 1},
+            },
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "qnt": 1,
+                "category": "$_id",
+            },
+        },
+        {
+            "$sort": {
+                "qnt": -1,
+                "category": 1,
+            },
+        },
+        {
+            "$limit": 5,
+        },
+    ]
+    results = db.news.aggregate(query)
+    return [result['category'] for result in results]
