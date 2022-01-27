@@ -1,4 +1,6 @@
 from tech_news.database import search_news
+import re
+import time
 
 
 # Requisito 6
@@ -17,10 +19,14 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    if date == "":
-        return []
+    try:
+        time.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError("Data inválida")
+
     news_list = []
-    response = search_news({"date": date})
+    regex = re.compile(date)
+    response = search_news({"timestamp": regex})
     if len(response) == 0:
         return response
     for item in response:
