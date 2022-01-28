@@ -2,27 +2,36 @@ import sys
 
 
 # Requisito 12
-def analyzer_menu():
-    enun = 'Selecione uma das opções a seguir:\n'
-    op0 = '0 - Popular o banco com notícias;\n'
-    op1 = '1 - Buscar notícias por título;\n'
-    op2 = '2 - Buscar notícias por data;\n'
-    op3 = '3 - Buscar notícias por fonte;\n'
-    op4 = '4 - Buscar notícias por categoria;\n'
-    op5 = '5 - Listar top 5 notícias;\n'
-    op6 = '6 - Listar top 5 categorias;\n'
-    op7 = '7 - Sair.\n'
-    print(enun + op0 + op1 + op2 + op3 + op4 + op5 + op6 + op7)
-    option = input()
-    if option == '0':
+def answer_menu(answer):
+    if answer == '0':
         print("Digite quantas notícias serão buscadas:")
-    elif option == '1':
+    if answer == '1':
         print("Digite o título:")
-    elif option == '2':
+    elif answer == '2':
         print("Digite a data no formato aaaa-mm-dd:")
-    elif option == '3':
+    elif answer == '3':
         print("Digite a fonte:")
-    elif option == '4':
+    elif answer == '4':
         print("Digite a categoria:")
     else:
         sys.stderr.write("Opção inválida\n")
+
+
+def analyzer_menu():
+    menu = (
+            'Selecione uma das opções a seguir:\n' +
+            ' 0 - Popular o banco com notícias;\n' +
+            ' 1 - Buscar notícias por título;\n' +
+            ' 2 - Buscar notícias por data;\n' +
+            ' 3 - Buscar notícias por fonte;\n' +
+            ' 4 - Buscar notícias por categoria;\n' +
+            ' 5 - Listar top 5 notícias;\n' +
+            ' 6 - Listar top 5 categorias;\n' +
+            ' 7 - Sair.'
+    )
+    option = input(menu)
+    answer_menu(option)
+
+
+
+# analyzer_menu()
