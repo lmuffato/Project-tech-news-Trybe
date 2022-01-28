@@ -1,3 +1,6 @@
+import sys
+
+
 # Requisito 12
 def analyzer_menu():
     enun = 'Selecione uma das opções a seguir:\n'
@@ -13,13 +16,13 @@ def analyzer_menu():
     option = input()
     if option == '0':
         print("Digite quantas notícias serão buscadas:")
-    if option == '1':
+    elif option == '1':
         print("Digite o título:")
-    if option == '2':
+    elif option == '2':
         print("Digite a data no formato aaaa-mm-dd:")
-    if option == '3':
+    elif option == '3':
         print("Digite a fonte:")
-    if option == '4':
+    elif option == '4':
         print("Digite a categoria:")
     else:
-        raise ValueError("Opção inválida")
+        sys.stderr.write("Opção inválida\n")
