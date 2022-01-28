@@ -40,7 +40,8 @@ def search_by_source(source):
     if source == "":
         return []
     news_list = []
-    """ source: https://pt.stackoverflow.com/questions/496212/fazer-uma-consulta-com-pymongo-filtrando-por-uma-string-ignorando-letras-maiuscu """
+    """ source: https://pt.stackoverflow.com/questions/496212/fazer-uma-consulta-
+    com-pymongo-filtrando-por-uma-string-ignorando-letras-maiuscu """
     response = search_news({"sources": re.compile(source, re.IGNORECASE)})
     if len(response) == 0:
         return response
@@ -52,4 +53,15 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    if category == "":
+        return []
+    news_list = []
+    """ source: https://pt.stackoverflow.com/questions/496212/fazer-uma-consulta-
+    com-pymongo-filtrando-por-uma-string-ignorando-letras-maiuscu """
+    response = search_news({"categories": re.compile(category, re.IGNORECASE)})
+    if len(response) == 0:
+        return response
+    for item in response:
+        news_typle = item["title"], item["url"]
+        news_list.append(news_typle)
+    return news_list
