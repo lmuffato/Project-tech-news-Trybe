@@ -37,7 +37,17 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    if source == "":
+        return []
+    news_list = []
+    """ source: https://pt.stackoverflow.com/questions/496212/fazer-uma-consulta-com-pymongo-filtrando-por-uma-string-ignorando-letras-maiuscu """
+    response = search_news({"sources": re.compile(source, re.IGNORECASE)})
+    if len(response) == 0:
+        return response
+    for item in response:
+        news_typle = item["title"], item["url"]
+        news_list.append(news_typle)
+    return news_list
 
 
 # Requisito 9
