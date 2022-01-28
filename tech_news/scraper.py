@@ -24,7 +24,7 @@ def scrape_novidades(html_content):
     if len(array) == 0:
         return selector.css(
             ".tec--list .tec--card__title__link::attr(href)"
-            ).getall()
+        ).getall()
     else:
         return array
 
@@ -50,9 +50,9 @@ def scrape_next_page_exemple(link):
 # Requisito 4
 def find_writer(selector):
     writer = (
-        selector.css(".tec--author__info__link ::text").get() or
-        selector.css(".tec--timestamp__item.z--font-bold ::text").get() or
-        selector.css(".z--m-none.z--truncate.z--font-bold ::text").get()
+        selector.css(".tec--author__info__link ::text").get()
+        or selector.css(".tec--timestamp__item.z--font-bold ::text").get()
+        or selector.css(".z--m-none.z--truncate.z--font-bold ::text").get()
     )
     if writer:
         writer = writer.strip()
@@ -61,7 +61,7 @@ def find_writer(selector):
 
 def shares_counter(selector):
     shares_count_str = selector.css(".tec--toolbar__item ::text").get().strip()
-    if shares_count_str == '':
+    if shares_count_str == "":
         shares_count = 0
     else:
         shares_count = int(shares_count_str.split(" ")[0])
@@ -72,7 +72,7 @@ def get_categories(selector):
     categories_list = selector.css("#js-categories ::text").getall()
     categories = []
     for category in categories_list:
-        if category != ' ':
+        if category != " ":
             categories.append(category.strip())
     return categories
 
@@ -83,22 +83,20 @@ def scrape_noticia(html_content):
     title = selector.css("h1.tec--article__header__title::text").get()
     timestamp = selector.css(
         ".tec--timestamp__item time::attr(datetime)"
-        ).get()
-    comments_count = selector.css(
-        "#js-comments-btn ::attr(data-count)"
-        ).get()
-    if comments_count == '' or None:
+    ).get()
+    comments_count = selector.css("#js-comments-btn ::attr(data-count)").get()
+    if comments_count == "" or None:
         comments_count = 0
     else:
         comments_count = int(comments_count)
     summary_list = selector.css(
         ".tec--article__body > p:first_child *::text"
-        ).getall()
-    summary = ''.join(summary_list)
+    ).getall()
+    summary = "".join(summary_list)
     sources_list = selector.css(".z--mb-16 .tec--badge ::text").getall()
     sources = []
     for source in sources_list:
-        if source != ' ':
+        if source != " ":
             sources.append(source.strip())
     scrape_new = {
         "url": url,
@@ -122,7 +120,7 @@ def get_tech_news(amount):
     while len(news_list) < amount:
         nxt_page = scrape_next_page_link(html_content)
         html_content = fetch(nxt_page)
-        news_to_include = (scrape_novidades(html_content))
+        news_to_include = scrape_novidades(html_content)
         if (amount - len(news_list)) <= len(news_to_include):
             for i in range(amount - len(news_list)):
                 news_list.append(news_to_include[i])

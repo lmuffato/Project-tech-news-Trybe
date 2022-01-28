@@ -98,16 +98,12 @@ LIST_FIVE_CATEGORY = [
     "Console_5",
 ]
 
-LIST_FOUR_CATEGORY = [
-    'Console_1',
-    'Console_2',
-    'PC_1',
-    'PC_2'
-]
+LIST_FOUR_CATEGORY = ["Console_1", "Console_2", "PC_1", "PC_2"]
+
 
 def test_listar_as_top_cinco_noticias():
     db.news.delete_many({})
-    
+
     # é possível buscar as cinco top 5 notícias
     db.news.insert_many(
         [
@@ -131,7 +127,7 @@ def test_listar_as_top_cinco_noticias():
         ]
     )
     assert top_5_news() == LIST_FIVE_NOTICES[:3]
-    
+
     # retornar vazio caso nao exista noticias
     db.news.delete_many({})
     assert top_5_news() == []
@@ -139,7 +135,7 @@ def test_listar_as_top_cinco_noticias():
 
 def test_listar_as_top_cinco_categorias():
     db.news.delete_many({})
-    
+
     # é possível buscar as cinco top 5 categorias
     db.news.insert_many(
         [
@@ -152,7 +148,7 @@ def test_listar_as_top_cinco_categorias():
         ]
     )
     assert top_5_categories() == LIST_FIVE_CATEGORY
-    
+
     # caso houver menos de 5 categorias, serão retornadas quantas houverem
     db.news.delete_many({})
     db.news.insert_many(
@@ -161,9 +157,9 @@ def test_listar_as_top_cinco_categorias():
             NEW_NOTICE_2,
         ]
     )
-    
+
     assert top_5_categories() == LIST_FOUR_CATEGORY[:4]
-    
+
     # buscar top categorias retornar vazio caso nao exista noticias
     db.news.delete_many({})
     assert top_5_categories() == []

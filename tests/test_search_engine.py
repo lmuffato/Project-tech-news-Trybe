@@ -83,11 +83,12 @@ def test_buscar_noticia_pela_data():
     with pytest.raises(ValueError, match="Data inválida"):
         search_by_date("1997-02-31")
 
+
 def test_buscar_noticia_pela_fonte():
     db.news.delete_many({})
     db.news.insert_one(NEW_NOTICE)
     assert search_by_source("ResetEra") == LIST
-    
+
     # fonte que não existe retorna lista vazia
     db.news.delete_many({})
     db.news.insert_one(NEW_NOTICE)

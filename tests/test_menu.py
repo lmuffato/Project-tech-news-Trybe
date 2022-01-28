@@ -108,11 +108,13 @@ NEW_NOTICE_6 = {
     "categories": ["PC_6", "Console_6"],
 }
 
+
 def test_analyzer_menu_basic(capsys):
     # validar saída do console analyzer menu
     def fake_input(prompt=""):
         print(prompt, end=" ")
         return ""
+
     with patch("builtins.input", fake_input):
         analyzer_menu()
     out, err = capsys.readouterr()
