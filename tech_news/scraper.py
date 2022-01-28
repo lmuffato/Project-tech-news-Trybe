@@ -1,24 +1,20 @@
 import requests
 import time
-import parsel
+
 
 # Requisito 1
 def fetch(url):
     """Seu código deve vir aqui"""
     time.sleep(1)
     try:
-        response = requests.get("https://www.tecmundo.com.br/novidades", timeout=3)
+        response = requests.get(url, timeout=3)
         if response.status_code == 200:
             return response.text
         else:
             return None
     except requests.ReadTimeout:
         return None
-    # if (response.satus_code == 200):
-    #     return response
-    # return None
-    
-    
+# https://app.betrybe.com/course/computer-science/redes-e-raspagem-de-dados/raspagem-de-dados/ab38ab4e-bdbd-4984-8987-1abf32d85f26/conteudos/b63ffce8-be02-4be1-9b88-bda695400647/alguns-problemas/7c5e2fcd-b870-4ad3-b7d7-85c2d10011ae?use_case=side_bar
 
 
 # Requisito 2
