@@ -4,7 +4,7 @@ import requests
 import time
 
 
-# Requisito 1 #
+# Requisito 1 ###
 def fetch(url):
     try:
         response = requests.get(url, timeout=3)
