@@ -1,19 +1,25 @@
-from database import search_news
+from database import find_news
+from pprint import pprint
+from collections import Counter
 
 
-# Requisito 6
-def search_by_title(title):
-    if title == "":
-        return []
+# Requisito 11
+def top_5_categories():
     news_list = []
-    response = search_news({"title": title.capitalize()})
+    response = find_news()
     if len(response) == 0:
         return response
     for item in response:
-        news_typle = item["title"], item["url"]
-        news_list.append(news_typle)
-    return news_list
+        for cat in item["categories"]:
+            news_list.append(cat)
+    duplicates = Counter(news_list)
+    top_typle = duplicates.most_common()
+    categories_list = []
+    for category in top_typle:
+        categories_list.append(category[0])
+    categories_list.sort()
+    top_5_list = categories_list[:5]
+    return top_5_list
 
 
-search_title = "o futuro do trabalho será mesmo remoto?"
-print(search_by_title(search_title))
+pprint(top_5_categories())

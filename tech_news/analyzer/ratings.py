@@ -26,7 +26,7 @@ def top_5_news():
     return news_list_ordered[:5]
 
 
-# Requisito 11
+# Requisito 11 #
 def top_5_categories():
     news_list = []
     response = find_news()
