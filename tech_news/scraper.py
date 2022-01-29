@@ -1,4 +1,4 @@
-from .database import create_news
+from database import create_news
 from parsel import Selector
 import requests
 import time
@@ -114,7 +114,3 @@ def get_tech_news(amount):
 
     create_news(list_noticias)
     return list_noticias
-
-
-data = get_tech_news(20)
-print(f" quant {len(data)}")
