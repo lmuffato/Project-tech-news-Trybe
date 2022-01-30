@@ -1,3 +1,4 @@
+from tech_news.database import create_news
 from parsel import Selector
 import requests
 import time
@@ -69,7 +70,7 @@ def get_writer(selector):
 def get_shares_count(selector):
     author_div = '.tec--author'
     shares = '.tec--toolbar__item::text'
-    shares_count = selector.css(f'{author_div} {shares}').re_first('\d')
+    shares_count = selector.css(f'{author_div} {shares}').re_first(r'\d')
 
     if shares_count is None:
         shares_count = 0
@@ -80,10 +81,8 @@ def get_shares_count(selector):
 
 
 def get_comments_count(selector):
-    container = '.tec--author'
-    comments = '.tec--toolbar__item'
-    btn = '.tec--btn::text'
-    count = selector.css(f'{container} {comments} {btn}').re_first('\d')
+    comments_btn = '#js-comments-btn::attr(data-count)'
+    count = selector.css(f'{comments_btn}').get()
 
     if count is None:
         count = 0
@@ -139,4 +138,20 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    scrapped = []
+    news = []
+    url = 'https://www.tecmundo.com.br/novidades'
+    previous_url = ''
+    for n in range(amount):
+        html_content = fetch(url)
+        if (url != previous_url):
+            news.extend(scrape_novidades(html_content))
+            previous_url = url
+
+        if (len(news) < amount):
+            url = scrape_next_page_link(html_content)
+        new = scrape_noticia(fetch(news[n]))
+        scrapped.append(new)
+
+    create_news(scrapped)
+    return scrapped
