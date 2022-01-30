@@ -1,23 +1,46 @@
-import requests  # permite realizar requisições http
-import time  # acesso a horário e conversões
+# requests: permite realizar requisições http
+import requests
+# tine: acesso a horário e conversões
+import time
+# parsel: lib para extrair dados de html e xml...
+# usando seletores xpath e css podendo ser combinados com regex
+# https://pythonrepo.com/repo/scrapy-parsel-python-web-crawling
+from parsel import Selector
 
 
 # Requisito 1
-def fetch(url):  # função fetch recebe uma url
+# função fetch recebe uma url
+def fetch(url):
     try:
         # requisição http definindo timeout de 3seg
         response = requests.get(url, timeout=3)
-        time.sleep(1)  # rate limite 1 segundo
-        if response.status_code != 200:  # retorna um number
-            return None  # retorna none se status_code for diferente de 200
-        return response.text  # retorna conteúdo de texto caso status seja 200
-    except requests.Timeout:  # caso não receba resposta no time especificado..
-        return None  # retorna none
+        # rate limite 1 segundo
+        time.sleep(1)
+        # status_code: retorna um number
+        if response.status_code != 200:
+            # retorna none se status_code for diferente de 200
+            return None
+        # retorna conteúdo de texto caso status seja 200
+        return response.text
+    # caso não receba resposta no time especificado retorna none
+    except requests.Timeout:
+        return None
 
 
 # Requisito 2
+# recebe url
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    #  guarda o conteúdo de texto
+    data = Selector(text=html_content)
+    #  a::attr(href) captura somente o valor contido no texto do seletor 'a'
+    list = data.css(
+        "h3.tec--card__title a.tec--card__title__link::attr(href)"
+    ).getall()
+    #  retorna uma lista e se nao encontrar nenhuma URL retorna uma lista vazia
+    if (list):
+        return list
+    else:
+        return []
 
 
 # Requisito 3
