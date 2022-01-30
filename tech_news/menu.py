@@ -1,5 +1,13 @@
 # Requisito 12
 
+from tech_news.scraper import get_tech_news
+from tech_news.analyzer.search_engine import (
+    search_by_title, search_by_date, search_by_source, search_by_category
+    )
+from tech_news.analyzer.ratings import top_5_news, top_5_categories
+
+import sys
+
 
 def analyzer_menu():
     options = input(
@@ -14,4 +22,25 @@ def analyzer_menu():
         " 7 - Sair.\n"
     )
 
-    return options
+# ideia de utilizar lambda no dict:
+# https://github.com/tryber/sd-010-a-tech-news/pull/100/files
+
+    menu = {
+        "0": lambda: get_tech_news(
+            int(input("Digite quantas notícias serão buscadas:"))
+        ),
+        "1": lambda: search_by_title(str(input("Digite o título:"))),
+        "2": lambda: search_by_date(
+            str(input("Digite a data no formato aaaa-mm-dd:"))
+        ),
+        "3": lambda: search_by_source(str(input("Digite a fonte:"))),
+        "4": lambda: search_by_category(str(input("Digite a categoria:"))),
+        "5": lambda: top_5_news(),
+        "6": lambda: top_5_categories(),
+        "7": lambda: print("Encerrando script"),
+    }
+
+    try:
+        print(menu[options]())
+    except KeyError:
+        sys.stderr.write("Opção inválida\n")
