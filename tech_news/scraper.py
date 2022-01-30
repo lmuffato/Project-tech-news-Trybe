@@ -1,6 +1,19 @@
+import requests
+import time
+from parsel import Selector
+from .database import create_news
+
+
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
+    time.sleep(2)
+    try:
+        response = requests.get(url, timeout=3)
+        if (response.status_code == 200):
+            return response.text
+        return None
+    except requests.Timeout:
+        return None
 
 
 # Requisito 2
