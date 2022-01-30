@@ -24,12 +24,11 @@ def scrape_novidades(html_content):
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    page = Selector(html_content)
-    css_next_page_selector = ".tec--list a.tec--btn::attr(href)"
-    next_page_button = page.css(css_next_page_selector).get()
+    content = Selector(html_content)
+    next_page = content.css(".tec--list a.tec--btn::attr(href)").get()
 
-    if (next_page_button):
-        return next_page_button
+    if (next_page):
+        return next_page
     else:
         return None
 
