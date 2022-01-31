@@ -8,7 +8,7 @@ from tech_news.scraper import get_tech_news
 from tech_news.analyzer.ratings import top_5_news, top_5_categories
 
 
-def search_news(option):
+def search_news_functions(option):
     if option == 0:
         amount = int(input("Digite quantas notícias serão buscadas: "))
         return get_tech_news(amount)

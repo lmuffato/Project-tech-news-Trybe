@@ -1,5 +1,5 @@
 import sys
-from tech_news.search_news_menu import search_top_news, search_news
+from tech_news.search_news_menu import search_top_news, search_news_functions
 
 
 # Requisito 12
@@ -15,13 +15,10 @@ def analyzer_menu():
     option = int(input("Escolha um número entre 0-7: "))
 
     if option >= 0 and option < 4:
-        return search_news(option)
+        return search_news_functions(option)
     elif option >= 4 and option < 7:
         return search_top_news(option)
     elif option == 7:
         print("Encerrando script")
     else:
         print("Opção inválida", file=sys.stderr)
-
-
-print(analyzer_menu())
