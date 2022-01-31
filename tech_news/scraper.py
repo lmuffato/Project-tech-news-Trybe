@@ -42,7 +42,7 @@ def scrape_noticia(html_content):
 
     title = content.css("#js-article-title::text").get()
     timestamp = content.css("#js-article-date::attr(datetime)").get()
-    writer = content.css("p.z--font-bold *::text").get()
+    writer = content.css(".z--font-bold *::text").get()
     shares_count = content.css(".tec--toolbar__item::text").get()
     comments_count = content.css("#js-comments-btn::attr(data-count)").get()
 
@@ -60,9 +60,9 @@ def scrape_noticia(html_content):
         "url": url,
         "title": title,
         "timestamp": timestamp,
-        "writer": writer.strip() or None,
-        "shares_count": int(shares_count.split()[0]) or 0,
-        "comments_count": int(comments_count) or 0,
+        "writer": writer.strip() if writer else None,
+        "shares_count": int(shares_count.split()[0]) if shares_count else 0,
+        "comments_count": int(comments_count) if comments_count else 0,
         "summary": summary,
         "sources": sources,
         "categories": categories,
