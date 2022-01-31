@@ -2,6 +2,8 @@
 from database import find_news
 from collections import Counter
 
+# Ajuda Adelino
+
 
 def top_5_news():
     """Seu código deve vir aqui"""
