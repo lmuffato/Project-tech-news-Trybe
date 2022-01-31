@@ -35,7 +35,36 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    content = Selector(html_content)
+
+    url = content.css("meta[property='og:url']::attr(content)").get()
+    # Ref https://github.com/tryber/sd-010-a-tech-news/pull/65/files
+
+    title = content.css("#js-article-title::text").get()
+    timestamp = content.css("#js-article-date::attr(datetime)").get()
+    writer = content.css("p.z--font-bold *::text").get()
+    shares_count = content.css(".tec--toolbar__item::text").get()
+    comments_count = content.css("#js-comments-btn::attr(data-count)").get()
+
+    summary = "".join(content.css(".tec--article__body > p:first-child *::text").getall()).strip()
+    # Ref https://github.com/tryber/sd-010-a-tech-news/pull/65/files
+
+    sources_list = content.css(".z--mb-16 a.tec--badge::text").getall()
+    sources = [source.strip() for source in sources_list]
+    categories_list = content.css("#js-categories a::text").getall()
+    categories = [category.strip() for category in categories_list]
+
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer.strip() or None,
+        "shares_count": int(shares_count.split()[0]) or 0,
+        "comments_count": int(comments_count) or 0,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
 
 
 # Requisito 5
