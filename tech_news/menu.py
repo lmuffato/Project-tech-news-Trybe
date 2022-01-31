@@ -1,6 +1,4 @@
 import sys
-
-from click import prompt
 from tech_news.search_news_menu import search_top_news, search_news_functions
 
 
