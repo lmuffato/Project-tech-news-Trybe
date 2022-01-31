@@ -1,4 +1,4 @@
-from tech_news.database import create_news
+from .database import create_news
 from parsel import Selector
 import requests
 import time
