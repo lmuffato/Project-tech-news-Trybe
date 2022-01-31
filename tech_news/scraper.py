@@ -1,6 +1,7 @@
 import requests
 from time import sleep
 from parsel import Selector
+from .database import create_news
 
 
 # Requisito 1
@@ -49,7 +50,7 @@ def scrape_noticia(html_content):
     comments = selector.css("#js-comments-btn::attr(data-count)").get()
     comments_count = comments if comments else 0
     summary = selector.css(
-        ".tec--article__body p:first-child *::text"
+        ".tec--article__body > p:first-child *::text"
         ).getall()
     response_summary = "".join(summary)
     response_sources = []
@@ -74,4 +75,15 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = fetch("https://www.tecmundo.com.br/novidades")
+    links = scrape_novidades(url)
+
+    while len(links) < amount:
+        more_pages = scrape_next_page_link(url)
+        next_page = fetch(more_pages)
+        links.extend(scrape_novidades(next_page))
+
+    notes = [scrape_noticia(fetch(element)) for element in links[:amount]]
+
+    create_news(notes)
+    return notes
