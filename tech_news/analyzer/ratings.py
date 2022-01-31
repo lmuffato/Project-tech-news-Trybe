@@ -18,12 +18,11 @@ def top_5_news():
 def top_5_categories():
     results = find_news()
     categories = []
-
     if not results:
         return []
 
     for notice in results:
-        categories.append(notice["categories"])
+        categories.extend([*notice["categories"]])
 
     count = Counter(categories)
     sorted_list = sorted(count, key=count.get, reverse=True)
