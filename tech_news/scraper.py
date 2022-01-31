@@ -46,7 +46,9 @@ def scrape_noticia(html_content):
     shares_count = content.css(".tec--toolbar__item::text").get()
     comments_count = content.css("#js-comments-btn::attr(data-count)").get()
 
-    summary = "".join(content.css(".tec--article__body > p:first-child *::text").getall()).strip()
+    summary = "".join(
+        content.css(".tec--article__body > p:first-child *::text")
+        .getall()).strip()
     # Ref https://github.com/tryber/sd-010-a-tech-news/pull/65/files
 
     sources_list = content.css(".z--mb-16 a.tec--badge::text").getall()
