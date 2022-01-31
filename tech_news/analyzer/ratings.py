@@ -1,5 +1,5 @@
 # Requisito 10
-from database import find_news
+from tech_news.database import find_news
 from collections import Counter
 
 # Ajuda Adelino
