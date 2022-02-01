@@ -19,7 +19,8 @@ def fetch(url):
 # Requisito 2
 def scrape_novidades(html_content):
     selector = Selector(text=html_content)
-    return selector.css('h3.tec--card__title a.tec--card__title__link::attr(href)').getall()
+    query = 'h3.tec--card__title a.tec--card__title__link::attr(href)'
+    return selector.css(query).getall()
 
 
 # Requisito 3
@@ -32,9 +33,34 @@ def scrape_next_page_link(html_content):
         return None
 
 
+# Feito com ajuda
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    news = {}
+    selector = Selector(text=html_content)
+    url = selector.css('head link[rel=canonical]::attr(href)').get()
+    title = selector.css('h1.tec--article__header__title::text').get()
+    timestamp = selector.css('time::attr(datetime)').get()
+    writer = selector.css('.z--font-bold *::text').get()
+    sc = selector.css('div.tec--toolbar__item::text').re_first(r'\d+')
+    comments_count = selector.css('#js-comments-btn::attr(data-count)').get()
+    summary_query = 'div.tec--article__body > p:first-child *::text'
+    summary_tag = selector.css(summary_query).getall()
+    summary = ''.join(summary_tag)
+    sources = selector.css('div.z--mb-16 a::text').getall()
+    sources = [s.strip() for s in sources]
+    categories = selector.css('div#js-categories a.tec--badge::text').getall()
+    categories = [c.strip() for c in categories]
+    news['url'] = url
+    news['title'] = title
+    news['timestamp'] = timestamp
+    news['writer'] = writer.strip() if writer else None
+    news['shares_count'] = int(sc) if sc else 0
+    news['comments_count'] = int(comments_count)
+    news['summary'] = summary
+    news['sources'] = sources
+    news['categories'] = categories
+    return news
 
 
 # Requisito 5
