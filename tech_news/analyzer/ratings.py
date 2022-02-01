@@ -18,7 +18,6 @@ def top_5_news():
     return tops_5
 
 
-
 # Requisito 11
 def top_5_categories():
     """Seu código deve vir aqui"""
