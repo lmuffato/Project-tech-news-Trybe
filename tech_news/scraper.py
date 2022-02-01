@@ -36,16 +36,25 @@ def scrape_novidades(html_content):
     html_page = Selector(text=html_content)  # carrega a pagina html
     array_links = html_page.css(css_selector).getall()
     # Usa o seletor de css para retornar um array com as tags encontradas
+    # .getll() retonra todas as ocorrências encontradas
     return array_links
 
 
 # Teste manual
-print(scrape_novidades(fetch("https://www.tecmundo.com.br/novidades")))
+# print(scrape_novidades(fetch("https://www.tecmundo.com.br/novidades")))
 
 
 # Requisito 3
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    css_selector = "a.tec--btn--lg::attr(href)"  # endereço do botão next
+    html_page = Selector(text=html_content)  # carrega a pagina html
+    url_next_page = html_page.css(css_selector).get()
+    # .get() retorna o primeiro elemento encontrado
+    return url_next_page
+
+
+# Teste manual
+# print(scrape_next_page_link(fetch("https://www.tecmundo.com.br/novidades")))
 
 
 # Requisito 4
