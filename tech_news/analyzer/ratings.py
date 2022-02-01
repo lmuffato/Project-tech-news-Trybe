@@ -1,4 +1,5 @@
 from tech_news.database import find_news
+from collections import Counter
 
 
 def total_calculate(new):
@@ -17,4 +18,15 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    news_list = find_news()
+    categories = []
+    if not news_list:
+        return []
+    for new in news_list:
+        categories.extend([*new['categories']])
+    counter = Counter(categories)
+    total_sort = sorted(
+        counter, key=counter.get, reverse=True
+    )
+
+    return sorted(total_sort)[:5]
