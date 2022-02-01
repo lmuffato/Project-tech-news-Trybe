@@ -1,6 +1,22 @@
+import requests
+import time
+
+
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
+    try:
+        # timeout é o limite em segundos para lançar o erro timeOut
+        response = requests.get(url, timeout=3)
+        time.sleep(1)   # espera 1 segundo para cada resquisição
+        if response.status_code != 200:
+            return None   # Se não retornar status 200, retorna nenhum valor
+        return response.text   # Todo o html da página
+    except requests.Timeout:   # Tratamento do erro Timeout
+        return None   # no caso de erro de timeOut, retorna nenhum valor
+
+
+# Teste manual
+print(fetch("https://www.tecmundo.com.br/novidades"))
 
 
 # Requisito 2
