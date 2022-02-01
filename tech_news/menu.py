@@ -1,7 +1,7 @@
 import sys
 
 
-# Requisito 12
+# Requisito_12
 def analyzer_menu():
     info = input(
         "Selecione uma das opções a seguir:\n"
