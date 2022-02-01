@@ -1,10 +1,11 @@
+from parsel import Selector
 import requests
 import time
 
 
 # Requisito 1
 def fetch(url):
-    try:
+    try:  # Tenta realizar a ação
         # timeout é o limite em segundos para lançar o erro timeOut
         response = requests.get(url, timeout=3)
         time.sleep(1)   # espera 1 segundo para cada resquisição
@@ -16,12 +17,30 @@ def fetch(url):
 
 
 # Teste manual
-print(fetch("https://www.tecmundo.com.br/novidades"))
+# print(fetch("https://www.tecmundo.com.br/novidades"))
 
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    # "elementoPai.classe elementoFilho.class::attr(nomeAtributo)"
+    css_selector = "h3.tec--card__title a.tec--card__title__link::attr(href)"
+    # O seletor acima corresponde ao endereço do link desejado abaixo
+    # <h3 class="tec--card__title">
+    #   <a
+    #     class="tec--card__title__link"
+    #     href="link desejado"
+    #    >
+    #   </a>
+    # </h3>
+    # Acessando o valor do atribudo da tag html -> class::attr(nomeDoAtributo)"
+    html_page = Selector(text=html_content)  # carrega a pagina html
+    array_links = html_page.css(css_selector).getall()
+    # Usa o seletor de css para retornar um array com as tags encontradas
+    return array_links
+
+
+# Teste manual
+print(scrape_novidades(fetch("https://www.tecmundo.com.br/novidades")))
 
 
 # Requisito 3
