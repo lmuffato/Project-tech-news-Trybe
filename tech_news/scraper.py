@@ -174,7 +174,7 @@ def get_tech_news(amount):
     return all_news_info
 
 # Teste manual
-# print(get_tech_news(5))
+# print(get_tech_news(10))
 
 # Obs: É necessário ligar o serviço do mongodb
 # no terminal: sudo service mongod start
