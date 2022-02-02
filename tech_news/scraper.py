@@ -145,7 +145,7 @@ def get_tech_news(amount):
     news_links_list.extend(scrape_novidades(html_page))
 
     # enquanto o numero de links não for menor que amount
-    while len(news_links_list) <= amount:
+    while len(news_links_list) <= int(amount):
         # recuper ao link da próxima página
         next_page_link = scrape_next_page_link(html_page)
         # recupara o html formatado
@@ -157,7 +157,7 @@ def get_tech_news(amount):
     all_news_info = []
 
     # para cada link em news_links_list
-    for link in news_links_list[:amount]:
+    for link in news_links_list[:int(amount)]:
         # o parâmetro amount em news_links_list[:amount]
         # limita os elementos a serem iterados pelo for
 
