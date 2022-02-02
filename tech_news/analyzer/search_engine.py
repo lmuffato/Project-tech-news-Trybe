@@ -67,6 +67,22 @@ def search_by_source(source):
     return newShapeElement(news_list)
 
 
+# Teste manual
+# print(search_by_source("Venture Beat"))
+
+
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    news_list = search_news(
+      {
+        "sources": {
+          "$regex": category,
+          "$options": "i"
+        }
+      })
+
+    return newShapeElement(news_list)
+
+
+# Teste manual
+# print(search_by_category("Tesla"))
