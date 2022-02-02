@@ -75,7 +75,7 @@ def search_by_source(source):
 def search_by_category(category):
     news_list = search_news(
       {
-        "sources": {
+        "category": {
           "$regex": category,
           "$options": "i"
         }
