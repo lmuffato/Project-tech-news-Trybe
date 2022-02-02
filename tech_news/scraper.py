@@ -37,7 +37,34 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    link = selector.css("meta[property='og:url']::attr(content)").get()
+    title = selector.css("#js-article-title::text").get()
+    timestamp = selector.css("#js-article-date::attr(datetime)").get()
+    writer = selector.css(".z--font-bold *::text").get()
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+    summary = ''.join(
+        selector.css(".tec--article__body > p:first-child *::text")
+        .getall()).strip()
+    sources_list = selector.css(".z--mb-16 a.tec--badge::text").getall()
+    sources = [source.strip() for source in sources_list]
+    categories_list = selector.css("#js-categories a::text").getall()
+    categories = [category.strip() for category in categories_list]
+
+    return {
+        "url": link,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer.strip() if writer else None,
+        "shares_count": int(shares_count.split()[0]) if shares_count else 0,
+        "comments_count": int(comments_count) if comments_count else 0,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
+
+    # Ref https://github.com/tryber/sd-010-a-tech-news/pull/115/files
 
 
 # Requisito 5
