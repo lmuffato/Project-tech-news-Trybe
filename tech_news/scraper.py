@@ -1,6 +1,7 @@
 from parsel import Selector
 import requests
 import time
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -37,11 +38,12 @@ def scrape_novidades(html_content):
     array_links = html_page.css(css_selector).getall()
     # Usa o seletor de css para retornar um array com as tags encontradas
     # .getll() retonra todas as ocorrências encontradas
+    # retorna um array com os links de todas as notícias
     return array_links
 
 
 # Teste manual
-# print(scrape_novidades(fetch("https://www.tecmundo.com.br/novidades")))
+print(scrape_novidades(fetch("https://www.tecmundo.com.br/novidades")))
 
 
 # Requisito 3
@@ -134,4 +136,49 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    # array qye recebe as informações de cada página
+    news_links_list = []
+    # Página html já formatada
+    html_page = fetch("https://www.tecmundo.com.br/novidades")
+
+    # Une elementos em um único array
+    news_links_list.extend(scrape_novidades(html_page))
+
+    # enquanto o numero de links não for menor que amount
+    while len(news_links_list) <= amount:
+        # recuper ao link da próxima página
+        next_page_link = scrape_next_page_link(html_page)
+        # recupara o html formatado
+        next_page = fetch(next_page_link)
+        # recupera todos os links de noticias e une ao array
+        news_links_list.extend(scrape_novidades(next_page))
+
+    # array com todos os objetos de todas as noticias
+    all_news_info = []
+
+    # para cada link em news_links_list
+    for link in news_links_list[:amount]:
+        # o parâmetro amount em news_links_list[:amount]
+        # limita os elementos a serem iterados pelo for
+
+        # faça uma requisão na página e recupere o html
+        page = fetch(link)
+
+        # salve todos os dados na noticia em um objeto
+        # e acrescente esse objeto a um array
+        all_news_info.append(scrape_noticia(page))
+
+    # Salva o array no banco de dados através insert_many
+    create_news(all_news_info)
+    return all_news_info
+
+# Teste manual
+# print(get_tech_news(5))
+
+# Obs: É necessário ligar o serviço do mongodb
+# no terminal: sudo service mongod start
+
+# conferir as informações salvas no mongodb
+# no terminal: mongosh
+# use tech_news
+# db.news.find()
