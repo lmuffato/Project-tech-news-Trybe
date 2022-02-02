@@ -89,7 +89,7 @@ def get_tech_news(amount):
         news_dict.append(scrape_noticia(page))
 
     create_news(news_dict)
-    
+
     return news_dict
 
     # Ref https://github.com/tryber/sd-010-a-tech-news/pull/111/files
