@@ -90,7 +90,7 @@ def scrape_noticia(html_content):
     # Quantidade de compartilhametos
     shares_count = selector.css(".tec--toolbar__item::text").get()
 
-    # Tratamento do dados - removendo a string "Compartilharam"    
+    # Tratamento do dados - removendo a string "Compartilharam"
     if shares_count:
         # divide a string em duas e recupera a primeira (numero)
         shares_count = (shares_count.strip().split(" ")[0])
