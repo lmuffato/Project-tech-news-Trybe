@@ -170,6 +170,7 @@ def get_tech_news(amount):
 
     # Salva o array no banco de dados através insert_many
     create_news(all_news_info)
+
     return all_news_info
 
 # Teste manual
